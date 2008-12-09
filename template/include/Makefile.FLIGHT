@@ -1,0 +1,93 @@
+# -*- makefile -*-
+# Known as Makefile.FLIGHT on ska systems
+
+# Define common variables to define directory paths within the
+# CXC SKA "flight" environments.  This makefile should be
+# included in each task makefile. 
+
+# Define the root directories where installed (flight) code resides
+# ROOT_FLIGHT is a holdover from when the TST environment was an
+# option (but this was always a non-starter).
+
+ROOT_SKA = /proj/sot/ska
+ROOT_FLIGHT = $(ROOT_SKA)
+#
+## Define ROOT and ROOT_FLIGHT
+## ROOT is the top of the development SKA or TST environment tree. 
+## ROOT_FLIGHT is the top of the flight (installed) SKA/TST tree.
+#
+
+# Flight environment is SKA
+ifdef SKA
+  ROOT = $(SKA)
+else
+  ROOT = $(ROOT_SKA)
+endif
+
+# Define generic installation paths
+ifndef INSTALL
+  INSTALL = $(ROOT)
+endif
+
+ifndef INSTALL_BIN
+  INSTALL_BIN = $(INSTALL)/bin
+endif
+
+ifndef TASK
+  TASK = share
+endif
+
+ifndef INSTALL_DATA
+  INSTALL_DATA = $(INSTALL)/data/$(TASK)
+endif
+
+ifndef INSTALL_SHARE
+  INSTALL_SHARE = $(INSTALL)/share/$(TASK)
+endif
+
+ifndef INSTALL_LIB
+  INSTALL_LIB = $(INSTALL)/lib
+endif
+
+ifndef INSTALL_INCLUDE
+  INSTALL_INCLUDE = $(INSTALL)/include
+endif
+
+ifndef INSTALL_IDL
+  INSTALL_IDL = $(INSTALL)/idl
+endif
+
+ifndef INSTALL_DOC
+  INSTALL_DOC = $(INSTALL)/doc/$(TASK)
+endif
+
+ifndef INSTALL_PERLLIB
+  INSTALL_PERLLIB = $(INSTALL)/lib/perl
+endif
+
+# The targets and commands below are strictly for local testing 
+#
+# Make directories and links within local dir which emulate global flight
+# environment directory structure.  During dev/test cycle when SKA=$PWD,
+# this will insure that the local bin, data and share files are used.
+
+# Targets for test or FLIGHT files that need to be copied into local test area.
+# Test files in directory t/ have precedence over flight files.
+
+data/% bin/% share/% doc/% include/% idl/% i686-Linux/% sparc-SunOS/%: FORCE
+	mkdir -p $(INSTALL)/`dirname $@`;     \
+	if [ -r t/$@ ] ; then \
+	  if [ -d t/$@ ] ; then \
+	    rsync --times --archive t/$@/ $(INSTALL)/$@/;     \
+          else \
+	    rsync --times t/$@ $(INSTALL)/$@;     \
+	  fi \
+	else  \
+	  rsync --times $(ROOT_FLIGHT)/$@ $(INSTALL)/$@;  \
+	fi
+
+FORCE:
+
+## Make sure install dir is not flight.  (This doesn't resolve links etc)
+check_install:
+	test "$(INSTALL)" != "$(ROOT_FLIGHT)"

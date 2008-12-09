@@ -1,0 +1,32 @@
+To Do:
+
+- Make a configure file
+- Break template into installable packages as much as possible
+- IDL startup and batch startup into template (or as a package)
+- $SKA/include/Task_template etc
+- Check include/Task_template/Makefile for compatibility
+- Write HowTo for binary exec installation
+
+Required launchers:
+- starcheck
+- aca_movie
+- ?
+
+Transition plan
+---------------
+- Install skare for Solaris 10 and FC8 (i686 and x86_64) in /proj/sot/ska/dev
+  - Skip python installation on Solaris
+  - Include DBD::Sybase
+- Install starcheck and test on Solaris and x86_64
+  - Solaris 10 - test on zip and kracko
+- Check devel procedure for arc on x86_64. [done]
+
+- From /proj/sot/ska
+  mkdir classic
+  mv bin lib include classic/
+- From ~/Scratch/pyskare
+  setenv SKA /proj/sot/ska
+  
+
+- Install latest arc
+  

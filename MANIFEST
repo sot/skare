@@ -1,0 +1,10 @@
+ez_setup.py
+install.py
+Makefile.in
+pexpect.py
+cfg
+template
+virtual-python.py
+yaml
+NOTES
+MANIFEST

@@ -1,0 +1,33 @@
+NAME = skare
+VERSION = 0.03
+PREFIX = @prefix@
+
+all: basedirs python perl perl_dbi
+
+except_python: basedirs perl perl_dbi
+
+basedirs:
+	./install.py --prefix $(PREFIX) --config template.cfg
+
+python:
+	./install.py --prefix $(PREFIX) --config env_vars.cfg \
+	--config python.cfg
+
+perl:
+	./install.py --prefix $(PREFIX) --config env_vars.cfg \
+	--config cfitsio.cfg \
+	--config pgplot.cfg \
+	--config perl_modules.cfg 
+
+perl_dbi:
+	./install.py --prefix $(PREFIX) --config env_vars.cfg \
+	--config perl_dbi.cfg
+
+dist:
+	mkdir $(NAME)-$(VERSION)
+	mkdir -p dist
+	tar --exclude .svn --exclude "*.pyc" --exclude "*~" --create --files-from=MANIFEST --file - \
+	 | (tar --extract --directory $(NAME)-$(VERSION) --file - )
+	tar --create --verbose --gzip --file dist/$(NAME)-$(VERSION).tar.gz $(NAME)-$(VERSION)
+	rm -rf $(NAME)-$(VERSION)
+

@@ -1,0 +1,84 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Cwd;
+use Getopt::Long;
+
+# Use the convention that flt_envs must be in $SKA/bin to derive SKA
+# OVERRIDE any existing value!
+($ENV{SKA} = Cwd::abs_path($0)) =~ s|/bin/flt_envs||;
+
+die "Cannot find the SKA root directory: flt_envs is in unexpected location.\n"
+  unless defined $ENV{SKA} and -d $ENV{SKA};
+
+# Find CXC::Envs::Flight.
+eval <<CXC_ENVS_FLIGHT;
+    use lib '$ENV{SKA}/lib/perl';
+    use CXC::Envs::Flight;
+CXC_ENVS_FLIGHT
+
+if ($@) {
+    die "$@\n";
+}
+
+my %param = ( shell => 'csh',
+	    );
+
+GetOptions( \%param, qw( shell=s
+                         ska
+			 help
+		       ) ) or die;
+
+if ($param{help}) {
+    require Pod::Usage;
+    Pod::Usage::pod2usage ( { -exitval => 0, -verbose => 2 } );
+}
+
+print CXC::Envs::Flight::shell_cmds($param{shell}, 'ska');
+
+__END__
+
+=head1 NAME
+
+flt_envs - configure Flt environment
+
+=head1 SYNOPSIS
+
+flt_envs [options]
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-shell> [sh ksh csh tcsh]
+
+Output commands compatible with the specified shell
+
+=item B<--help>
+
+print this usage and exit.
+
+=back
+
+=head1 DESCRIPTION
+
+B<flt_envs> is normally used inside a shell script (most likely the
+user's shell startup script, like F<.cshrc> or F<.profile>) to 
+add the required entities to the user's environment to access the Flight
+programs and facilities.  B<flt_envs> is designed to be C<eval>'d by the
+shell, e.g.
+
+  eval `flt_envs -shell csh`
+
+normally this results in the setting of various environmental variables,
+including the user's path.
+
+Don't B<eval> the output until you've got what you want.
+
+=head1 AUTHOR
+
+Tom Aldcroft (taldcroft@cfa.harvard.edu)
+
+Based on mst_envs by Diab Jerius (djerius@cfa.harvard.edu)
