@@ -51,7 +51,7 @@ Fallback
 --------
   cd /proj/sot/ska
   mkdir skare
-  mv bin lib include skare/
+  mv bin lib include arch skare/
   mv classic/* ./
 
   cd /pool14/aldcroft/Release..
