@@ -16,6 +16,7 @@ try:
 except NameError:
     from sets import Set as set
     
+VERSION = '$Id: install.py 366 2008-12-09 15:40:03Z aldcroft $'
 
 def get_options():
     """Get options.
@@ -232,6 +233,7 @@ class Module(object):
         
         # Process with python tarfile module.  The first member will be the directory
         # name - catch that in order to determine where the tar will get extracted.
+        self.tarfile = os.path.basename(tarfile)
         if self.moduledir and os.path.exists(self.moduledir):
             print "Removing existing module build dir", self.moduledir
             shutil.rmtree(self.moduledir)
@@ -275,7 +277,7 @@ os.environ['python'] = opt.python
 os.environ['prefix'] = prefix = os.path.abspath(opt.prefix)
 os.environ['prefix_arch'] = os.path.join(os.environ['prefix'], opt.arch,
                                          os.environ['platform_os_generic'])
-build_dir =  os.path.join(os.path.abspath(opt.build) or os.path.join(prefix, 'build'),
+build_dir =  os.path.join(os.path.abspath(opt.build or os.path.join(prefix, 'build')),
                           os.environ['platform_os_generic'])
 os.environ['build_dir'] = build_dir 
 os.environ['pkg_dir'] = pkg_dir = os.path.abspath(opt.pkgs)
@@ -291,6 +293,10 @@ for dirname, subdirs in (('build_dir', ['']),
         if not os.path.exists(path):
             print 'Making dir', path
             os.makedirs(path)
+
+# Get pkgs manifest and copy to prefix
+pkgs = [x.strip() for x in open('pkgs.manifest')]
+bash('cp -p pkgs.manifest ${prefix}/')
 
 # Do the modules installation by iterating over the yaml 'install' sections
 # (delimited by '---' in the yaml cfg file) in each config file
@@ -323,6 +329,11 @@ for configfile in opt.config:
             # build directory (moduledir) will be.  This is needed to check .installed.
             module.untar(build_dir, pkg_dir, extract=False)
             os.environ['module_dir'] = module.moduledir or ''
+
+            # Check that the tar package is in the package manifest
+            if module.tarfile and module.tarfile not in pkgs:
+                print 'Package %s from %s is not in pkg.manifest' % (module.tarfile, pkg_dir)
+                sys.exit(1)
 
             # If the test cmds exist and succeed, and .installed exists in the
             # module build directory then move on to next module

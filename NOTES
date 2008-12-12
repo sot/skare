@@ -1,32 +1,83 @@
 To Do:
 
-- Make a configure file
 - Break template into installable packages as much as possible
 - IDL startup and batch startup into template (or as a package)
 - $SKA/include/Task_template etc
-- Check include/Task_template/Makefile for compatibility
 - Write HowTo for binary exec installation
+- Find a way to run skare on rhodes:
+   - Force perl to be /usr/local/bin/perl on rhodes --or--
+   - Make flt_envs run on 5.005 ??
 
-Required launchers:
-- starcheck
-- aca_movie
-- ?
+
 
 Transition plan
 ---------------
-- Install skare for Solaris 10 and FC8 (i686 and x86_64) in /proj/sot/ska/dev
+X Install skare for Solaris 8, 10 and FC8 (i686 and x86_64) in /proj/sot/ska/dev
   - Skip python installation on Solaris
   - Include DBD::Sybase
-- Install starcheck and test on Solaris and x86_64
+X Install starcheck and test on Solaris 10 and x86_64
   - Solaris 10 - test on zip and kracko
-- Check devel procedure for arc on x86_64. [done]
+X Check devel procedure for arc on x86_64. 
+
+- Shut down cron jobs
+  - arc
+  - dsn_summary
+
+- Do everything as user aca
 
 - From /proj/sot/ska
   mkdir classic
   mv bin lib include classic/
-- From ~/Scratch/pyskare
-  setenv SKA /proj/sot/ska
-  
 
-- Install latest arc
+- From ~/Scratch/skare
+  setenv SKA /proj/sot/ska
+  ./configure --prefix=/proj/sot/ska
+  make base_dirs perl perl_dbi   # Solaris 8 and Solaris 10
+  make all                       # i686 and x86_64
+
+- Install and test starcheck Dec-2008-B release
+  cd /pool14/aldcroft/Release...
+  ./configure --prefix=/proj/sot/ska
+  make install
+  env SKA=/proj/sot/ska PERL5LIB='' SYBASE='' SYBASE_OCS='' \
+    /proj/sot/ska/bin/starcheck.pl -dir AUG0104A -fid_char fid_CHARACTERIS_JUL01 -out test
   
+- Install latest arc
+- Restart arc and dsn_summary
+  
+- 
+
+Fallback
+--------
+  cd /proj/sot/ska
+  mkdir skare
+  mv bin lib include skare/
+  mv classic/* ./
+
+  cd /pool14/aldcroft/Release..
+  env SKA=/proj/sot/ska PERL5LIB='' SYBASE='' SYBASE_OCS='' \
+    /proj/sot/ska/bin/starcheck.pl -dir AUG0104A -fid_char fid_CHARACTERIS_JUL01 -out test
+
+Summary of changes for mpweekly
+--------------------------------
+Starcheck 2008-Dec-B
+
+* Changes to accomodate new SKA runtime environment:
+   - A few very minor changes in actual code.
+   - Mostly updates to Makefile and regression test script logic. 
+
+SKA runtime environment update 2008-Dec
+
+* Significant update to aspect operations tool infrastructure: 
+  libraries, perl modules, and environment definition scripts.
+* Complete runtime environment of starcheck is now configured.
+* Perl and python scripts now use the native (/usr/bin) interpreter
+  instead of /proj/axaf.
+* Key driver: /proj/axaf perl no longer being maintained on Solaris.
+* Runtime environment can be installed in arbitrary root directory.
+* Development is done in a sandbox runtime environment.
+* Now using SYBASE version 15 libraries instead of version 12.
+* Aspect ops development guidelines were overhauled.
+* Full regression test of starcheck. No change required in MP load 
+  review script.
+* Tested Replan Central code.
