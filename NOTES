@@ -19,33 +19,47 @@ X Install starcheck and test on Solaris 10 and x86_64
   - Solaris 10 - test on zip and kracko
 X Check devel procedure for arc on x86_64. 
 
-- Shut down cron jobs
+** Actual install 2008-Dec-12 Friday evening
+X Shut down cron jobs
   - arc
   - dsn_summary
 
-- Do everything as user aca
+X Do everything as user aca
 
-- From /proj/sot/ska
+X From /proj/sot/ska
   mkdir classic
   mv bin lib include classic/
 
-- From ~/Scratch/skare
+- Set prompt
+
+X From /pool14/aca/skare
+  set prompt="aca-$prompt"
   setenv SKA /proj/sot/ska
   ./configure --prefix=/proj/sot/ska
-  make base_dirs perl perl_dbi   # Solaris 8 and Solaris 10
-  make all                       # i686 and x86_64
 
-- Install and test starcheck Dec-2008-B release
-  cd /pool14/aldcroft/Release...
+  # Solaris 8 and Solaris 10
+  make except_python >&! log.$HOST &    
+
+  # i686 and x86_64
+  make all >&! log.$HOST &    
+
+X Install and test starcheck Dec-2008-B release
+  cd /pool14/aca
+  svn checkout file:///proj/sot/ska/svn/starcheck/tags/Release-2008-Dec-B
+  cd Release-2008-Dec-B
   ./configure --prefix=/proj/sot/ska
   make install
-  env SKA=/proj/sot/ska PERL5LIB='' SYBASE='' SYBASE_OCS='' \
+  env SKA=/proj/sot/ska PERL5LIB='' SYBASE='' \
     /proj/sot/ska/bin/starcheck.pl -dir AUG0104A -fid_char fid_CHARACTERIS_JUL01 -out test
   
-- Install latest arc
-- Restart arc and dsn_summary
+X Copy select bin files from classic using copy_bin
+X Install latest arc
+X Install latest dsn_summary
+X Restart arc and dsn_summary
   
-- 
+X Change my occweb access permission back
+X Copy scat* bin files from classic/bin/sun4
+X Move all old arch prefixes into classic
 
 Fallback
 --------
@@ -57,6 +71,12 @@ Fallback
   cd /pool14/aldcroft/Release..
   env SKA=/proj/sot/ska PERL5LIB='' SYBASE='' SYBASE_OCS='' \
     /proj/sot/ska/bin/starcheck.pl -dir AUG0104A -fid_char fid_CHARACTERIS_JUL01 -out test
+
+Install notes
+--------------
+- Should update test on Ska::Web to not require occweb access
+- Schedule::Cron failed one test (dubious) on baffin i686 FC8 first
+  time when piping to log file.  Passed next time on interactive run.
 
 Summary of changes for mpweekly
 --------------------------------
