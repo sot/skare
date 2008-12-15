@@ -98,7 +98,7 @@ Shell-GetEnv-0.07.tar.gz
 Ska-AGASC-3.1.tar.gz
 Ska-Convert-0.01.tar.gz
 Ska-DatabaseUtil-2.5.tar.gz
-Ska-HashTable-0.04.tar.gz
+Ska-HashTable-0.05.tar.gz
 Ska-IO-0.01.tar.gz
 Ska-Message-0.01.tar.gz
 Ska-Process-0.04.tar.gz
@@ -120,3 +120,8 @@ Tk-804.028.tar.gz
 URI-1.37.tar.gz
 version-0.53.tar.gz
 YAML-0.35y.tar.gz
+SQL-Abstract-1.24.tar.gz
+Ska-SQL-Select-1.1.tar.gz
+Ska-Obsid-1.7.tar.gz
+Ska-Fetch-0.03.tar.gz
+Ska-Report-TimeRange-0.02.tar.gz

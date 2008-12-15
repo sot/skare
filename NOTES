@@ -1,5 +1,9 @@
 To Do:
 
+- Need to update skare config to use 0.10. (Have done this manually for 
+  /proj/sot/ska/{,dev}/lib/perl.
+- Make a task_schedule launcher for doing test and development.
+
 - Break template into installable packages as much as possible
 - IDL startup and batch startup into template (or as a package)
 - $SKA/include/Task_template etc
@@ -77,6 +81,9 @@ Install notes
 - Should update test on Ska::Web to not require occweb access
 - Schedule::Cron failed one test (dubious) on baffin i686 FC8 first
   time when piping to log file.  Passed next time on interactive run.
+- CFITSIO::Simple was at version 0.09 instead of 0.10.  This messed
+  up telem_archive processing. 
+
 
 Summary of changes for mpweekly
 --------------------------------
