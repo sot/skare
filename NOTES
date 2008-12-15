@@ -108,3 +108,38 @@ SKA runtime environment update 2008-Dec
 * Full regression test of starcheck. No change required in MP load 
   review script.
 * Tested Replan Central code.
+
+Copy from classic/bin
+---------------------
+rsync -av   vv_asp \
+           sql2rdb.pl \
+           ps2any \
+           swapACACoords.pl \
+           time_convert.pl \
+           cmd_decode.pl \
+           sausage2makestars.pl \
+           makestars2fot.pl \
+           make_stars.pl \
+           create_sql_table.pl \
+           starcheck_print.pl \
+           run_asp_pipe.pl \
+           arc5gl \
+           aca_dark_cal_checker.pl \
+           locate_ska \
+           loop_starcheck.pl \
+           watch_cron_logs.pl \
+           rbrow \
+           ascii2rdb \
+           aca_movie.pl \
+           obs_info.pl \
+           tkdiff \
+           ssa_err.pl \
+           splat.pl \
+           fix_ska_perms.pl \
+           fetch \
+           task_schedule.pl \
+           find_obsid_load.pl \
+           doapp \
+           dark_curr.pl \
+           starcheck.pl \
+         /proj/sot/ska/bin/
