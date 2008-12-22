@@ -1,4 +1,4 @@
-# '$Id: install.py 366 2008-12-09 15:40:03Z aldcroft $'
+# '$Id$'
 App-Env-0.14.tar.gz
 App-Env-ASCDS-0.01.tar.gz
 App-Env-CIAO-0.08.tar.gz
@@ -23,7 +23,7 @@ Clone-0.18.tar.gz
 Compress-Raw-Zlib-2.004.tar.gz
 Compress-Zlib-2.004.tar.gz
 Config-General-2.26.tar.gz
-CXC-Envs-Flight-1.95.tar.gz
+CXC-Envs-Flight-1.96.tar.gz
 CXC-SysArch-1.00.tar.gz
 Data-DumpXML-1.06.tar.gz
 Data-ParseTable-0.06.tar.gz
