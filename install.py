@@ -296,7 +296,7 @@ for dirname, subdirs in (('build_dir', ['']),
 
 # Get pkgs manifest and copy to prefix
 pkgs = [x.strip() for x in open('pkgs.manifest')]
-bash('cp -p pkgs.manifest ${prefix}/')
+bash('cp -p pkgs.manifest ${prefix_arch}/')
 
 # Do the modules installation by iterating over the yaml 'install' sections
 # (delimited by '---' in the yaml cfg file) in each config file
