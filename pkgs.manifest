@@ -124,7 +124,7 @@ YAML-0.35y.tar.gz
 SQL-Abstract-1.24.tar.gz
 Ska-SQL-Select-1.1.tar.gz
 Ska-Obsid-1.7.tar.gz
-Ska-Fetch-0.03.tar.gz
+Ska-Fetch-0.04.tar.gz
 Ska-Report-TimeRange-0.02.tar.gz
 pexpect-2.4.tar.gz
 Ska.DBI-0.01.tar.gz
@@ -134,3 +134,5 @@ Ska.File-0.01.tar.gz
 Ska.Table-0.03.tar.gz
 BayesianBlocks-0.02.tar.gz
 TimeDate-1.16.tar.gz
+cosmocalc-0.1.tar.gz
+Sphinx-0.5dev-20090128.tar.gz
