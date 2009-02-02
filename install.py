@@ -37,7 +37,7 @@ def get_options():
                       help="Root build directory",
                       )
     parser.add_option("--pkgs",
-                      default="/proj/sot/ska/Scratch/jean/pkgs",
+                      default="/proj/sot/ska/pkgs",
                       help="Packages directory",
                       )
     parser.add_option("--config",
