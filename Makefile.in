@@ -1,5 +1,5 @@
 NAME = skare
-VERSION = 0.03
+VERSION = 0.04
 PREFIX = @prefix@
 
 all: basedirs python perl perl_dbi
@@ -11,10 +11,12 @@ basedirs:
 
 python:
 	./install.py --prefix $(PREFIX) --config env_vars.cfg \
+	--config xtime.cfg \
 	--config python.cfg
 
 perl:
 	./install.py --prefix $(PREFIX) --config env_vars.cfg \
+	--config xtime.cfg \
 	--config cfitsio.cfg \
 	--config pgplot.cfg \
 	--config perl_modules.cfg 
