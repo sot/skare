@@ -13,8 +13,8 @@ Astro-FITS-Header-2.8.1_patch.tar.gz
 cfitsio3020.tar.gz
 CFITSIO-Simple-0.09.tar.gz
 Chandra.ECF-1.0.tar.gz
-Chandra-Time-0.05.tar.gz
-Chandra.Time-1.7.tar.gz
+Chandra-Time-0.06.tar.gz
+Chandra.Time-1.8.tar.gz
 Chandra-Tools-dmcoords-0.28.tar.gz
 Chandra-Tools-ECF-0.01.tar.gz
 Class-Accessor-0.30.tar.gz
@@ -23,7 +23,7 @@ Clone-0.18.tar.gz
 Compress-Raw-Zlib-2.004.tar.gz
 Compress-Zlib-2.004.tar.gz
 Config-General-2.26.tar.gz
-CXC-Envs-Flight-1.96.tar.gz
+CXC-Envs-Flight-1.97.tar.gz
 CXC-SysArch-1.00.tar.gz
 Data-DumpXML-1.06.tar.gz
 Data-ParseTable-0.06.tar.gz
@@ -137,3 +137,4 @@ TimeDate-1.16.tar.gz
 cosmocalc-0.1.1.tar.gz
 Sphinx-0.5dev-20090128.tar.gz
 psycopg2-2.0.8.tar.gz
+XTime-1.1.0.tar.gz
