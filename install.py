@@ -226,10 +226,12 @@ class Module(object):
         # Resolve the tarfile glob and make sure only one file matched
         tarfileglob = os.path.join(pkg_dir, self.file)
         tarfiles = glob(tarfileglob)
-        if len(tarfiles) == 1:
-            tarfile = tarfiles[0]
+        if len(tarfiles) == 0:
+            raise RuntimeError, '%s glob matched no files' % (tarfileglob)
         else:
-            raise RuntimeError, '%s glob matched %s' % (tarfileglob, str(tarfiles))
+            tarfile = sorted(tarfiles)[-1]
+            if len(tarfiles) > 1:
+                print "Warning: %s glob matched multiple files, using %s" % (tarfileglob, tarfile)
         
         # Process with python tarfile module.  The first member will be the directory
         # name - catch that in order to determine where the tar will get extracted.
