@@ -9,6 +9,10 @@ except_python: basedirs perl perl_dbi
 basedirs:
 	./install.py --prefix $(PREFIX) --config template.cfg
 
+num_libs:
+        ./install.py --prefix $(PREFIX) --config env_vars.cfg \
+        --config num_libs.cfg 
+
 python:
 	./install.py --prefix $(PREFIX) --config env_vars.cfg \
 	--config xtime.cfg \
