@@ -26,7 +26,7 @@ def get_options():
     parser.set_defaults()
 
     parser.add_option("--prefix",
-                      default="skare",
+                      default="/proj/sot/ska/dev",
                       help="Installation prefix",
                       )
     parser.add_option("--arch",
