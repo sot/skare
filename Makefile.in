@@ -16,7 +16,8 @@ num_libs:
 python:
 	./install.py --prefix $(PREFIX) --config env_vars.cfg \
 	--config xtime.cfg \
-	--config python.cfg
+	--config python.cfg \
+	--config meld.cfg
 
 perl:
 	./install.py --prefix $(PREFIX) --config env_vars.cfg \
