@@ -13,6 +13,7 @@ epydoc-3.0.1.tar.gz
 ipython-0.9.1.tar.gz
 Jinja2-2.1.1.tar.gz
 matplotlib-0.98.5.2.tar.gz
+multiprocessing-2.6.1.1.tar.gz
 nose-0.11.1.tar.gz
 numpy-1.3.0.tar.gz
 pexpect-2.4.tar.gz
