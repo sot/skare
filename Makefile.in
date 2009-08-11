@@ -13,6 +13,10 @@ num_libs:
 	./install.py --prefix $(PREFIX) --config env_vars.cfg \
 	--config num_libs.cfg 
 
+pycuda:
+	./install.py --prefix $(PREFIX) --config env_vars.cfg \
+	--config pycuda.cfg
+
 python:
 	./install.py --prefix $(PREFIX) --config env_vars.cfg \
 	--config xtime.cfg \
