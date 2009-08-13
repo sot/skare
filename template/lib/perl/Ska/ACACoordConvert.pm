@@ -7,6 +7,7 @@ use Carp;
 use PDL;
 use PDL::NiceSlice;
 
+use base 'Exporter';
 our @EXPORT = qw ( toPixels
 	       toAngle);
 
