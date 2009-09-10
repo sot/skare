@@ -2,7 +2,7 @@ NAME = skare
 VERSION = 0.04
 PREFIX = @prefix@
 
-all: basedirs python perl perl_dbi
+all: basedirs python perl perl_dbi wcstools
 
 except_python: basedirs perl perl_dbi
 
@@ -12,6 +12,10 @@ basedirs:
 num_libs:
 	./install.py --prefix $(PREFIX) --config env_vars.cfg \
 	--config num_libs.cfg 
+
+wcstools:
+	./install.py --prefix $(PREFIX) --config env_vars.cfg \
+	--config wcstools.cfg 
 
 pycuda:
 	./install.py --prefix $(PREFIX) --config env_vars.cfg \
