@@ -9,23 +9,29 @@ except_python: basedirs perl perl_dbi
 basedirs:
 	./install.py --prefix $(PREFIX) --config template.cfg
 
+# Optional packages in support of python modules
+
+hdf5:
+	./install.py --prefix $(PREFIX) --config env_vars.cfg --config hdf5.cfg 
+
 num_libs:
-	./install.py --prefix $(PREFIX) --config env_vars.cfg \
-	--config num_libs.cfg 
+	./install.py --prefix $(PREFIX) --config env_vars.cfg --config num_libs.cfg 
 
 wcstools:
-	./install.py --prefix $(PREFIX) --config env_vars.cfg \
-	--config wcstools.cfg 
+	./install.py --prefix $(PREFIX) --config env_vars.cfg --config wcstools.cfg 
 
 pycuda:
-	./install.py --prefix $(PREFIX) --config env_vars.cfg \
-	--config pycuda.cfg
+	./install.py --prefix $(PREFIX) --config env_vars.cfg --config pycuda.cfg
+
+# Base python
 
 python:
 	./install.py --prefix $(PREFIX) --config env_vars.cfg \
 	--config xtime.cfg \
 	--config python.cfg \
 	--config meld.cfg
+
+# Perl
 
 perl:
 	./install.py --prefix $(PREFIX) --config env_vars.cfg \
@@ -35,8 +41,7 @@ perl:
 	--config perl_modules.cfg 
 
 perl_dbi:
-	./install.py --prefix $(PREFIX) --config env_vars.cfg \
-	--config perl_dbi.cfg
+	./install.py --prefix $(PREFIX) --config env_vars.cfg --config perl_dbi.cfg
 
 dist:
 	mkdir $(NAME)-$(VERSION)

@@ -23,6 +23,7 @@ pycuda-0.93.tar.gz
 pyfits-1.3.tar.gz
 Pygments-1.0.tar.gz
 pyparsing-1.4.6.tar.gz
+Pyrex-0.9.8.5.tar.gz
 Python-2.5.tgz
 python-sybase-0.39-patch.tar.gz
 PyYAML-3.05.tar.gz
@@ -44,9 +45,11 @@ Ska.Sun-0.03.tar.gz
 Ska.Table-0.03.tar.gz
 Ska.TelemArchive-0.06.tar.gz
 Sphinx-0.6.1.tar.gz
+tables-2.2b1.tar.gz
 #
 # Numerical libraries
 #
+hdf5-1.8.3.tar.gz
 boost_1_39_0.tar.gz
 fftw-3.2.1.tar.gz
 lapack-3.1.1.tgz
