@@ -1,47 +1,70 @@
 NAME = skare
-VERSION = 0.04
+VERSION = 0.06
 PREFIX = @prefix@
-
-all: basedirs python perl perl_dbi wcstools
+STDCONF = --prefix $(PREFIX) --config env_vars.cfg --yes 
+# Full install of operational Ska runtime environment
+# The order is important
+all: basedirs libs pylibs python perl
 
 except_python: basedirs perl perl_dbi
 
 basedirs:
 	./install.py --prefix $(PREFIX) --config template.cfg
 
-# Optional packages in support of python modules
+libs: xtime wcstools cfitsio pgplot
 
+pylibs: num_libs hdf5 libyaml 
+
+python: python2 python3 swig python2_modules
+
+perl: perl_modules perl_dbi
+
+# Packages in support of python modules (req'd for operational Ska RE)
 hdf5:
-	./install.py --prefix $(PREFIX) --config env_vars.cfg --config hdf5.cfg 
+	./install.py $(STDCONF) --config hdf5.cfg 
 
 num_libs:
-	./install.py --prefix $(PREFIX) --config env_vars.cfg --config num_libs.cfg 
+	./install.py $(STDCONF) --config num_libs.cfg 
+
+libyaml:
+	./install.py $(STDCONF) --config libyaml.cfg 
 
 wcstools:
-	./install.py --prefix $(PREFIX) --config env_vars.cfg --config wcstools.cfg 
+	./install.py $(STDCONF) --config wcstools.cfg 
 
+swig:
+	./install.py $(STDCONF) --config swig.cfg 
+
+xtime:
+	./install.py $(STDCONF) --config xtime.cfg 
+
+cfitsio:
+	./install.py $(STDCONF) --config cfitsio.cfg 
+
+pgplot:
+	./install.py $(STDCONF) --config pgplot.cfg 
+
+# Optional packages for python modules
 pycuda:
-	./install.py --prefix $(PREFIX) --config env_vars.cfg --config pycuda.cfg
+	./install.py $(STDCONF) --config pycuda.cfg
 
-# Base python
+# Base python 2.x
+python2:
+	./install.py $(STDCONF) --config python.cfg
 
-python:
-	./install.py --prefix $(PREFIX) --config env_vars.cfg \
-	--config xtime.cfg \
-	--config python.cfg \
-	--config meld.cfg
+python2_modules:
+	./install.py $(STDCONF) --config python_modules.cfg
 
-# Perl
+# Base python 3.x
+python3:
+	./install.py $(STDCONF) --config python3.cfg 
 
-perl:
-	./install.py --prefix $(PREFIX) --config env_vars.cfg \
-	--config xtime.cfg \
-	--config cfitsio.cfg \
-	--config pgplot.cfg \
-	--config perl_modules.cfg 
+# Perl 5.8.x
+perl_modules: 
+	./install.py $(STDCONF) --config perl_modules.cfg 
 
 perl_dbi:
-	./install.py --prefix $(PREFIX) --config env_vars.cfg --config perl_dbi.cfg
+	./install.py $(STDCONF) --config perl_dbi.cfg
 
 dist:
 	mkdir $(NAME)-$(VERSION)

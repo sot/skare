@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 
 import re
 import os
@@ -40,6 +40,10 @@ def get_options():
                       default="/proj/sot/ska/pkgs",
                       help="Packages directory",
                       )
+    parser.add_option("--manifest",
+                      default="pkgs.manifest",
+                      help="Packages manifest",
+                      )
     parser.add_option("--config",
                       default=[],
                       action="append",
@@ -56,6 +60,11 @@ def get_options():
     parser.add_option("--verbose",
                       action="store_true",
                       help="Verbose output",
+                      )
+
+    parser.add_option("--allow-errors",
+                      action="store_true",
+                      help="Allow build/test errors and automatically continue",
                       )
 
     return parser.parse_args()
@@ -210,7 +219,7 @@ class Module(object):
             cmds = 'cd %s\n' % self.moduledir + cmds
         return 0 == bash(cmds, keep_env=self.keep_env)
 
-    def untar(self, build_dir, pkg_dir, extract=True):
+    def untar(self, build_dir, pkg_dir, pkgs_manifest, extract=True):
         """Get the module tar file from pkg_dir and untar in build dir.  If the untarred
         module already exists in the build_dir then remove it first."""
 
@@ -223,15 +232,13 @@ class Module(object):
             else:
                 return
 
-        # Resolve the tarfile glob and make sure only one file matched
+        # Resolve the tarfile glob and make sure one file from pkgs_manifest matches
         tarfileglob = os.path.join(pkg_dir, self.file)
-        tarfiles = glob(tarfileglob)
-        if len(tarfiles) == 0:
-            raise RuntimeError, '%s glob matched no files' % (tarfileglob)
+        tarfiles = [x for x in glob(tarfileglob) if os.path.basename(x) in pkgs_manifest]
+        if len(tarfiles) != 1:
+            raise RuntimeError, '%s glob matched %d files in package manifest' % len(tarfiles)
         else:
-            tarfile = sorted(tarfiles)[-1]
-            if len(tarfiles) > 1:
-                print "Warning: %s glob matched multiple files, using %s" % (tarfileglob, tarfile)
+            tarfile = tarfiles[0]
         
         # Process with python tarfile module.  The first member will be the directory
         # name - catch that in order to determine where the tar will get extracted.
@@ -297,8 +304,8 @@ for dirname, subdirs in (('build_dir', ['']),
             os.makedirs(path)
 
 # Get pkgs manifest and copy to prefix
-pkgs = [x.strip() for x in open('pkgs.manifest')]
-bash('cp -p pkgs.manifest ${prefix_arch}/')
+pkgs = [x.strip() for x in open(opt.manifest)]
+bash('cp -p ' + opt.manifest + ' ${prefix_arch}/')
 
 # Do the modules installation by iterating over the yaml 'install' sections
 # (delimited by '---' in the yaml cfg file) in each config file
@@ -329,7 +336,7 @@ for configfile in opt.config:
 
             # Do an initial dry-run through untar in order to figure out what the module
             # build directory (moduledir) will be.  This is needed to check .installed.
-            module.untar(build_dir, pkg_dir, extract=False)
+            module.untar(build_dir, pkg_dir, pkgs, extract=False)
             os.environ['module_dir'] = module.moduledir or ''
 
             # Check that the tar package is in the package manifest
@@ -346,14 +353,16 @@ for configfile in opt.config:
             print '\nInstalling', module.name
 
             # Untar the module into the build directory
-            module.untar(build_dir, pkg_dir)
+            module.untar(build_dir, pkg_dir, pkgs)
 
             # Do the actual build and install
             for cmdtyp in ('build', 'install'):
                 print 'Running', cmdtyp
                 if not module.run_cmds(cmdtyp):
                     print '%s failed, continue anyway (y/n)?' % cmdtyp.capitalize(),
-                    if not raw_input().lower().strip().startswith('y'):
+                    if opt.allow_errors:
+                        print 'YES (auto)'
+                    elif not raw_input().lower().strip().startswith('y'):
                         sys.exit(1)
 
             # If possible touch the .installed file in the module's build directory
@@ -367,6 +376,8 @@ for configfile in opt.config:
                 except:
                     pass
                 print 'Module %s passed install step but failed test cmds, continue anyway (y/n)?' % module.name,
-                if not raw_input().lower().strip().startswith('y'):
+                if opt.allow_errors:
+                    print 'YES (auto)'
+                elif not raw_input().lower().strip().startswith('y'):
                     sys.exit(1)
         
