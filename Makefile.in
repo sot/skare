@@ -1,7 +1,7 @@
 NAME = skare
 VERSION = 0.06
 PREFIX = @prefix@
-STDCONF = --prefix $(PREFIX) --config env_vars.cfg --yes 
+STDCONF = --prefix $(PREFIX) --config env_vars.cfg --allow-errors
 # Full install of operational Ska runtime environment
 # The order is important
 all: basedirs libs pylibs python perl
@@ -20,8 +20,14 @@ python: python2 python3 swig python2_modules
 perl: perl_modules perl_dbi
 
 # Packages in support of python modules (req'd for operational Ska RE)
+pygtk:
+	./install.py $(STDCONF) --config pygtk.cfg
+
 hdf5:
 	./install.py $(STDCONF) --config hdf5.cfg 
+
+meld:
+	./install.py $(STDCONF) --config meld.cfg 
 
 num_libs:
 	./install.py $(STDCONF) --config num_libs.cfg 
