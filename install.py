@@ -236,7 +236,7 @@ class Module(object):
         tarfileglob = os.path.join(pkg_dir, self.file)
         tarfiles = [x for x in glob(tarfileglob) if os.path.basename(x) in pkgs_manifest]
         if len(tarfiles) != 1:
-            raise RuntimeError, '%s glob matched %d files in package manifest' % len(tarfiles)
+            raise RuntimeError, '%s glob matched %d files in package manifest' % (tarfileglob, len(tarfiles))
         else:
             tarfile = tarfiles[0]
         
