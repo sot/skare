@@ -249,7 +249,8 @@ class Module(object):
         tar = Tarfile.open(tarfile)
         for member in tar:
             if self.tardir is None:
-                self.tardir = os.path.split(member.name)[0]
+                tardir_paths = os.path.split(member.name)
+                self.tardir = tardir_paths[0] or tardir_paths[1]
                 self.moduledir = os.path.join(build_dir, self.tardir)
                 # Kinda yucky -- allow for setting extract=False to just run through to this point
                 # in order to set self.moduledir
