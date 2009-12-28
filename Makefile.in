@@ -1,7 +1,8 @@
 NAME = skare
 VERSION = 0.06
 PREFIX = @prefix@
-STDCONF = --prefix $(PREFIX) --config env_vars.cfg --allow-errors
+STDCONF = --prefix $(PREFIX) --config env_vars.cfg 
+# --allow-errors
 # Full install of operational Ska runtime environment
 # The order is important
 all: basedirs libs pylibs python perl
