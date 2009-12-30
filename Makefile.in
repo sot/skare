@@ -12,7 +12,7 @@ except_python: basedirs perl perl_dbi
 basedirs:
 	./install.py --prefix $(PREFIX) --config template.cfg
 
-libs: xtime wcstools cfitsio pgplot
+libs: xtime wcstools cfitsio pgplot 
 
 pylibs: num_libs hdf5 libyaml 
 
@@ -35,6 +35,9 @@ num_libs:
 
 libyaml:
 	./install.py $(STDCONF) --config libyaml.cfg 
+
+mpich2:
+	./install.py $(STDCONF) --config mpich2.cfg 
 
 wcstools:
 	./install.py $(STDCONF) --config wcstools.cfg 
