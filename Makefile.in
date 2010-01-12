@@ -54,6 +54,9 @@ cfitsio:
 pgplot:
 	./install.py $(STDCONF) --config pgplot.cfg 
 
+sherpa:
+	./install.py $(STDCONF) --config sherpa.cfg 
+
 # Optional packages for python modules
 pycuda:
 	./install.py $(STDCONF) --config pycuda.cfg

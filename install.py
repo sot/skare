@@ -291,7 +291,7 @@ build_dir =  os.path.join(os.path.abspath(opt.build or os.path.join(prefix, 'bui
                           os.environ['platform_os_generic'])
 os.environ['build_dir'] = build_dir 
 os.environ['pkg_dir'] = pkg_dir = os.path.abspath(opt.pkgs)
-os.environ['installer_dir'] = os.path.dirname(__file__)
+os.environ['installer_dir'] = os.path.abspath(os.path.dirname(__file__))
 
 # Make sure that the required build and install dirs exist.
 #   (this could be made into a cfg file)
