@@ -57,6 +57,9 @@ pgplot:
 sherpa:
 	./install.py $(STDCONF) --config sherpa.cfg 
 
+sherpaX:
+	./install.py $(STDCONF) --config sherpaX.cfg 
+
 # Optional packages for python modules
 pycuda:
 	./install.py $(STDCONF) --config pycuda.cfg
