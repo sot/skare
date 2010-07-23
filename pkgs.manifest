@@ -14,7 +14,7 @@ docutils-0.5.tar.gz
 egenix-mx-base-3.0.0.tar.gz
 ipython-0.10.tar.gz
 Jinja2-2.5.tar.gz
-matplotlib-0.99.1.1.tar.gz
+matplotlib-1.0.0.tar.gz
 mpi4py-1.2.tar.gz
 nose-0.11.1.tar.gz
 numpy-1.3.0.tar.gz
