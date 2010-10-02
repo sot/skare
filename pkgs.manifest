@@ -24,6 +24,7 @@ psycopg2-2.0.8.tar.gz
 pycuda-0.93.tar.gz
 pyds9-1.0.tar.gz
 pyfits-2.2.2.tar.gz
+pyger-0.1.0.tar.gz
 Pygments-1.0.tar.gz
 pygobject-2.14.2.tar.gz
 pygtk-2.10.6.tar.gz
