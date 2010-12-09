@@ -67,12 +67,14 @@ yaml-0.1.3.tar.gz
 swig-1.3.40.tar.gz
 #
 # Numerical libraries
-#
 hdf5-1.8.3.tar.gz
 boost_1_39_0.tar.gz
 fftw-3.2.1.tar.gz
 lapack-3.1.1.tgz
 atlas3.8.2.tar.gz
+#
+# Gnu Scientific Lib (see gsl.cfg)
+gsl-1.14.tar.gz
 #
 # Mercurial and source version control
 #
@@ -82,7 +84,6 @@ meld-1.3.0.tar.gz
 #
 # Perl and C
 #
-Alien-SVN-1.6.12.0.tar.gz
 App-Env-0.15.tar.gz
 App-Env-ASCDS-0.02.tar.gz
 App-Env-CIAO-0.08.tar.gz
