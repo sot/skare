@@ -36,7 +36,7 @@ Python-3.1.1.tgz
 python-sybase-0.39-patch.tar.gz
 pyyaks-0.2.tar.gz
 PyYAML-3.09.tar.gz
-Quaternion-0.03.tar.gz
+Quaternion-0.03.2.tar.gz
 scipy-0.7.1.tar.gz
 sherpa-4.2.2.tar.gz
 Ska.arc5gl-0.01.tar.gz
@@ -55,7 +55,7 @@ Ska.Table-0.03.tar.gz
 Ska.TelemArchive-0.08.tar.gz
 Sphinx-1.0.5.tar.gz
 tables-2.2b1.tar.gz
-Ska.quatutil-0.01.tar.gz
+Ska.quatutil-0.02.tar.gz
 Cython-0.13.tar.gz
 Chandra.acis_esa-0.01.tar.gz
 Ska.report_ranges-0.01.tar.gz
