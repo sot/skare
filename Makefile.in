@@ -21,6 +21,9 @@ python: python2 python3 swig python2_modules
 perl: perl_modules perl_dbi
 
 # Packages in support of python modules (req'd for operational Ska RE)
+gtk:
+	./install.py $(STDCONF) --config gtk.cfg
+
 pygtk:
 	./install.py $(STDCONF) --config pygtk.cfg
 

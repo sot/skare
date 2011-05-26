@@ -15,7 +15,7 @@ docutils-snapshot.tar.gz
 egenix-mx-base-3.0.0.tar.gz
 ipython-0.10.tar.gz
 Jinja2-2.5.tar.gz
-matplotlib-1.0.0.tar.gz
+matplotlib-1.0.1.tar.gz
 mpi4py-1.2.tar.gz
 nose-0.11.1.tar.gz
 numpy-1.3.0.tar.gz
@@ -27,8 +27,6 @@ pyds9-1.0.tar.gz
 pyfits-2.2.2.tar.gz
 pyger-0.1.0.tar.gz
 Pygments-1.3.1.tar.gz
-pygobject-2.14.2.tar.gz
-pygtk-2.10.6.tar.gz
 pyparsing-1.4.6.tar.gz
 Pyrex-0.9.9.tar.gz
 Python-2.5.tgz
@@ -60,6 +58,20 @@ Ska.quatutil-0.02.tar.gz
 Cython-0.14.1.tar.gz
 Chandra.acis_esa-0.01.tar.gz
 Ska.report_ranges-0.01.tar.gz
+#
+# gtk+ and pygtk
+# 
+atk-1.28.0.tar.gz
+cairo-1.8.8.tar.gz
+fontconfig-2.7.3.tar.gz
+glib-2.22.2.tar.gz
+gtk+-2.18.3.tar.gz
+pango-1.26.0.tar.gz
+pixman-0.16.2.tar.gz
+py2cairo-1.10.0.tar.gz
+pycairo-1.8.8.tar.gz
+pygobject-2.20.0.tar.gz
+pygtk-2.16.0.tar.gz
 #
 # Misc supporting C libraries
 # 
