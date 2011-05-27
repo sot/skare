@@ -17,8 +17,8 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the 
-#       Free Software Foundation, Inc. 
+# along with this program; if not, write to the
+#       Free Software Foundation, Inc.
 #       51 Franklin Street, Fifth Floor
 #       Boston, MA  02110-1301, USA
 #
@@ -43,7 +43,7 @@ help () {
 }
 
 print_version () {
-  echo 2.1.10
+  echo 2.1.20
 }
 
 ###############################################################################
@@ -89,9 +89,9 @@ while [ $# -gt 0 ]; do
   arg=$1
   shift
 
-  case "$arg" in 
+  case "$arg" in
 
-    ?(-)-help|?(-)-hel|?(-)-he|?(-)-h) 
+    ?(-)-help|?(-)-hel|?(-)-he|?(-)-h)
       help 0
       exit 0;;
 
@@ -138,7 +138,7 @@ while [ $# -gt 0 ]; do
 	output_format=value
 	;;
 
-    -*)  
+    -*)
       die 'unknown option `'$arg"'"
       ;;
 
@@ -164,7 +164,7 @@ fi
 ###############################################################################
 # Get required info from uname...
 #
-#   uname -msr output order... 
+#   uname -msr output order...
 #      1. kernel name / operating system name
 #      2. kernel release / operating system release
 #      3. machine hardware name
@@ -184,10 +184,37 @@ _uname_m=${_uname[2]}
 ###############################################################################
 # Clean up OS name and OSrev...
 
+# versions may have several levels of hierarchy: a.b.c.d limit it to
+# two levels.
+#
+# sets global variables os_version, os_version_maj and os_version_min
+function simplify_version {
+
+    # work by stripping off levels from the left.  this makes no
+    # assumptions as to the number of levels greater than two
+    local version=$1
+
+    os_version_maj=${version%%.*}
+
+    if [ "$os_version_maj" = "$version" ]; then
+
+	os_version="$os_version_maj"
+	os_version_min=
+	os_version="$version"
+
+    else
+
+	local minor="${version#*.}"
+	os_version_min="${minor%%.*}"
+	os_version="$os_version_maj.$os_version_min"
+
+    fi
+}
+
 
 case "$OS" in
 
-  Linux)      
+  Linux)
 
     os_type=linux
 
@@ -257,9 +284,38 @@ case "$OS" in
     #----------------------------------------------------------
     # Now get vendor/distribution name and version
 
+    _found=0
+
+    if [ -f /etc/issue ]; then
+
+	exec 4< /etc/issue
+	read -u 4 _os _os1 _os2
+	case "$_os" in
+
+	Debian )
+		os_vendor=debian
+		simplify_version $_os2
+		_found=1
+		;;
+
+	CentOS )
+		os_vendor=CentOS
+		simplify_version $_os2
+		_found=1
+		;;
+
+	Ubuntu )
+		os_vendor=Ubuntu
+		simplify_version $_os1
+		_found=1
+		;;
+	esac
+
+    fi
+
     # brute force debian, 'cause lsb_release on debian runs apt-cache,
     # which takes forever
-    if [ -f /etc/debian_version ]; then
+    if [ $_found == 0 -a -f /etc/debian_version ]; then
 
       os_vendor=debian
 
@@ -268,7 +324,9 @@ case "$OS" in
       os_version=$(< /etc/debian_version)
       if [ $os_version == lenny/sid ]; then
 	  os_version=5.0
-      else	
+      elif [ $os_version == squeeze/sid ]; then
+	  os_version=6.0
+      else
 	  os_version=${os_version//\//_}
 
 	  # use eval 'cause I can't remember if older bashes might
@@ -278,14 +336,20 @@ case "$OS" in
 	      exit 1
 	  fi
 
+	  simplify_version $os_version
+
 	  # backwards compatibility
 	  [ "$os_version" = 3.1 ] && \
 	      os_vendor=Debian
-	      
+
       fi
 
+      _found=1
+
+    fi
+
     # try LSB
-    elif [ -x /usr/bin/lsb_release -o -x /bin/lsb_release ]; then
+    if [ $_found=0 -a \( -x /usr/bin/lsb_release -o -x /bin/lsb_release \) ]; then
 
       _tmp=($(lsb_release -s -r -i))
       os_vendor=${_tmp[0]}
@@ -301,10 +365,12 @@ case "$OS" in
 		   else
 		     os_vendor=RHF
 		   fi
+		   simplify_version $os_version
 		   ;;
 
 	RedHatEnterprise* )
 	           os_vendor=RHEL
+		   simplify_version $os_version
 		   ;;
 
 	Debian )
@@ -315,7 +381,7 @@ case "$OS" in
 		   os_version=$(< /etc/debian_version)
 		   if [ $os_version == lenny/sid ]; then
 		     os_version=5.0
-		   else	
+		   else
 		     os_version=${os_version//\//_}
 
 	             # use eval 'cause I can't remember if older
@@ -331,12 +397,18 @@ case "$OS" in
 
 		 # don't care about the revision e.g.: "4.0r?"
 		 os_version=${os_version%r?}
+
+		 simplify_version $os_version
 		 ;;
 
       esac
 
+      _found=1
+
+    fi
     # brute force redhat?
-    elif [ -f /etc/redhat-release ]; then
+
+    if [ $_found == 0 -a -f /etc/redhat-release ]; then
 
       _tmp=$(< /etc/redhat-release)
 
@@ -348,18 +420,44 @@ case "$OS" in
 
       os_version=${_tmp##*elease }
       os_version=${os_version%% *}
+      simplify_version $os_version
+
+    fi
 
     # no clue
-    else
+
+
+    if [ $_found == 0 ] ; then
 
       echo 1>&2 "$0: unable to determine Linux vendor"
       exit 1
 
-    fi  
+    fi
 
-    # so far no differences between major and minor versions
-    os_version_maj=$os_version
-    os_versions=$os_version
+    case "$os_vendor" in
+
+	RHEL | CentOS )
+
+	    # For CentOS & RHEL, minor versions are supposed to be compatible
+	    os_versions=${os_version}:${os_version_maj}
+	    (( _min = os_version_min - 1 ))
+	    while (( _min > 0 ))
+	    do
+		os_versions="${os_versions}:${os_version_maj}.${_min}"
+		(( _min = _min - 1 ))
+	    done
+
+	    ;;
+
+
+	* )
+	    # so far no differences between major and minor versions
+	    os_version_maj=$os_version
+	    os_versions=$os_version
+	    ;;
+
+    esac
+
 
     ;;
 
@@ -389,7 +487,7 @@ case "$OS" in
 	 # out as os_version_min above is really the "major" version
 	 # (e.g. Solaris 7,8,9,10)  We should just toss the "5." prefix,
 	 # but for historical compatibility we'll leave it in.
-	 
+
 	 os_version_maj="$os_version_min"
 
 	 # Solaris is pretty backwards compatible, so construct a list
@@ -401,12 +499,12 @@ case "$OS" in
 	   os_versions="${os_versions}:5.${_maj}"
 	   (( _maj = _maj - 1 ))
 	 done
-	 
+
 	 # add the horribly generic "5" prefix for backwards
 	 # compatibility. new environments shouldn't depend upon it.
 	 os_versions="${os_versions}:5"
 
-	 # add back in the 5. prefix 
+	 # add back in the 5. prefix
 	 os_version_maj="5.$os_version_maj"
 
 	 os_uversion=$os_version
@@ -417,12 +515,16 @@ case "$OS" in
 	 kern_version_maj=$kern_version
 	 ;;
 
-  Darwin) 
+  Darwin)
 	  OS=darwin
 	  os_type=$OS
 	  os_vendor=apple
 
 	  os_version=$(sw_vers -productVersion)
+	  # ensure there's a triad of values
+	  test ${os_version%.*} = ${os_version%%.*} \
+	      && os_version="${os_version}.0"
+
 	  os_version_maj=${os_version%.*}
 	  os_versions="${os_version}:${os_version_maj}"
 
@@ -479,20 +581,19 @@ case $os_type in
 	   *Athlon*64*)   hw_cpu="athlon_64";;
 	   *Athlon*)      hw_cpu="athlon";;
 	   *Opteron*)     hw_cpu="opteron";;
+	   *Intel*)       hw_cpu="intel";;
 	   *Pentium*III*) hw_cpu="pentium3";;
 	   *Pentium\(R\)\ 4* ) hw_cpu="pentium4";;
 	   *Pentium\(R\)\ D* ) hw_cpu="pentiumD";;
 	   *Xeon*)        hw_cpu="xeon";;
 	   *Core\(TM\)2' '* ) hw_cpu=core2;;
+	   *Core\(TM\)*i7' '* ) hw_cpu=corei7;;
 	   *)	     echo 1>&2 "$0: unrecognized CPU type: $hw_cpu" ; exit 1 ;;
 	 esac
 
 	 hw_cpus="${hw_cpu}:${hw_cpu_generic}"
 
 	 hw_cpus_lib="$hw_cpus"
-
-	 test $hw_cpu_generic = x86_64 \
-	  && hw_cpus="$hw_cpus:i686"
 
 	 ;;
 
@@ -527,7 +628,7 @@ case $os_type in
 	    #  it reports i486!
 	    i486 )
 		   hw_cpu=$(sysctl -n machdep.cpu.brand_string 2>/dev/null )
-		   
+
 		   case "$hw_cpu" in
 		     *Core\(TM\)2* ) hw_cpu=core2 ;;
 
@@ -553,7 +654,7 @@ case $os_type in
     hw_cpu="$_uname_m"
     hw_cpu_generic="$_uname_m"
     hw_cpus="$hw_cpu"
-  ;;  
+  ;;
 
 esac
 
@@ -651,11 +752,11 @@ function exists {
 }
 
 function value {
-  eval echo "\$$1"  
+  eval echo "\$$1"
 }
 
 function output {
-    
+
     # check that this is a real variable
     eval var_exists='${'$2':+1}'
     if [ $var_exists ]; then
@@ -702,7 +803,7 @@ case $output_format in
     done
     ;;
 
-  make)      
+  make)
     for var in $output_vars; do
       make_var=$(upper $var)
       output "$pfx$make_var = " $var
@@ -791,7 +892,7 @@ B<sysarch> provides a uniform description of a system, including the
 underlying hardware, the operating system, and the unique operating
 system characteristics.  Its intent is to identify important system
 characteristics which determine the interoperability of software with
-hardware/operating system platforms.  
+hardware/operating system platforms.
 
 Compatibility between operating systems sometimes occurs.  Solaris is
 a true champion of this, retaining compatibility across more than a
@@ -906,7 +1007,7 @@ The most specific description of the actual CPU.
 =item B<hw_cpu_generic>
 
 The generic description for the CPU.  This is I<not> the most generic
-one with which the CPU is compatible.  For example, 
+one with which the CPU is compatible.  For example,
 
     athlon_64 => x86_64,  not i686
     core2     => x86_64,  not i686
@@ -920,7 +1021,7 @@ hardware is compatible, from least to most generic.
 
 =back
 
-For example, for a SunBlade 1500, 
+For example, for a SunBlade 1500,
 
   hw_cpu  = ultra3i
   hw_cpus = ultra3i:sun4u:sun4m:sparc
@@ -934,7 +1035,7 @@ For an AMD Athlon64 CPU,
 =head2 System Identification
 
 The system designation represents the combination of operating system,
-kernel, and optionally vendor or distribution name.  
+kernel, and optionally vendor or distribution name.
 
 =over
 
@@ -979,7 +1080,7 @@ information.
 =item B<kern_version>
 
 B<kern_version> is the kernel version.  On Linux it is the base kernel,
-without any vendor specific version information. 
+without any vendor specific version information.
 
 =item B<kern_version_maj>
 
@@ -1027,7 +1128,7 @@ specifications.  It's a triad with one of the following combinations:
   <hw_cpu>-<os_type>-<os_uversion>
   <hw_cpu>-<OS>-<os_version>
 
-where C<E<lt>OSE<gt>> is 
+where C<E<lt>OSE<gt>> is
 
  <os_type>_<os_vendor>
 
@@ -1036,7 +1137,7 @@ except for Solaris and OSX (Darwin) where it is
  <os_type>
 
 It is assumed that B<os_uversion> is constant for a given
-B<os_version>.  
+B<os_version>.
 
 =head3 Host System
 
@@ -1072,7 +1173,7 @@ hardware variations.  This is equivalent to
 =item B<platform_uos_native>
 
 The most detailed specification using the user space component version.
-Equivalent to 
+Equivalent to
 
   <hw_cpu>-<os_type>-<os_uversion>
 

@@ -1,0 +1,9 @@
+# NOT DOING THIS STRATEGY!!
+
+pypm info --full
+cp ~/.cache/pypm/1.3/download-cache/* /proj/sot/ska/pkgs/
+
+mkdir -p /proj/sot/ska/pkgs/2.7/linux-x86
+wget http://pypm-free.activestate.com/2.7.1.4/linux-x86/index.gz
+mv index.gz /proj/sot/ska/pkgs/2.7/linux-x86/
+/proj/sot/ska/arch/i686-linux_CentOS-5.6/bin/pypm -g -R /proj/sot/ska/pkgs/ install numpy

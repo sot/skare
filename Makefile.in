@@ -3,24 +3,31 @@ VERSION = 0.06
 PREFIX = @prefix@
 STDCONF = --prefix $(PREFIX) --config env_vars.cfg 
 # --allow-errors
+
 # Full install of operational Ska runtime environment
 # The order is important
-all: basedirs libs pylibs python perl
+all_32: basedirs libs python_32 perl
 
-except_python: basedirs perl perl_dbi
+all_64: basedirs libs python_64 perl
 
 basedirs:
 	./install.py --prefix $(PREFIX) --config template.cfg
 
-libs: xtime wcstools cfitsio pgplot gsl
+libs: xtime wcstools cfitsio pgplot gsl hdf5 libyaml mpich2 gtk
 
-pylibs: num_libs hdf5 libyaml 
+python_32: activepython_32 swig pygtk python_modules
 
-python: python2 python3 swig python2_modules
+python_64: activepython_64 swig pygtk python_modules
 
 perl: perl_modules perl_dbi
 
 # Packages in support of python modules (req'd for operational Ska RE)
+activepython_32:
+	./install.py $(STDCONF) --config activepython_32.cfg
+
+activepython_64:
+	./install.py $(STDCONF) --config activepython_64.cfg
+
 gtk:
 	./install.py $(STDCONF) --config gtk.cfg
 
@@ -70,16 +77,8 @@ sherpaX:
 pycuda:
 	./install.py $(STDCONF) --config pycuda.cfg
 
-# Base python 2.x
-python2:
-	./install.py $(STDCONF) --config python.cfg
-
-python2_modules:
+python_modules:
 	./install.py $(STDCONF) --config python_modules.cfg
-
-# Base python 3.x
-python3:
-	./install.py $(STDCONF) --config python3.cfg 
 
 # Perl 5.8.x
 perl_modules: 
