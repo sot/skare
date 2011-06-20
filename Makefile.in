@@ -1,5 +1,5 @@
 NAME = skare
-VERSION = 0.06
+VERSION = 0.08
 PREFIX = @prefix@
 STDCONF = --prefix $(PREFIX) --config env_vars.cfg 
 # --allow-errors
@@ -94,4 +94,14 @@ dist:
 	 | (tar --extract --directory $(NAME)-$(VERSION) --file - )
 	tar --create --verbose --gzip --file dist/$(NAME)-$(VERSION).tar.gz $(NAME)-$(VERSION)
 	rm -rf $(NAME)-$(VERSION)
+
+bdist_32:
+	tar --create --bzip2 --file $(NAME)-$(VERSION)-32.tar.bz2 \
+	$(PREFIX)/bin $(PREFIX)/include $(PREFIX)/arch $(PREFIX)/lib \
+	$(PREFIX)/build/*/*/.installed
+
+bdist_64:
+	tar --create --bzip2 --file $(NAME)-$(VERSION)-64.tar.bz2 \
+	$(PREFIX)/bin $(PREFIX)/include $(PREFIX)/arch $(PREFIX)/lib \
+	$(PREFIX)/build/*/*/.installed
 

@@ -5,40 +5,38 @@
 ActivePython-2.7.1.4-linux-x86.tar.gz
 ActivePython-2.7.1.4-linux-x86_64.tar.gz
 argparse-1.1.tar.gz
-asciitable-0.5.0.tar.gz
+asciitable-0.6.0.tar.gz
 Chandra.cmd_states-0.05.tar.gz
 Chandra.ECF-0.02.tar.gz
 Chandra.Maneuver-0.04.tar.gz
 Chandra.Time-1.12.tar.gz
-cosmocalc-0.1.1.tar.gz
-distribute-0.6.14.tar.gz
+cosmocalc-0.1.2.tar.gz
+distribute-0.6.19.tar.gz
 Django-1.0.2-final.tar.gz
 docutils-snapshot.tar.gz
 egenix-mx-base-3.0.0.tar.gz
-ipython-0.10.tar.gz
-Jinja2-2.5.tar.gz
+ipython-0.10.2.tar.gz
+Jinja2-2.5.5.tar.gz
 matplotlib-1.0.1.tar.gz
-mpi4py-1.2.tar.gz
-nose-0.11.1.tar.gz
-numpy-1.3.0.tar.gz
+mpi4py-1.2.2.tar.gz
+nose-1.0.0.tar.gz
 odict-1.0.tar.gz
 pexpect-2.4.tar.gz
 psycopg2-2.0.8.tar.gz
 pycuda-0.93.tar.gz
 pyds9-1.0.tar.gz
-pyfits-2.2.2.tar.gz
+pyfits-2.4.0.tar.gz
 pyger-0.1.0.tar.gz
-Pygments-1.3.1.tar.gz
-pyparsing-1.4.6.tar.gz
+Pygments-1.4.tar.gz
+pyparsing-1.5.5.tar.gz
 Pyrex-0.9.9.tar.gz
 Python-2.5.tgz
 Python-2.6.2.tgz
 Python-3.1.1.tgz
 python-sybase-0.39-patch.tar.gz
 pyyaks-0.2.tar.gz
-PyYAML-3.09.tar.gz
+PyYAML-3.10.tar.gz
 Quaternion-0.03.2.tar.gz
-scipy-0.7.1.tar.gz
 sherpa-4.2.2.tar.gz
 Ska.arc5gl-0.01.tar.gz
 Ska.astro-0.02.tar.gz
@@ -54,7 +52,7 @@ Ska.Shell-0.01.tar.gz
 Ska.Sun-0.04.tar.gz
 Ska.Table-0.03.tar.gz
 Ska.TelemArchive-0.08.tar.gz
-Sphinx-1.0.5.tar.gz
+Sphinx-1.0.7.tar.gz
 tables-2.2b1.tar.gz
 Ska.quatutil-0.02.tar.gz
 Cython-0.14.1.tar.gz
@@ -77,12 +75,12 @@ pygtk-2.16.0.tar.gz
 #
 # Misc supporting C libraries
 # 
-mpich2-1.2.1.tar.gz
-yaml-0.1.3.tar.gz
+mpich2-1.4.tar.gz
+yaml-0.1.4.tar.gz
 swig-1.3.40.tar.gz
 #
 # Numerical libraries
-hdf5-1.8.3.tar.gz
+hdf5-1.8.7.tar.gz
 boost_1_39_0.tar.gz
 fftw-3.2.1.tar.gz
 lapack-3.1.1.tgz
@@ -93,9 +91,9 @@ gsl-1.14.tar.gz
 #
 # Mercurial and source version control
 #
-mercurial-1.7.1.tar.gz
+mercurial-1.8.4.tar.gz
 hgview-0.11.2.tar.gz
-meld-1.3.0.tar.gz
+meld-1.5.1.tar.gz
 #
 # Perl and C
 #
@@ -125,7 +123,7 @@ Compress-Raw-Zlib-2.004.tar.gz
 Compress-Zlib-2.004.tar.gz
 Config-General-2.26.tar.gz
 CXC-Envs-0.59.tar.gz
-CXC-Envs-Flight-1.98.tar.gz
+CXC-Envs-Flight-1.99.tar.gz
 CXC-SysArch-1.00.tar.gz
 Data-DumpXML-1.06.tar.gz
 Data-ParseTable-0.06.tar.gz
@@ -140,7 +138,7 @@ Env-Path-0.16.tar.gz
 eps2png-2.2.tar.gz
 Expect-1.15.tar.gz
 Expect-Simple-0.04.tar.gz
-ExtUtils-F77-1.15_patch.tar.gz
+ExtUtils-F77-1.16.tar.gz
 File-chdir-0.1002.tar.gz
 File-MMagic-1.25.tar.gz
 Font-AFM-1.20.tar.gz
@@ -217,5 +215,6 @@ Ska-CatQuery-0.01.tar.gz
 TimeDate-1.16.tar.gz
 wcstools-3.7.8.tar.gz
 XML-Simple-2.18.tar.gz
+XML-Parser-2.36.tar.gz
 XTime-1.1.0.tar.gz
 Ska-RunAsp-0.03.tar.gz
