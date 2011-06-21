@@ -1,5 +1,5 @@
 NAME = skare
-VERSION = 0.08
+VERSION = 0.10
 PREFIX = @prefix@
 STDCONF = --prefix $(PREFIX) --config env_vars.cfg 
 # --allow-errors
