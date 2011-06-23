@@ -58,6 +58,7 @@ Ska.quatutil-0.02.tar.gz
 Cython-0.14.1.tar.gz
 Chandra.acis_esa-0.01.tar.gz
 Ska.report_ranges-0.01.tar.gz
+virtualenv-1.6.1.tar.gz
 #
 # gtk+ and pygtk
 # 
