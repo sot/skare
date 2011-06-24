@@ -64,6 +64,9 @@ cfitsio:
 gsl:
 	./install.py $(STDCONF) --config gsl.cfg 
 
+git:
+	./install.py $(STDCONF) --config git.cfg 
+
 pgplot:
 	./install.py $(STDCONF) --config pgplot.cfg 
 
