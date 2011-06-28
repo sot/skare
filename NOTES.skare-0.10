@@ -1,22 +1,32 @@
-Transition to Ska Runtime Environment 0.10
+Ska Runtime Environment 0.10
 ===========================================
 
-.. Build this document with:
+.. Build and install this document with:
    rst2html.py --stylesheet=/proj/sot/ska/www/ASPECT/aspect.css \
         --embed-stylesheet NOTES.skare-0.10 NOTES.skare-0.10.html
+   cp NOTES.skare-0.10.html /proj/sot/ska/www/ASPECT/skare-0.10.html
 
-Content
--------
+Content overview
+----------------
 
 - Python 2.7 (binary install from ActivePython)
-- NumPy 1.6 (package install from AP)
-- SciPy 0.9 (package install from AP)
+- NumPy 1.6 (package install from ActivePython)
+- SciPy 0.9 (package install from ActivePython)
 - Updates to Python modules: asciitable, cosmocalc, distribute, ipython,
   Jinja2, mpi4py, nose, pyfits, Pygments, pyparsing, PyYAML, Sphinx,
 - Updates to C libraries: mpich2, yaml, hdf5
 - Pygtk + Gtk+ dependencies
 - meld (now works properly)
-- Common build process for 32-bit (OCC) and 64-bit
+- Common build process for 32-bit (GRETA) and 64-bit
+- No updates to perl or perl libraries
+- Only three files are modified in place; all other updates are in a new directory
+  that does not conflict with current installation.
+
+Review
+------
+
+Notes and testing were reviewed by Jean Connelly.  Command states and module
+testing were run independently by Jean.
 
 Build
 -----
@@ -28,34 +38,44 @@ Install (or git pull) skare on 32-bit or 64-bit virtual CentOS-5 machine.
   cd ~/git
 
   git clone git@github.com:sot/skare.git
-  git checkout actpy
-  # -- OR --
-  git checkout actpy
-  git pull origin actpy
+  git checkout master
 
   # Choose prefix (dev or flight) and configure
-  set prefix=/proj/sot/ska/dev 
-  set prefix=/proj/sot/ska
+  prefix=/proj/sot/ska/dev 
+  prefix=/proj/sot/ska
   ./configure --prefix=$prefix
 
   # Choose 64 or 32-bit installation
-  make basedirs libs python_64
-  make basedirs libs python_32
+  make basedirs libs python_64 git
+  make basedirs libs python_32 git
 
-  # Create tarfile output (dev or flight)
+  # Create tarfile output (dev or flight) [replace 64 -> 32 as needed]
   cd $prefix
-  tar zcf skare-0.10-{32,64}-dev.tar.gz arch bin lib build/*/*/.installed
-  tar zcf skare-0.10-{32,64}.tar.gz arch bin lib build/*/*/.installed
+  tar zcf skare-0.10-64-dev.tar.gz arch bin lib build/*/*/.installed
+  tar zcf skare-0.10-64.tar.gz arch bin lib build/*/*/.installed
+  scp skare-0.10-64.tar.gz ccosmos:/proj/sot/ska/dist/
 
-Pre-install testing in developement area
+Pre-install testing in development area
 ----------------------------------------
+
+Starcheck
+^^^^^^^^^^^^
+::
+
+  cd ~/hg/starcheck
+  (unska; /proj/sot/ska/bin/starcheck -dir AUG0104A -fid_char fid_CHARACTERIS_JUL01 -out test.7cb31b)
+  make test
+  diff test.7cb31b.txt test.txt
+
+==> OK
 
 Eng_archive
 ^^^^^^^^^^^^
+::
 
-cd ~/hg
-hg clone /proj/sot/ska/hg/eng_archive
-cd eng_archive
+  cd ~/hg
+  hg clone /proj/sot/ska/hg/eng_archive
+  cd eng_archive
 
 Follow the steps for "Regression test for new skare (..) in $ska/dev" in NOTES.test.
 
@@ -123,11 +143,17 @@ Other modules
 - Ska.Shell: OK
 - asciitable: OK
 
-Flight Installation on HEAD network
+Installation on HEAD network
 ------------------------------------
 
 Copy the skare tar distribution skare-0.10-64.tar.gz to /proj/sot/ska/dist.
 ::
+
+  # Do everything as aca
+  su -l aca
+
+  # Stop all cron jobs
+  touch /proj/sot/ska/data/task_schedule/master_heart_attack
 
   cd /proj/sot/ska/dist
   mkdir skare-0.10-64
@@ -135,28 +161,93 @@ Copy the skare tar distribution skare-0.10-64.tar.gz to /proj/sot/ska/dist.
   tar xf ../skare-0.10-64.tar.gz
 
   # preview updates in key areas
-  rsync --size-only --dry-run -av ./bin/ /proj/sot/ska/bin/
-  rsync --size-only --dry-run -av ./lib/ /proj/sot/ska/lib/
+  rsync --size-only --dry-run -av bin/ /proj/sot/ska/bin/
+  rsync --size-only --dry-run -av lib/ /proj/sot/ska/lib/
 
-  rsync -av ./ /proj/sot/ska/ >& install.log &
-  tail -f install.log
+  mv /proj/sot/ska/build{,.bak}
+  ls /proj/sot/ska/dist/skare-0.10-64/
+  rsync -av /proj/sot/ska/dist/skare-0.10-64/ /proj/sot/ska/ >& install.log 
 
   # Make modules that cannot be made on virtual machine, e.g. Sybase, and
   # ensure completeness.
   make python_modules
 
+  # TEST per instructions below
+
+  # Allow all cron jobs to resume
+  rm /proj/sot/ska/data/task_schedule/master_heart_attack
+
+Installation on GRETA network
+------------------------------------
+
+Perform GRETA network installation after a soak period of about one week on the
+HEAD network.  Start by copying the skare tar distribution skare-0.10-32.tar.gz
+to /proj/sot/ska/dist on the GRETA network.  Then do the installation steps::
+
+  # Do everything as aca
+  su -l aca
+
+  # Stop all cron jobs
+  crontab -e
+
+  cd /proj/sot/ska/dist
+  mkdir skare-0.10-32
+  cd skare-0.10-32
+  tar xf ../skare-0.10-32.tar.gz
+
+  # preview updates in key areas
+  rsync --size-only --dry-run -av bin/ /proj/sot/ska/bin/
+  rsync --size-only --dry-run -av lib/ /proj/sot/ska/lib/
+
+  mv /proj/sot/ska/build{,.bak}
+  ls /proj/sot/ska/dist/skare-0.10-32/
+
+  # DO THE INSTALL
+  rsync -av /proj/sot/ska/dist/skare-0.10-32/ /proj/sot/ska/ >& install.log 
+
+  # Make modules that cannot be made on virtual machine, e.g. Sybase, and
+  # ensure completeness.
+  make python_modules
+
+  # TEST per instructions below (as applicable for GRETA)
+
+  # Allow all cron jobs to resume
+  crontab -e
+
 Fallback
 --------
-::
+
+Only three files are expected to changed (the rest go in a new arch directory): 
+
+- bin/sysarch 
+- bin/syspathsubst 
+- lib/perl/CXC/Envs/Flight.pm.
+
+Confirm with::
 
   rsync --dry-run -av /proj/sot/.snapshot/nightly.0/ska/bin/ /proj/sot/ska/bin/
   rsync --dry-run -av /proj/sot/.snapshot/nightly.0/ska/lib/ /proj/sot/ska/lib/
 
-  rsync -av /proj/sot/.snapshot/nightly.0/ska/bin/ /proj/sot/ska/bin/
-  rsync -av /proj/sot/.snapshot/nightly.0/ska/lib/ /proj/sot/ska/lib/
+Restore with::
+
+  cp -p /proj/sot/.snapshot/nightly.0/ska/bin/sysarch /proj/sot/ska/bin/
+  cp -p /proj/sot/.snapshot/nightly.0/ska/bin/syspathsubst /proj/sot/ska/bin/
+  cp -p /proj/sot/.snapshot/nightly.0/ska/lib/perl/CXC/Envs/Flight.pm /proj/sot/ska/lib/perl/CXC/Envs/
+  rm -rf /proj/sot/ska/build
+  mv /proj/sot/ska/build{.bak,}
 
 Post-install testing 
 --------------------
+
+Starcheck
+^^^^^^^^^^^^
+::
+
+  cd ~/hg/starcheck
+  /proj/sot/ska/bin/starcheck -dir AUG0104A -fid_char fid_CHARACTERIS_JUL01 -out test.new
+  diff test.7cb31b.txt test.new.txt
+
+==> 
 
 Eng_archive
 ^^^^^^^^^^^^
