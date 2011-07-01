@@ -170,6 +170,8 @@ Copy the skare tar distribution skare-0.10-64.tar.gz to /proj/sot/ska/dist.
 
   # Make modules that cannot be made on virtual machine, e.g. Sybase, and
   # ensure completeness.
+  # First clone the skare installer repo, then
+  ./configure --prefix=/proj/sot/ska
   make python_modules
 
   # TEST per instructions below
@@ -247,7 +249,7 @@ Starcheck
   /proj/sot/ska/bin/starcheck -dir AUG0104A -fid_char fid_CHARACTERIS_JUL01 -out test.new
   diff test.7cb31b.txt test.new.txt
 
-==> 
+==> OK
 
 Eng_archive
 ^^^^^^^^^^^^
@@ -259,7 +261,7 @@ Eng_archive
 
 Follow the steps for "Regression test for new skare in /proj/sot/ska" in NOTES.test.
 
-==> 
+==> OK
 
 Commanded states
 ^^^^^^^^^^^^^^^^^^^
@@ -268,7 +270,7 @@ Commanded states
   cd ~/hg/timelines
   nosetests
 
-==> 
+==> PENDING...
 
 psmc_check
 ^^^^^^^^^^
@@ -281,20 +283,20 @@ psmc_check
   diff regress_ska{.new,.7cb31b}/val
   diff regress_ska{.new,.7cb31b}/validation_quant.csv
 
-==> 
+==> OK
 
 Other modules
 ^^^^^^^^^^^^^
 
-- Ska.Table: 
-- Ska.DBI: 
-- Quaternion:
-- Ska.ftp: 
-- Ska.Numpy: 
-- Ska.ParseCM: 
-- Ska.quatutil: 
-- Ska.Shell: 
-- asciitable: 
+- Ska.Table: OK
+- Ska.DBI: OK
+- Quaternion (nose): OK
+- Ska.ftp (nose): OK
+- Ska.Numpy: OK
+- Ska.ParseCM: OK
+- Ska.quatutil: OK
+- Ska.Shell: OK
+- asciitable: OK
 
 
 
