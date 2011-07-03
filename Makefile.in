@@ -13,7 +13,7 @@ all_64: basedirs libs python_64 perl
 basedirs:
 	./install.py --prefix $(PREFIX) --config template.cfg
 
-libs: xtime wcstools cfitsio pgplot gsl hdf5 libyaml mpich2 gtk
+libs: xtime wcstools cfitsio pgplot gsl hdf5 libyaml mpich2 gtk num_libs
 
 python_32: activepython_32 pycore swig pygtk python_modules
 
