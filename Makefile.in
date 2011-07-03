@@ -15,9 +15,9 @@ basedirs:
 
 libs: xtime wcstools cfitsio pgplot gsl hdf5 libyaml mpich2 gtk
 
-python_32: activepython_32 swig pygtk python_modules
+python_32: activepython_32 pycore swig pygtk python_modules
 
-python_64: activepython_64 swig pygtk python_modules
+python_64: activepython_64 pycore swig pygtk python_modules
 
 perl: perl_modules perl_dbi
 
@@ -27,6 +27,9 @@ activepython_32:
 
 activepython_64:
 	./install.py $(STDCONF) --config activepython_64.cfg
+
+pycore:
+	./install.py $(STDCONF) --config pycore.cfg
 
 gtk:
 	./install.py $(STDCONF) --config gtk.cfg
