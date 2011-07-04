@@ -42,8 +42,8 @@ Install (or git pull) skare on 32-bit or 64-bit virtual CentOS-5 machine.
   ./configure --prefix=$prefix
 
   # Choose 64 or 32-bit installation
-  make basedirs libs python_64 git
-  make basedirs libs python_32 git
+  make basedirs libs python_64 git meld sherpa
+  make basedirs libs python_32 git meld sherpa
 
   # Create tarfile output (dev or flight) [replace 64 -> 32 as needed]
   cd $prefix
@@ -58,6 +58,7 @@ Starcheck
 ^^^^^^^^^^^^
 ::
 
+  skadev
   cd ~/hg/starcheck
   (unska; /proj/sot/ska/bin/starcheck -dir AUG0104A -fid_char fid_CHARACTERIS_JUL01 -out test.7cb31b)
   make test
@@ -91,7 +92,7 @@ Commanded states
 
   nosetests
 
-==> OK
+==> 
 ::
 
   cd ~/hg/Chandra.cmd_states
@@ -103,7 +104,7 @@ Commanded states
 
   nosetests
 
-==> OK
+==> 
 
 psmc_check
 ^^^^^^^^^^
@@ -112,13 +113,13 @@ psmc_check
   skadev
   cd ~/hg/psmc
   ln -s $ska/data/telem_archive $ska/dev/data/
+  make install
   python ./psmc_check.py --run_start_time='2011:001' --outdir regress_skadev
 
   # NEW WINDOW
   ska
   python ./psmc_check.py --run_start_time='2011:001' --outdir regress_ska
 
-  diff regress_ska{,dev}/val
   diff regress_ska{,dev}/validation_quant.csv
   rm $ska/dev/data/telem_archive
 
@@ -130,7 +131,7 @@ Other modules
 - Ska.Table: OK (with patch).  Updated because recent pyfits throws IOError,
   not caught properly.  This was true of Flight Ska, just did not run tests for
   pyfits 2.2.2 install.
-- Ska.DBI: OK
+- Ska.DBI: OK   (need to run as aca and link to aspect_authorization)
 - Quaternion: OK
 - Ska.ftp: OK
 - Ska.Numpy: OK
@@ -159,14 +160,22 @@ Copy the skare tar distribution skare-0.11-64.tar.gz to /proj/sot/ska/dist.
   # preview updates in key areas
   rsync --size-only --dry-run -av bin/ /proj/sot/ska/bin/
   rsync --size-only --dry-run -av lib/ /proj/sot/ska/lib/
+  # NO CHANGES
 
-  mv /proj/sot/ska/build{,.bak}
-  ls /proj/sot/ska/dist/skare-0.11-64/
-  rsync -av /proj/sot/ska/dist/skare-0.11-64/ /proj/sot/ska/ >& install.log 
+  ls        /proj/sot/ska/dist/skare-0.11-64/
+  mv /proj/sot/ska/build/x86_64-linux_CentOS-5{,.bak}
+  mv /proj/sot/ska/arch/x86_64-linux_CentOS-5{,.bak}
+
+  cd /proj/sot/ska/dist
+  rsync -av /proj/sot/ska/dist/skare-0.11-64/ /proj/sot/ska/ >& install-0.11-64.log 
 
   # Make modules that cannot be made on virtual machine, e.g. Sybase, and
   # ensure completeness.
   # First clone the skare installer repo, then
+  cd /proj/sot/ska/dist
+  (ska; git clone ~aldcroft/git/skare)
+  cd skare
+  git branch # confirm correct branch  
   ./configure --prefix=/proj/sot/ska
   make python_modules
 
@@ -276,7 +285,6 @@ psmc_check
   cd ~/hg/psmc
   python ./psmc_check.py --run_start_time='2011:001' --outdir regress_ska.new
 
-  diff regress_ska{.new,.7cb31b}/val
   diff regress_ska{.new,.7cb31b}/validation_quant.csv
 
 ==> OK
