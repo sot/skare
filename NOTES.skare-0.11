@@ -1,26 +1,22 @@
-Ska Runtime Environment 0.10
+Ska Runtime Environment 0.11
 ===========================================
 
 .. Build and install this document with:
    rst2html.py --stylesheet=/proj/sot/ska/www/ASPECT/aspect.css \
-        --embed-stylesheet NOTES.skare-0.10 NOTES.skare-0.10.html
-   cp NOTES.skare-0.10.html /proj/sot/ska/www/ASPECT/skare-0.10.html
+        --embed-stylesheet NOTES.skare-0.11 NOTES.skare-0.11.html
+   cp NOTES.skare-0.11.html /proj/sot/ska/www/ASPECT/skare-0.11.html
 
-Content overview
-----------------
+Content changes overview
+------------------------
 
-- Python 2.7 (binary install from ActivePython)
-- NumPy 1.6 (package install from ActivePython)
-- SciPy 0.9 (package install from ActivePython)
-- Updates to Python modules: asciitable, cosmocalc, distribute, ipython,
-  Jinja2, mpi4py, nose, pyfits, Pygments, pyparsing, PyYAML, Sphinx,
-- Updates to C libraries: mpich2, yaml, hdf5
-- Pygtk + Gtk+ dependencies
-- meld (now works properly)
-- Common build process for 32-bit (GRETA) and 64-bit
-- No updates to perl or perl libraries
-- Only three files are modified in place; all other updates are in a new directory
-  that does not conflict with current installation.
+- num_libs_bin: new binary install of "num_libs.cfg".  Using procedure
+  in NOTES.make_num_libs_bin, create a package with arch-dependent
+  binaries for num_libs compiled from source (which can take a long time).
+  Do this on the target host if possible.  (Building num_libs on VMware
+  Centos-5 VM takes at least 2 hours and is completely the wrong CPU).
+- NumPy 1.5 source install
+- SciPy 0.9 source install
+- New pycore.cfg which installs numpy, scipy, matplotlib from source.
 
 Review
 ------
@@ -46,14 +42,14 @@ Install (or git pull) skare on 32-bit or 64-bit virtual CentOS-5 machine.
   ./configure --prefix=$prefix
 
   # Choose 64 or 32-bit installation
-  make basedirs libs python_64 git
-  make basedirs libs python_32 git
+  make basedirs libs python_64 git meld sherpa
+  make basedirs libs python_32 git meld sherpa
 
   # Create tarfile output (dev or flight) [replace 64 -> 32 as needed]
   cd $prefix
-  tar zcf skare-0.10-64-dev.tar.gz arch bin lib build/*/*/.installed
-  tar zcf skare-0.10-64.tar.gz arch bin lib build/*/*/.installed
-  scp skare-0.10-64.tar.gz ccosmos:/proj/sot/ska/dist/
+  tar zcf skare-0.11-64-dev.tar.gz arch bin lib build/*/*/.installed
+  tar zcf skare-0.11-64.tar.gz arch bin lib build/*/*/.installed
+  scp skare-0.11-64.tar.gz ccosmos:/proj/sot/ska/dist/
 
 Pre-install testing in development area
 ----------------------------------------
@@ -62,6 +58,7 @@ Starcheck
 ^^^^^^^^^^^^
 ::
 
+  skadev
   cd ~/hg/starcheck
   (unska; /proj/sot/ska/bin/starcheck -dir AUG0104A -fid_char fid_CHARACTERIS_JUL01 -out test.7cb31b)
   make test
@@ -95,7 +92,7 @@ Commanded states
 
   nosetests
 
-==> OK
+==> 
 ::
 
   cd ~/hg/Chandra.cmd_states
@@ -107,7 +104,7 @@ Commanded states
 
   nosetests
 
-==> OK
+==> 
 
 psmc_check
 ^^^^^^^^^^
@@ -116,13 +113,13 @@ psmc_check
   skadev
   cd ~/hg/psmc
   ln -s $ska/data/telem_archive $ska/dev/data/
+  make install
   python ./psmc_check.py --run_start_time='2011:001' --outdir regress_skadev
 
   # NEW WINDOW
   ska
   python ./psmc_check.py --run_start_time='2011:001' --outdir regress_ska
 
-  diff regress_ska{,dev}/val
   diff regress_ska{,dev}/validation_quant.csv
   rm $ska/dev/data/telem_archive
 
@@ -134,7 +131,7 @@ Other modules
 - Ska.Table: OK (with patch).  Updated because recent pyfits throws IOError,
   not caught properly.  This was true of Flight Ska, just did not run tests for
   pyfits 2.2.2 install.
-- Ska.DBI: OK
+- Ska.DBI: OK   (need to run as aca and link to aspect_authorization)
 - Quaternion: OK
 - Ska.ftp: OK
 - Ska.Numpy: OK
@@ -146,7 +143,7 @@ Other modules
 Installation on HEAD network
 ------------------------------------
 
-Copy the skare tar distribution skare-0.10-64.tar.gz to /proj/sot/ska/dist.
+Copy the skare tar distribution skare-0.11-64.tar.gz to /proj/sot/ska/dist.
 ::
 
   # Do everything as aca
@@ -156,21 +153,29 @@ Copy the skare tar distribution skare-0.10-64.tar.gz to /proj/sot/ska/dist.
   touch /proj/sot/ska/data/task_schedule/master_heart_attack
 
   cd /proj/sot/ska/dist
-  mkdir skare-0.10-64
-  cd skare-0.10-64
-  tar xf ../skare-0.10-64.tar.gz
+  mkdir skare-0.11-64
+  cd skare-0.11-64
+  tar xf ../skare-0.11-64.tar.gz
 
   # preview updates in key areas
   rsync --size-only --dry-run -av bin/ /proj/sot/ska/bin/
   rsync --size-only --dry-run -av lib/ /proj/sot/ska/lib/
+  # NO CHANGES
 
-  mv /proj/sot/ska/build{,.bak}
-  ls /proj/sot/ska/dist/skare-0.10-64/
-  rsync -av /proj/sot/ska/dist/skare-0.10-64/ /proj/sot/ska/ >& install.log 
+  ls        /proj/sot/ska/dist/skare-0.11-64/
+  mv /proj/sot/ska/build/x86_64-linux_CentOS-5{,.bak}
+  mv /proj/sot/ska/arch/x86_64-linux_CentOS-5{,.bak}
+
+  cd /proj/sot/ska/dist
+  rsync -av /proj/sot/ska/dist/skare-0.11-64/ /proj/sot/ska/ >& install-0.11-64.log 
 
   # Make modules that cannot be made on virtual machine, e.g. Sybase, and
   # ensure completeness.
   # First clone the skare installer repo, then
+  cd /proj/sot/ska/dist
+  (ska; git clone ~aldcroft/git/skare)
+  cd skare
+  git branch # confirm correct branch  
   ./configure --prefix=/proj/sot/ska
   make python_modules
 
@@ -183,7 +188,7 @@ Installation on GRETA network
 ------------------------------------
 
 Perform GRETA network installation after a soak period of about one week on the
-HEAD network.  Start by copying the skare tar distribution skare-0.10-32.tar.gz
+HEAD network.  Start by copying the skare tar distribution skare-0.11-32.tar.gz
 to /proj/sot/ska/dist on the GRETA network.  Then do the installation steps::
 
   # Do everything as aca
@@ -193,19 +198,19 @@ to /proj/sot/ska/dist on the GRETA network.  Then do the installation steps::
   crontab -e
 
   cd /proj/sot/ska/dist
-  mkdir skare-0.10-32
-  cd skare-0.10-32
-  tar xf ../skare-0.10-32.tar.gz
+  mkdir skare-0.11-32
+  cd skare-0.11-32
+  tar xf ../skare-0.11-32.tar.gz
 
   # preview updates in key areas
   rsync --size-only --dry-run -av bin/ /proj/sot/ska/bin/
   rsync --size-only --dry-run -av lib/ /proj/sot/ska/lib/
 
   mv /proj/sot/ska/build{,.bak}
-  ls /proj/sot/ska/dist/skare-0.10-32/
+  ls /proj/sot/ska/dist/skare-0.11-32/
 
   # DO THE INSTALL
-  rsync -av /proj/sot/ska/dist/skare-0.10-32/ /proj/sot/ska/ >& install.log 
+  rsync -av /proj/sot/ska/dist/skare-0.11-32/ /proj/sot/ska/ >& install.log 
 
   # Make modules that cannot be made on virtual machine, e.g. Sybase, and
   # ensure completeness.
@@ -280,7 +285,6 @@ psmc_check
   cd ~/hg/psmc
   python ./psmc_check.py --run_start_time='2011:001' --outdir regress_ska.new
 
-  diff regress_ska{.new,.7cb31b}/val
   diff regress_ska{.new,.7cb31b}/validation_quant.csv
 
 ==> OK

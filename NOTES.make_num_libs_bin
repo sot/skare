@@ -1,0 +1,27 @@
+# 32 bit
+# ssh hea-intern10  # 32-bit machine
+# ./configure --prefix=/data/cosmos2/ska32
+# make num_libs
+#
+# 64 bit (used existing ones) but similar strategy above would work.
+# Do this on the expected host target for best results.
+
+mkdir -p num_libs_bin-1.0.0/x86_64-linux_CentOS-5
+mkdir -p num_libs_bin-1.0.0/i686-linux_CentOS-5
+cd num_libs_bin-1.0.0
+cp -f $ska/arch/x86_64-linux_CentOS-5.6/lib/libatlas.* ./x86_64-linux_CentOS-5
+cp -f $ska/arch/x86_64-linux_CentOS-5.6/lib/libcblas.* ./x86_64-linux_CentOS-5
+cp -f $ska/arch/x86_64-linux_CentOS-5.6/lib/libf77blas.* ./x86_64-linux_CentOS-5
+cp -f $ska/arch/x86_64-linux_CentOS-5.6/lib/liblapack.* ./x86_64-linux_CentOS-5
+cp -f $ska/arch/x86_64-linux_CentOS-5.6/lib/libfftw3.* ./x86_64-linux_CentOS-5
+
+cp -f /data/cosmos2/ska32/arch/i686-linux_CentOS-5/lib/libatlas.* ./i686-linux_CentOS-5
+cp -f /data/cosmos2/ska32/arch/i686-linux_CentOS-5/lib/libcblas.* ./i686-linux_CentOS-5
+cp -f /data/cosmos2/ska32/arch/i686-linux_CentOS-5/lib/libf77blas.* ./i686-linux_CentOS-5
+cp -f /data/cosmos2/ska32/arch/i686-linux_CentOS-5/lib/liblapack.* ./i686-linux_CentOS-5
+cp -f /data/cosmos2/ska32/arch/i686-linux_CentOS-5/lib/libfftw3.* ./i686-linux_CentOS-5
+
+cd ..
+tar zcf num_libs_bin-1.0.0.tar.gz num_libs_bin-1.0.0
+mv num_libs_bin-1.0.0.tar.gz $ska/pkgs/
+
