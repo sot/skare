@@ -19,7 +19,6 @@ ipython-0.10.2.tar.gz
 Jinja2-2.5.5.tar.gz
 matplotlib-1.0.1.tar.gz
 mpi4py-1.2.2.tar.gz
-nose-1.0.0.tar.gz
 numpy-1.5.0.tar.gz
 odict-1.0.tar.gz
 pexpect-2.4.tar.gz
@@ -61,6 +60,16 @@ Cython-0.14.1.tar.gz
 Chandra.acis_esa-0.01.tar.gz
 Ska.report_ranges-0.01.tar.gz
 virtualenv-1.6.1.tar.gz
+#
+# Testing and code validation
+#
+nose-1.1.2.tar.gz
+pytest-2.1.3.tar.gz
+logilab-astng-0.23.0.tar.gz
+logilab-common-0.57.1.tar.gz 
+pyflakes-0.5.0.tar.gz
+pylint-0.25.0.tar.gz
+pep8-0.6.1.tar.gz
 #
 # gtk+ and pygtk
 # 
