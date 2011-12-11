@@ -582,6 +582,7 @@ case $os_type in
 	   *Athlon*)      hw_cpu="athlon";;
 	   *Opteron*)     hw_cpu="opteron";;
 	   *Intel*)       hw_cpu="intel";;
+	   *Virtual*)     hw_cpu="virtual";;
 	   *Pentium*III*) hw_cpu="pentium3";;
 	   *Pentium\(R\)\ 4* ) hw_cpu="pentium4";;
 	   *Pentium\(R\)\ D* ) hw_cpu="pentiumD";;
