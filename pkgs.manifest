@@ -60,6 +60,7 @@ Cython-0.14.1.tar.gz
 Chandra.acis_esa-0.01.tar.gz
 Ska.report_ranges-0.01.tar.gz
 virtualenv-1.6.1.tar.gz
+xija-0.1.tar.gz
 #
 # Testing and code validation
 #
