@@ -1,5 +1,5 @@
 NAME = skare
-VERSION = 0.11
+VERSION = 0.12
 PREFIX = @prefix@
 STDCONF = --prefix $(PREFIX) --config env_vars.cfg 
 # --allow-errors
@@ -13,7 +13,7 @@ all_64: basedirs libs python_64 perl
 basedirs:
 	./install.py --prefix $(PREFIX) --config template.cfg
 
-libs: xtime wcstools cfitsio pgplot gsl hdf5 libyaml mpich2 gtk num_libs_bin
+libs: xtime wcstools cfitsio pgplot gsl hdf5 libyaml mpich2 gtk num_libs_bin zmq
 
 python_32: activepython_32 pycore swig pygtk python_modules
 
@@ -63,6 +63,9 @@ swig:
 
 xtime:
 	./install.py $(STDCONF) --config xtime.cfg 
+
+zmq:
+	./install.py $(STDCONF) --config zmq.cfg 
 
 cfitsio:
 	./install.py $(STDCONF) --config cfitsio.cfg 

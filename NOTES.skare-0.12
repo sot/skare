@@ -1,0 +1,68 @@
+Skare 0.12
+===========
+
+Package updates
+---------------
+
+- IPython 0.12
+- Matplotlib 1.1.0
+- sip
+- tornado
+- zeromq
+- pyzmq
+
+Matplotlib
+----------
+
+I would recommend using Qt4Agg as the default plotting backend.  Features an
+interactive plot editor for changing attributes of plot elements like lines and
+axes.  To do this edit the file below and change the "backend" setting as shown:
+
+   ~/.matplotlib/matplotlibrc:
+
+# the default backend; one of GTK GTKAgg GTKCairo FltkAgg QtAgg TkAgg
+#     Agg Cairo GD GDK Paint PS PDF SVG Template
+backend      : Qt4Agg
+
+IPython 0.12
+------------
+
+This update includes new features from IPython 0.11 and 0.12.  This
+represents a major overhaul in this tool:
+
+ http://ipython.org/ipython-doc/rel-0.12/whatsnew/version0.11.html
+ http://ipython.org/ipython-doc/rel-0.12/whatsnew/version0.12.html
+
+In particular the new Qt Console provides a much richer interactive
+analysis environment with inline figures, multiline editing, graphical
+call tips, and so on:
+
+ http://ipython.org/ipython-doc/rel-0.12/interactive/qtconsole.html
+
+Setting up to use version 0.12
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+At the very least you need to do the following:
+
+% ska
+% mv ~/.ipython ~/.ipython-0.10
+% ipython profile create
+
+If you had previously done any customizations to your IPython 
+configuration that you want to convert to IPython 0.12 then
+contact me.  Otherwise I would suggest the following:
+
+% cd ~/.config/ipython/profile_default
+% cp ipython_config.py{,.bak}
+% cp ~aldcroft/.config/ipython/profile_default/ipython_config.py ./
+% cd startup
+% cp ~aldcroft/.config/ipython/profile_default/ipython_config.py/startup/*.py ./
+
+After doing this, you will automatically have "import numpy as np" executed
+upon starting IPython.  In addition a new "magic" command will be defined so
+that when you type "impska" at the prompt, the following commands will be run::
+
+    import asciitable
+    import Ska.engarchive.fetch_eng as fetch
+    from Chandra.Time import DateTime
+    from Ska.Matplotlib import plot_cxctime, cxctime2plotdate
