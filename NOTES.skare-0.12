@@ -4,8 +4,9 @@ Skare 0.12
 Package updates
 ---------------
 
-- IPython 0.12
 - Matplotlib 1.1.0
+- SciPy 0.10
+- IPython 0.12
 - sip
 - tornado
 - zeromq
@@ -23,6 +24,11 @@ axes.  To do this edit the file below and change the "backend" setting as shown:
 # the default backend; one of GTK GTKAgg GTKCairo FltkAgg QtAgg TkAgg
 #     Agg Cairo GD GDK Paint PS PDF SVG Template
 backend      : Qt4Agg
+
+SciPy 0.10
+----------
+
+http://docs.scipy.org/doc/scipy-0.10.0/reference/release.0.10.0.html
 
 IPython 0.12
 ------------
