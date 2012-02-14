@@ -46,9 +46,9 @@ exception of Perl, which lives in `lib/perl`.
 
 **Arch independent scripts**
 
-The `ipython`, `perl` and `python` files are just shell launcher scripts that
-use `flt_envs` to set the Ska environment and launch the correct arch-specific
-binary.  The `flt_envs` script depends on the Ska `perl` to run.
+The ``ipython``, ``perl`` and ``python`` files are just shell launcher scripts that
+use ``flt_envs`` to set the Ska environment and launch the correct arch-specific
+binary.  The ``flt_envs`` script depends on the Ska ``perl`` to run.
 ::
 
   bin/  
@@ -152,8 +152,8 @@ architecture where needed.  ::
 
 Environment setup
 -----------------
-Environment setup can be done by eval'ing the `$SKA/bin/flt_envs` script.  This
-uses `sysarch` to determine the system architecture.
+Environment setup can be done by eval'ing the ``$SKA/bin/flt_envs`` script.  This
+uses ``sysarch`` to determine the system architecture.
 
 ::
 
@@ -165,26 +165,26 @@ uses `sysarch` to determine the system architecture.
 Configuration management
 -------------------------
 
-The Ska runtime environment is maintained via the `skare` project.  This
+The Ska runtime environment is maintained via the ``skare`` project.  This
 project consists of a main installer script and a number of configuration files
 that specify build instructions for each package within Ska.  The entire Ska
 runtime environment can be built from scratch within this project.  It requires
 Python version 2.4 or later to run.
 
-The `skare` project is maintained under git revision control.
+The ``skare`` project is maintained under git revision control.
 
 Most regular updates to the HEAD network runtime environment (e.g. updating a
 component package) are done by placing the new source tarball in
-`/proj/sot/ska/pkgs` and updating the skare `pkgs.manifest` file to reflect the
+``/proj/sot/ska/pkgs`` and updating the skare ``pkgs.manifest`` file to reflect the
 new package.  Typically testing is done by first installing to the dev
-environment `/proj/sot/ska/dev` with the `skare` package installer.  Once testing
+environment ``/proj/sot/ska/dev`` with the ``skare`` package installer.  Once testing
 is complete the new package is installed to the flight environment with the
-package installer.  The `arch`, `bin`, and `lib` directories are owned and only
-writable by a management group account `aca`.
+package installer.  The ``arch``, ``bin``, and ``lib`` directories are owned and only
+writable by a management group account ``aca``.
 
 For major updates to the runtime environment, the build is done on a CentOS-5
 VM (currently with VMware on Mac).  Then the arch-specific directory
-(e.g. `arch/x86_64-linux_CentOS-5`) is moved into place after renaming the
+(e.g. ``arch/x86_64-linux_CentOS-5``) is moved into place after renaming the
 original.  This allows for easy install and quick backout.  Note that at this
 time the Perl part of the environment is largely static and is not part of this
 process.
@@ -192,35 +192,36 @@ process.
 The current GRETA network installation follows the same pattern: small updates
 are done in-place on a per-package basis where possible, large updates are done
 with a binary install.  Many of the compiled packages cannot be built on the
-standard GRETA network because of the lack of `dev` RPMs.
+standard GRETA network because of the lack of ``dev`` RPMs.  In this case a
+binary install is reqiured.
 
 GRETA Ska going forward
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 Proposal:
 
 * SOT (currently TLA , JC) will maintain primary responsibilty for the
-  `skare` project and for updates to the content of the Ska runtime environment.
+  ``skare`` project and for updates to the content of the Ska runtime environment.
 
-* FOT CM will assume ownership and sole write-access for `/proj/sot/ska/arch`.
+* FOT CM will assume ownership and sole write-access for ``/proj/sot/ska/arch``.
   This directory and contents are henceforth referred to as FOT Ska.  All
-  other files in the `/proj/sot/ska` root will be owned and maintained by SOT.
+  other files in the ``/proj/sot/ska`` root will be owned and maintained by SOT.
 
 * Changes to FOT Ska are controlled through the FOT Matlab tools control board
   and will follow all procedures required of actual Matlab code.
 
 * FOT CM will track the Ska runtime environment by maintaining a version of 
-  the `skare` project within the FOT version control.  Presumably there is
+  the ``skare`` project within the FOT version control.  Presumably there is
   no advantage to versioning the actual binary package tarballs.
 
-* SOT will maintain a duplicate of the `x86_64` HEAD network runtime
-  environment on GRETA in the `/proj/sot/ska/sot` root (the SOT Ska).  This
+* SOT will maintain a duplicate of the ``x86_64`` HEAD network runtime
+  environment on GRETA in the ``/proj/sot/ska/sot`` root (the SOT Ska).  This
   will allow FOT personnel access to the latest versions of SOT tools on
   chimchim.
 
-* SOT will maintain a clone of the `skare` git repository in
-  `/proj/sot/ska/git/skare`.  The `master` (aka trunk) branch will reflect the
+* SOT will maintain a clone of the ``skare`` git repository in
+  ``/proj/sot/ska/git/skare``.  The ``master`` (aka trunk) branch will reflect the
   current installation on the HEAD network and the installation in
-  `/proj/sot/ska/sot`.
+  ``/proj/sot/ska/sot``.
 
 * On an as-needed basis the SOT Ska will be promoted to the FOT Ska under
   control of the FOT Matlab tools CCB.  Typically this would be driven be a
@@ -230,7 +231,7 @@ Proposal:
   there a better strategy?
 
   * Option A: SOT provides "binary installs" for x86_64 and i686 platforms.
-  * Option B: FOT builds binary installs using `skare` installer on
+  * Option B: FOT builds binary installs using ``skare`` installer on
     their own CentOS-5 VMs.
   * Option C: Suggestions?
   
