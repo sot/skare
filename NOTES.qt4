@@ -1,0 +1,8 @@
+export PKG_CONFIG_PATH=/proj/sot/ska/dev/arch/x86_64-linux_CentOS-5/lib/pkgconfig
+./configure --prefix=/proj/sot/ska/dev/arch/x86_64-linux_CentOS-5 -fast
+find . -name "Makefile*" | xargs perl -i.bak -pe 's/-Werror//'
+gmake -j4
+gmake -j4 install
+ 
+NOTE: docs are not built.
+
