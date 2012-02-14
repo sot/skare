@@ -23,6 +23,8 @@ different root, but an existing Ska runtime environment is not movable.
 
 This tree holds everything that is architecture and OS-specific, with the
 exception of Perl, which lives in `lib/perl`.
+
+*FOT Matlab tools depends only on this part of the Ska runtime environment.*
 ::
 
   arch/
