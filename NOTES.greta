@@ -1,0 +1,42 @@
+Setting up the GRETA skatest environment 2012-Apr-13
+-----------------------------------------------------
+
+On chimchim:
+^^^^^^^^^^^^^
+cd /proj/sot/ska
+mkdir test
+rsync -a bin doc include lib share test/
+
+cd $ska/test
+ln -s ../data
+ln -s ../pkgs
+ln -s ../dist
+mkdir build
+
+cd $ska/build
+tar cf $ska/tmp/build_stub_x86.tar x86_64-linux_CentOS-5/*/.installed
+cd $ska/test/build/
+tar xvf $ska/tmp/build_stub_x86.tar
+
+On ccosmos
+^^^^^^^^^^^^
+mkdir $ska/test
+mkdir $ska/test/build/
+
+cd $ska
+rsync -a lib test/
+
+cd $ska/build
+tar cf $ska/tmp/build_stub_x86.tar x86_64-linux_CentOS-5/*/.installed
+cd $ska/test/build/
+tar xvf $ska/tmp/build_stub_x86.tar
+
+
+cd ~/git/skare
+git pull
+./configure --prefix=/proj/sot/ska/test
+
+make basedirs 
+make libs python_64 > build.log 2>&1 
+make meld git sherpa > build2.log 2>&1 
+
