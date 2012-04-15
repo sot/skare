@@ -10,7 +10,6 @@ rsync -a bin doc include lib share test/
 cd $ska/test
 ln -s ../data
 ln -s ../pkgs
-ln -s ../dist
 mkdir build
 
 cd $ska/build
@@ -23,20 +22,57 @@ On ccosmos
 mkdir $ska/test
 mkdir $ska/test/build/
 
-cd $ska
-rsync -a lib test/
+cd $ska/test
+rsync -a ../lib ./
+ln -s ../share
+ln -s ../data
+ln -s ../pkgs
 
 cd $ska/build
 tar cf $ska/tmp/build_stub_x86.tar x86_64-linux_CentOS-5/*/.installed
 cd $ska/test/build/
 tar xvf $ska/tmp/build_stub_x86.tar
 
+rm x86_64-linux_CentOS-5/fontconfig-*/.installed
+rm x86_64-linux_CentOS-5/glib-*/.installed
+rm x86_64-linux_CentOS-5/pixman-*/.installed
+rm x86_64-linux_CentOS-5/cairo-*/.installed
+rm x86_64-linux_CentOS-5/pango-*/.installed
+rm x86_64-linux_CentOS-5/atk-*/.installed
+rm x86_64-linux_CentOS-5/gtk+-*/.installed
+rm x86_64-linux_CentOS-5/sip-*/.installed
 
 cd ~/git/skare
 git pull
 ./configure --prefix=/proj/sot/ska/test
 
 make basedirs 
-make libs python_64 > build.log 2>&1 
-make meld git sherpa > build2.log 2>&1 
+make libs > build0.log 2>&1 
+make python_64 > build.log 2>&1 
+make meld > build2.log 2>&1 
+make git > build3.log 2>&1 
+make sherpa > build4.log 2>&1 
+
+The git doc build had a problem, probably because git master is
+no longer compatible with skare build process.
+
+Functional testing
+^^^^^^^^^^^^^^^^^^^^
+unset PERL5LIB; . /proj/sot/ska/test/bin/ska_envs.sh; export PS1="skatest-$PS1"
+
+# Test eng_archive, Gtk, matplotlib, sherpa, cmd_states
+cd ~/git/xija
+./gui_fit examples/dpa/dpa.json --stop=2011:001 --days=90  # do a fit
+
+# Test PyQt4 and ipython >= 0.12
+% ipython qtconsole --pylab=qt
+plot()
+
+Transfer
+----------
+On ccosmos:
+
+cd $ska/test
+mkdir -p dist
+tar zcf dist/skare-0.12-e16ea9-64-test.tar.gz arch bin
 
