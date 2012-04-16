@@ -68,11 +68,34 @@ cd ~/git/xija
 % ipython qtconsole --pylab=qt
 plot()
 
-Transfer
-----------
+Transfer (initially or for updates)
+------------------------------------
 On ccosmos:
+
+cd ~/git/skare
+version=`./ska_version.py`
 
 cd $ska/test
 mkdir -p dist
-tar zcf dist/skare-0.12-e16ea9-64-test.tar.gz arch bin
+tar zcf dist/skare-${version}-64.tar.gz arch bin
 
+Transfer this file to chimchim:/proj/sot/ska/test/dist/
+
+On chimchim:
+
+cd $ska/test/dist
+set version= [ska_version.py output]
+mkdir skare-${version}-64
+cd skare-${version}-64
+tar xf ../skare-${version}-64.tar.gz
+
+rsync --dry-run -av [--size-only] ./ $ska/test/
+
+Keeping git repos in sync
+--------------------------
+On Mac
+
+cd ~/git/XXX
+git pull
+
+rsync --dry-run --av --delete ./ SOT@131.142.113.102:/proj/sot/ska/git/XXX/
