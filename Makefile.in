@@ -4,6 +4,9 @@ PREFIX = @prefix@
 STDCONF = --prefix $(PREFIX) --config env_vars.cfg 
 # --allow-errors
 
+install:
+	echo "Need to specify an explicit target"
+
 # Full install of operational Ska runtime environment
 # The order is important
 all_32: basedirs libs python_32 perl
