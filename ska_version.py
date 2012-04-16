@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Version numbering for this module. The `major`, `minor`, and `bugfix` variables
 hold the respective parts of the version number (bugfix is '0' if absent). The
@@ -40,3 +41,6 @@ def _get_git_devstr():
         return  '-r%s-%s' % (len(revs), revs[0][:6])
 
 version = version + _get_git_devstr()
+
+if __name__ == '__main__':
+    print version
