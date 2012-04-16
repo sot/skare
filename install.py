@@ -3,19 +3,21 @@
 import re
 import os
 import sys
-import pexpect
-from pprint import pprint
-import yaml
+import stat
 import tarfile as Tarfile
 from glob import glob
 import shutil
 from copy import deepcopy
 
+import pexpect
+import yaml
+import ska_version
+
 try:
     set()
 except NameError:
     from sets import Set as set
-    
+
 VERSION = '$Id: install.py 366 2008-12-09 15:40:03Z aldcroft $'
 
 def get_options():
@@ -264,6 +266,16 @@ def print_header(symbol, message):
     print symbol, message
     print symbol * 40
 
+def make_version_file(version_file):
+    f = open(version_file, 'w')
+    f.write("#!/bin/sh\n")
+    f.write("echo '%s'\n" % ska_version.version)
+    f.close()
+    os.chmod(version_file,
+             stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH |
+             stat.S_IWUSR | stat.S_IWGRP |
+             stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+
 # Start of main routine
 
 # Get program options and arguments
@@ -307,6 +319,8 @@ for dirname, subdirs in (('build_dir', ['']),
 # Get pkgs manifest and copy to prefix
 pkgs = [x.strip() for x in open(opt.manifest)]
 bash('cp -p ' + opt.manifest + ' ${prefix_arch}/')
+
+make_version_file(os.path.join(os.environ['prefix_arch'], 'bin', 'ska_version'))
 
 # Do the modules installation by iterating over the yaml 'install' sections
 # (delimited by '---' in the yaml cfg file) in each config file
