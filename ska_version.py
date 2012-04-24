@@ -38,7 +38,7 @@ def _get_git_devstr():
         return ''
     else:
         revs = stdout.decode('ascii').split('\n')
-        return  '-r%s-%s' % (len(revs), revs[0][:6])
+        return  '-r%s-%s' % (len(revs), revs[0][:7])
 
 version = version + _get_git_devstr()
 
