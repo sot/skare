@@ -92,6 +92,11 @@ pycairo-1.8.8.tar.gz
 pygobject-2.20.0.tar.gz
 pygtk-2.16.0.tar.gz
 #
+# Python shared object libraries (for GRETA / MCC)
+#
+libpython_so64-2.7.tar.gz
+libpython_so32-2.7.tar.gz
+#
 # Misc supporting C libraries
 # 
 mpich2-1.4.tar.gz
