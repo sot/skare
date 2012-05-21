@@ -1,5 +1,5 @@
 NAME = skare
-VERSION = 0.12
+VERSION = `ska_version.py`
 PREFIX = @prefix@
 STDCONF = --prefix $(PREFIX) --config env_vars.cfg 
 # --allow-errors
