@@ -62,7 +62,7 @@ Sphinx-1.0.7.tar.gz
 Ska.quatutil-0.02.tar.gz
 tables-2.2b1.tar.gz
 tornado-2.1.1.tar.gz
-Cython-0.14.1.tar.gz
+Cython-0.16.tar.gz
 Chandra.acis_esa-0.01.tar.gz
 Ska.report_ranges-0.01.tar.gz
 virtualenv-1.6.1.tar.gz
