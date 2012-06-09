@@ -18,7 +18,7 @@ basedirs:
 
 libs: xtime wcstools cfitsio pgplot gsl hdf5 libyaml mpich2 gtk num_libs_bin zmq
 
-python_32: activepython_32 libpython_so32 num_sci_pypm swig pygtk python_modules
+python_32: activepython_32 libpython_so32 num_sci_src swig pygtk python_modules
 
 python_64: activepython_64 libpython_so64 num_sci_src swig pygtk python_modules
 
