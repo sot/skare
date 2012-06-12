@@ -24,12 +24,13 @@ Content changes overview
     times filter to all MSIDs in a set.
   - Speed up `filter_bad_times()` by using a single mask array over 
     all bad time filters.
-  - Add some unit / regression tests
+  - Add some unit / regression tests.
 
 - Ska.Numpy 0.06 to 0.08: speed and lower memory usage with Cython:
-  - New function search_both_sorted() that is like np.searchsorted 
+
+  - New function ``search_both_sorted()`` that is like ``np.searchsorted()``
     but up to 15 times faster for both input arrays already sorted.
-  - Updated function interpolate() that is up to 8 times faster for
+  - Updated function ``interpolate()`` that is up to 8 times faster for
     both input X arrays already sorted.
 
 - PyFITS 2.4.0 to 3.0.7
@@ -40,7 +41,7 @@ Content changes overview
   down to multi-threaded C for very fast execution.
 
 - Other upgrades: argparse, distribute, docutils, Jinja2,
-  mpi4py, pep8, pytest, Pygments, Ska.Table, Sphinx, and virtualenv, 
+  mpi4py, pep8, pytest, Pygments, Ska.Table, Sphinx, and virtualenv. 
 
 - 32-bit version of NumPy and SciPy built from source (as for  64-bit)
 
@@ -91,7 +92,7 @@ Starcheck
   make test
   diff test-flight.txt test.txt
 
-==> 
+==> OK
 
 Eng_archive
 ^^^^^^^^^^^^
@@ -320,7 +321,7 @@ Starcheck
   /proj/sot/ska/bin/starcheck -dir AUG0104A -fid_char fid_CHARACTERIS_JUL01 -out test.new
   diff test.7cb31b.txt test.new.txt
 
-==> OK
+==> 
 
 Eng_archive
 ^^^^^^^^^^^^
@@ -332,7 +333,7 @@ Eng_archive
 
 Follow the steps for "Regression test for new skare in /proj/sot/ska" in NOTES.test.
 
-==> OK
+==> 
 
 Commanded states
 ^^^^^^^^^^^^^^^^^^^
@@ -341,7 +342,7 @@ Commanded states
   cd ~/hg/timelines
   nosetests
 
-==> PENDING...
+==> 
 
 psmc_check
 ^^^^^^^^^^
@@ -353,20 +354,20 @@ psmc_check
 
   diff regress_ska{.new,.7cb31b}/validation_quant.csv
 
-==> OK
+==> 
 
 Other modules
 ^^^^^^^^^^^^^
 
-- Ska.Table: OK
-- Ska.DBI: OK
-- Quaternion (nose): OK
-- Ska.ftp (nose): OK
-- Ska.Numpy: OK
-- Ska.ParseCM: OK
-- Ska.quatutil: OK
-- Ska.Shell: OK
-- asciitable: OK
+- Ska.Table: 
+- Ska.DBI: 
+- Quaternion (nose): 
+- Ska.ftp (nose): 
+- Ska.Numpy: 
+- Ska.ParseCM: 
+- Ska.quatutil: 
+- Ska.Shell: 
+- asciitable: 
 
 
 
