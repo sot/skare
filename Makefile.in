@@ -1,5 +1,5 @@
 NAME = skare
-VERSION = 0.12
+VERSION = `ska_version.py`
 PREFIX = @prefix@
 STDCONF = --prefix $(PREFIX) --config env_vars.cfg 
 # --allow-errors
@@ -9,18 +9,20 @@ install:
 
 # Full install of operational Ska runtime environment
 # The order is important
-all_32: basedirs libs python_32 perl
+all_32: basedirs libs python_32 perl std_extras
 
-all_64: basedirs libs python_64 perl
+all_64: basedirs libs python_64 perl std_extras
 
 basedirs:
 	./install.py --prefix $(PREFIX) --config template.cfg
 
 libs: xtime wcstools cfitsio pgplot gsl hdf5 libyaml mpich2 gtk num_libs_bin zmq
 
-python_32: activepython_32 libpython_so32 pycore swig pygtk python_modules
+python_32: activepython_32 libpython_so32 num_sci_src swig pygtk python_modules
 
-python_64: activepython_64 libpython_so64 pycore swig pygtk python_modules
+python_64: activepython_64 libpython_so64 num_sci_src swig pygtk python_modules
+
+std_extras: meld git sherpa
 
 perl: perl_modules perl_dbi
 
@@ -39,6 +41,12 @@ libpython_so64:
 
 pycore:
 	./install.py $(STDCONF) --config pycore.cfg
+
+num_sci_pypm:
+	./install.py $(STDCONF) --config num_sci_pypm.cfg
+
+num_sci_src:
+	./install.py $(STDCONF) --config num_sci_src.cfg
 
 gtk:
 	./install.py $(STDCONF) --config gtk.cfg
