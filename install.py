@@ -216,7 +216,7 @@ class Module(object):
         """Run the cmdtyp cmds.  If a module directory is defined then chdir there first."""
         if cmdtyp not in self.cmds:
             return True
-        cmds = self.cmds[cmdtyp]
+        cmds = 'export LD_RUN_PATH\n' + self.cmds[cmdtyp]
         if self.moduledir:
             cmds = 'cd %s\n' % self.moduledir + cmds
         return 0 == bash(cmds, keep_env=self.keep_env)
@@ -304,6 +304,7 @@ build_dir =  os.path.join(os.path.abspath(opt.build or os.path.join(prefix, 'bui
 os.environ['build_dir'] = build_dir 
 os.environ['pkg_dir'] = pkg_dir = os.path.abspath(opt.pkgs)
 os.environ['installer_dir'] = os.path.abspath(os.path.dirname(__file__))
+os.environ['LD_RUN_PATH'] = os.path.join(os.environ['prefix_arch'], 'lib')
 
 # Make sure that the required build and install dirs exist.
 #   (this could be made into a cfg file)
