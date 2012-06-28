@@ -139,7 +139,7 @@ Astro-Cosmology-0.90.tar.gz
 BayesianBlocks-0.02.tar.gz
 cfitsio3020.tar.gz
 CFITSIO-Simple-0.10.tar.gz
-Chandra-Time-0.05.tar.gz
+Chandra-Time-0.09.tar.gz
 Chandra-Tools-dmcoords-0.28.tar.gz
 Chandra-Tools-ECF-0.01.tar.gz
 Class-Accessor-0.30.tar.gz
@@ -165,6 +165,7 @@ eps2png-2.2.tar.gz
 Expect-1.15.tar.gz
 Expect-Simple-0.04.tar.gz
 ExtUtils-F77-1.16.tar.gz
+ExtUtils-PkgConfig-1.13.tar.gz
 File-chdir-0.1002.tar.gz
 File-MMagic-1.25.tar.gz
 Font-AFM-1.20.tar.gz
@@ -242,7 +243,7 @@ TimeDate-1.16.tar.gz
 wcstools-3.7.8.tar.gz
 XML-Simple-2.18.tar.gz
 XML-Parser-2.36.tar.gz
-XTime-1.1.0.tar.gz
+XTime-1.2.0.tar.gz
 Ska-RunAsp-0.03.tar.gz
 CXC-Archive-2.2.0_ska.tar.gz
 Capture-Tiny-0.15.tar.gz
@@ -251,3 +252,4 @@ Data-Password-Entry-0.03.tar.gz
 TermReadKey-2.30.tar.gz
 Term-ReadLine-1.07.tar.gz
 Term-ReadLine-Perl-1.0303.tar.gz
+POSIX-strptime-0.10.tar.gz
