@@ -3,7 +3,7 @@ Ska Runtime Environment 0.13
 
 .. Build and install this document with:
    rst2html.py --stylesheet=/proj/sot/ska/www/ASPECT/aspect.css \
-        --embed-stylesheet NOTES.skare-0.13 NOTES.skare-0.13.html
+        --embed-stylesheet NOTES.skare-0.13.rst NOTES.skare-0.13.html
    cp NOTES.skare-0.13.html /proj/sot/ska/www/ASPECT/skare-0.13.html
 
 Content changes overview
@@ -17,9 +17,6 @@ Content changes overview
 
   - Add ``MSID.interpolate()`` method which is like ``MSIDset.interpolate()``
   - Speed up ``interpolate()`` methods using the new ``Ska.Numpy.interpolate``.
-  - Add a standard bad times file (taken from values provided by 
-    A. Arvai) so that all bad times can be filtered out with
-    ``dat.filter_bad_times()``
   - Add ``MSIDset.filter_bad_times()`` method that applies the bad
     times filter to all MSIDs in a set.
   - Speed up `filter_bad_times()` by using a single mask array over 
@@ -35,6 +32,8 @@ Content changes overview
 
 - PyFITS 2.4.0 to 3.0.7
 
+- IPython 0.12 to 0.12.1: bug fix release
+
 - PyTables 2.2b1 to 2.3.1: efficient table indexing
 
 - Add new module numexpr 2.0.1: allows compiling NumPy expressions
@@ -47,16 +46,18 @@ Content changes overview
 
 - Minor improvements in build process
 
+- Update install.py to set LD_RUN_PATH globally to reduce (eliminate?) need for
+  LD_LIBRARY_PATH in Python.  Rebuild mpi4py, matplotlib, numpy, scipy,
+  ipython, tables.
+
 Review
 ------
 
 Notes and testing were reviewed by Jean Connelly.  Command states and module
 testing were run independently by Jean.
 
-Build 
------
-
-REMEMBER to "make install" eng archive!
+Build
+-------
 
 /proj/sot/ska/test
 ^^^^^^^^^^^^^^^^^^^
@@ -174,7 +175,7 @@ Other modules
   cd ~/hg/Ska.ParseCM
   python test.py
 
-**Ska.quatutil** - ::
+**Ska.quatutil** - OK::
 
   cd ~/hg/Ska.quatutil
   nosetests
@@ -190,7 +191,99 @@ Other modules
   git checkout 0.8.0
   py.test asciitable/tests
 
-Installation on GRETA network
+Installation on GRETA network (flight)
+--------------------------------------
+
+Ensure that the HEAD flight distribution has been installed and tested.
+
+On ccosmos::
+
+  ska
+  version=`ska_version`  # 0.13-r241-427bb9c
+  cd /proj/sot/ska/dist
+  mkdir skare-${version}
+  cd skare-${version}
+  cp -rp ../arch/x86_64-linux_CentOS-5 ../arch/i686-linux_CentOS-5 ./
+
+On chimchim as SOT::
+
+  set version=0.13-r241-427bb9c
+  rysnc -azv aldcroft@ccosmos:/proj/sot/ska/dist/skare-${version} /proj/sot/ska/tmp/
+
+On chimchim as FOT CM::
+
+  cd /proj/sot/ska/arch
+  set version=0.13-r241-427bb9c
+  cp -rp /proj/sot/ska/tmp/skare-0.13-r241-427bb9c ./
+  rm i686-linux_CentOS-5
+  rm x86_64-linux_CentOS-5
+  ln -s skare-0.13-r241-427bb9c/i686-linux_CentOS-5 ./
+  ln -s skare-0.13-r241-427bb9c/x86_64-linux_CentOS-5 ./
+
+Smoke test on chimchim::
+
+  source /proj/sot/ska/arch/x86_64-linux_CentOS-5/bin/ska_envs.csh
+  ipython --pylab
+  import Ska.engarchive.fetch as fetch
+  dat = fetch.Msid('tephin', '2012:001', stat='5min')
+  dat.plot()
+
+Smoke test on snowman::
+
+  source /proj/sot/ska/arch/i686-linux_CentOS-5/bin/ska_envs.csh
+  ipython --pylab
+  import Ska.engarchive.fetch as fetch
+  dat = fetch.Msid('tephin', '2012:001', stat='5min')
+  dat.plot()
+
+One-time cleanup for a change in directory structure convention.  (Note that
+the "r100" and "r200" are fictitious, the code that generated these SVN-like
+revision numbers didn't exist for these earlier versions)::
+
+  cd /proj/sot/ska/arch
+
+  mkdir skare-0.11-r100-c0195da
+  mv x86_64-linux_CentOS-5-0.11  skare-0.11-r100-c0195da/x86_64-linux_CentOS-5
+  mv i686-linux_CentOS-5-0.11  skare-0.11-r100-c0195da/i686-linux_CentOS-5
+
+  mkdir skare-0.12-r200-0512af5
+  mv x86_64-linux_CentOS-5-0.12  skare-0.12-r200-0512af5/x86_64-linux_CentOS-5
+  mv i686-linux_CentOS-5-0.12  skare-0.12-r200-0512af5/i686-linux_CentOS-5
+
+Fallback::
+
+  cd /proj/sot/ska/arch
+  rm i686-linux_CentOS-5
+  rm x86_64-linux_CentOS-5
+  ln -s skare-0.12-r200-0512af5/i686-linux_CentOS-5 ./
+  ln -s skare-0.12-r200-0512af5/x86_64-linux_CentOS-5 ./
+  
+Install eng_archive 0.19.1 executable scripts on chimchim as SOT::
+
+  ska
+  cd ~/git/eng_archive
+  git pull origin master
+  git checkout 0.19.1
+  make install
+
+
+Test on GRETA network (flight)
+--------------------------------------
+
+Test xija as SOT::
+
+  ska
+  cd ~/git/xija
+  py.test xija/tests/
+
+Test eng_archive::
+
+  ska
+  cd ~/git/eng_archive
+  py.test tests/
+
+
+Installation on GRETA network (test)
 -------------------------------------
 
 On ccosmos::
@@ -199,175 +292,122 @@ On ccosmos::
   cd ~/git/skare
   version=`./ska_version.py`
   cd /proj/sot/ska/test
-  tar zcf skare-${version}-test.tar.gz bin lib build/*/*/.installed
+  tar zcf skare-${version}-test.tar.gz bin lib
+  tar zcf skare-${version}-test-build.tar.gz build/*/*/.installed
   tar zcf skare-${version}-test-32.tar.gz arch/i686-linux_CentOS-5 
   tar zcf skare-${version}-test-64.tar.gz arch/x86_64-linux_CentOS-5
   mv skare-${version}*.tar.gz /proj/sot/ska/dist/
 
+On chimchim::
 
-Installation on HEAD network
-------------------------------------
+  set version=0.13-r241-427bb9c
+  cd /proj/sot/ska/tmp
+  scp -p aldcroft@ccosmos:/proj/sot/ska/dist/skare-${version}-test* ./
+  # then install
 
-Copy the skare tar distribution skare-0.11-64.tar.gz to /proj/sot/ska/dist.
+Installation on HEAD network (flight)
+-------------------------------------
+
+Copy the skare tar distribution binary to /proj/sot/ska/dist.
 ::
 
   # Do everything as aca
   su -l aca
+  ska
+
+  # Make copy of current arch dirs
+  cd /proj/sot/ska/arch
+  set version=`ska_version`
+  mkdir -p skare-${version}
+  cp -rp x86_64-linux_CentOS-5 skare-${version}/
+  # Normally do this for i686, but it doesn't exist yet for skare-0.12
+  cp -rp i686-linux_CentOS-5 skare-${version}/
+
+  # For skare-0.13 ONLY:
+  # Force re-build of these packages in order to set internal RPATH (see
+  # email from Mark search "mbaski rpath")
+  cd /proj/sot/ska/build/x86_64-linux_CentOS-5
+  rm mpi4py-1.*/.installed numpy-1.*/.installed scipy-0.*/.installed
+  rm matplotlib-1.1.0/.installed ipython-0.1*/.installed tables-2.*/.installed
+
+  # Prepare for in-place installation
+  cd ~/git/skare
+  git pull
+  git log  
 
   # Stop all cron jobs
   touch /proj/sot/ska/data/task_schedule/master_heart_attack
+  # Wait at least a minute
 
-  cd /proj/sot/ska/dist
-  mkdir skare-0.11-64
-  cd skare-0.11-64
-  tar xf ../skare-0.11-64.tar.gz
-
-  # preview updates in key areas
-  rsync --size-only --dry-run -av bin/ /proj/sot/ska/bin/
-  rsync --size-only --dry-run -av lib/ /proj/sot/ska/lib/
-  # NO CHANGES
-
-  ls        /proj/sot/ska/dist/skare-0.11-64/
-  mv /proj/sot/ska/build/x86_64-linux_CentOS-5{,.bak}
-  mv /proj/sot/ska/arch/x86_64-linux_CentOS-5{,.bak}
-
-  cd /proj/sot/ska/dist
-  rsync -av /proj/sot/ska/dist/skare-0.11-64/ /proj/sot/ska/ >& install-0.11-64.log 
-
-  # Make modules that cannot be made on virtual machine, e.g. Sybase, and
-  # ensure completeness.
-  # First clone the skare installer repo, then
-  cd /proj/sot/ska/dist
-  (ska; git clone ~aldcroft/git/skare)
-  cd skare
-  git branch # confirm correct branch  
+  # Build updated skare 0.13 on ccosmos
   ./configure --prefix=/proj/sot/ska
-  make python_modules
+  make all_64
+  
+  # For skare-0.13 ONLY:
+  # Need to install an update to the eng_archive "update_archive.py" script
+  # in $ska/share/eng_archive.
+  cd ~/git/eng_archive
+  make install
+
+  # Build 32-bit version on quango
+  ssh aca@quango
+  cd ~/git/skare
+  make all_32
 
   # TEST per instructions below
 
   # Allow all cron jobs to resume
   rm /proj/sot/ska/data/task_schedule/master_heart_attack
 
-Installation on GRETA network
-------------------------------------
 
-Perform GRETA network installation after a soak period of about one week on the
-HEAD network.  Start by copying the skare tar distribution skare-0.11-32.tar.gz
-to /proj/sot/ska/dist on the GRETA network.  Then do the installation steps::
-
-  # Do everything as aca
-  su -l aca
-
-  # Stop all cron jobs
-  crontab -e
-
-  cd /proj/sot/ska/dist
-  mkdir skare-0.11-32
-  cd skare-0.11-32
-  tar xf ../skare-0.11-32.tar.gz
-
-  # preview updates in key areas
-  rsync --size-only --dry-run -av bin/ /proj/sot/ska/bin/
-  rsync --size-only --dry-run -av lib/ /proj/sot/ska/lib/
-
-  mv /proj/sot/ska/build{,.bak}
-  ls /proj/sot/ska/dist/skare-0.11-32/
-
-  # DO THE INSTALL
-  rsync -av /proj/sot/ska/dist/skare-0.11-32/ /proj/sot/ska/ >& install.log 
-
-  # Make modules that cannot be made on virtual machine, e.g. Sybase, and
-  # ensure completeness.
-  make python_modules
-
-  # TEST per instructions below (as applicable for GRETA)
-
-  # Allow all cron jobs to resume
-  crontab -e
-
-TEST that shared object python libs are there!!!
-
-Fallback
---------
-
-Only three files are expected to changed (the rest go in a new arch directory): 
-
-- bin/sysarch 
-- bin/syspathsubst 
-- lib/perl/CXC/Envs/Flight.pm.
-
-Confirm with::
-
-  rsync --dry-run -av /proj/sot/.snapshot/nightly.0/ska/bin/ /proj/sot/ska/bin/
-  rsync --dry-run -av /proj/sot/.snapshot/nightly.0/ska/lib/ /proj/sot/ska/lib/
-
-Restore with::
-
-  cp -p /proj/sot/.snapshot/nightly.0/ska/bin/sysarch /proj/sot/ska/bin/
-  cp -p /proj/sot/.snapshot/nightly.0/ska/bin/syspathsubst /proj/sot/ska/bin/
-  cp -p /proj/sot/.snapshot/nightly.0/ska/lib/perl/CXC/Envs/Flight.pm /proj/sot/ska/lib/perl/CXC/Envs/
-  rm -rf /proj/sot/ska/build
-  mv /proj/sot/ska/build{.bak,}
-
-Post-install testing 
---------------------
+Post-install testing on HEAD
+-----------------------------
 
 Starcheck
 ^^^^^^^^^^^^
 ::
 
-  cd ~/hg/starcheck
+  cd ~/git/starcheck
   /proj/sot/ska/bin/starcheck -dir AUG0104A -fid_char fid_CHARACTERIS_JUL01 -out test.new
   diff test.7cb31b.txt test.new.txt
 
-==> 
+==> OK
 
 Eng_archive
 ^^^^^^^^^^^^
 ::
 
-  cd ~/hg
-  hg clone /proj/sot/ska/hg/eng_archive
-  cd eng_archive
+  cd ~/git/eng_archive
 
 Follow the steps for "Regression test for new skare in /proj/sot/ska" in NOTES.test.
 
-==> 
+==> OK
 
 Commanded states
 ^^^^^^^^^^^^^^^^^^^
 ::
 
-  cd ~/hg/timelines
+  cd ~/git/timelines
   nosetests
 
-==> 
-
-psmc_check
-^^^^^^^^^^
-::
-
-  ska
-  cd ~/hg/psmc
-  python ./psmc_check.py --run_start_time='2011:001' --outdir regress_ska.new
-
-  diff regress_ska{.new,.7cb31b}/validation_quant.csv
-
-==> 
+==> OK
 
 Other modules
 ^^^^^^^^^^^^^
 
-- Ska.Table: 
-- Ska.DBI: 
-- Quaternion (nose): 
-- Ska.ftp (nose): 
-- Ska.Numpy: 
-- Ska.ParseCM: 
-- Ska.quatutil: 
-- Ska.Shell: 
-- asciitable: 
+- Ska.Table: OK
+- Ska.DBI: OK
+- Quaternion (nose): OK
+- Ska.ftp (nose): OK
+- Ska.Numpy: OK
+- Ska.ParseCM: OK
+- Ska.quatutil: OK
+- Ska.Shell: OK
+- asciitable: OK
 
 
+Notes
+-----
+
+REMEMBER to "make install" eng archive!
 
