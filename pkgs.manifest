@@ -6,7 +6,7 @@ ActivePython-2.7.1.4-linux-x86.tar.gz
 ActivePython-2.7.1.4-linux-x86_64.tar.gz
 asciitable-0.8.0.tar.gz
 BeautifulSoup-3.2.1.tar.gz
-Chandra.cmd_states-0.08.tar.gz
+Chandra.cmd_states-0.08.1.tar.gz
 Chandra.ECF-0.02.tar.gz
 Chandra.Maneuver-0.04.tar.gz
 Chandra.taco-0.1.tar.gz
@@ -64,7 +64,7 @@ Cython-0.16.tar.gz
 Chandra.acis_esa-0.01.tar.gz
 Ska.report_ranges-0.01.tar.gz
 virtualenv-1.7.1.2.tar.gz
-xija-0.2.3.tar.gz
+xija-0.2.4.tar.gz
 #
 # Testing and code validation
 #
