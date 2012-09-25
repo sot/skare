@@ -100,6 +100,7 @@ sherpa:
 	./install.py $(STDCONF) --config sherpa.cfg 
 
 sherpaX:
+	./install.py $(STDCONF) --config ciao-sherpa.cfg
 	./install.py $(STDCONF) --config sherpaX.cfg 
 
 # Optional packages for python modules
