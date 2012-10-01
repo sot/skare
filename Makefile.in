@@ -22,7 +22,7 @@ python_32: activepython_32 libpython_so32 num_sci_src swig pygtk python_modules
 
 python_64: activepython_64 libpython_so64 num_sci_src swig pygtk python_modules
 
-std_extras: meld git sherpa
+std_extras: meld git sherpaX
 
 perl: perl_modules perl_dbi
 
