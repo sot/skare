@@ -9,7 +9,7 @@ NOTE: this code copied from astropy.version and simplified.  Any license
 restrictions therein are applicable.
 """
 
-version = '0.13'
+version = '0.14'
 
 _versplit = version.split('.')
 major = int(_versplit[0])
