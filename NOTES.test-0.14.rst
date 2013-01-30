@@ -147,6 +147,37 @@ Other modules
   git checkout 0.8.0
   py.test asciitable/tests
 
+Installation on GRETA network (test)
+-------------------------------------
+
+On ccosmos::
+
+  skatest
+  ska_version  # 0.14-r272-ebf9f03
+
+On quango (32-bit)::
+
+  skatest
+  ska_version  # 0.14-r272-ebf9f03
+
+On chimchim as SOT::
+
+  set version=0.14-r272-ebf9f03
+  mkdir /proj/sot/ska/test/arch/skare-${version}
+  rysnc -av aldcroft@ccosmos:/proj/sot/ska/test/arch/x86_64-linux_CentOS-5 \
+                             /proj/sot/ska/test/arch/skare-${version}/
+  rysnc -av aldcroft@ccosmos:/proj/sot/ska/test/arch/i686-linux_CentOS-5 \
+                             /proj/sot/ska/test/arch/skare-${version}/
+
+  cd /proj/sot/ska/test/arch
+  ls -l  # make sure everything looks good
+  ls -l $skare-${version}
+  rm i686-linux_CentOS-5
+  rm x86_64-linux_CentOS-5
+  ln -s skare-${version}/i686-linux_CentOS-5 ./
+  ln -s skare-${version}/x86_64-linux_CentOS-5 ./
+
+
 Installation on GRETA network (flight)
 --------------------------------------
 
