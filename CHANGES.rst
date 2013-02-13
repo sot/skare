@@ -1,8 +1,8 @@
 Ska Runtime Environment Changes
 ===========================================
 
-0.14
-------------------------
+0.14 - 2013-Jan-13
+------------------
 
 - Xija 0.2.2 to 0.2.7
 
@@ -10,22 +10,24 @@ Ska Runtime Environment Changes
   - Uses the new HDF5 cmd states when available
   - Pitch class filters out-of-bounds pitch values
 
-- Ska.engarchive 0.19.1 to 0.21:
+- Ska.engarchive 0.19.1 to 0.21
 
-  - ??
+  - Add three new content types: SIM SEA, EPHIN housekeeping, CPE
+  - Numerous infrastructure improvements in ingest and update process.
+  - Use weighted mean and stddev for calculating stats.
+  - Use float64 to accumulate sum for computing stats mean.
+  - Rebuild stats files for the full mission.
+  - Fix bug that number of samples for daily stats was incorrect.
+  - Add notes and regression testing code for re-building stats files.
 
-- Pyger 0.1.1 to 0.2.1  ??
+- Pyger 0.1.1 to 0.2.1
 
-- Sherpa installation is 4.4 (5?) and now includes the full X-ray fitting 
+  - Include the Xija DPA and IPS fuel tank models
+
+- Sherpa installation is 4.4.1 and now includes the full X-ray fitting
   capability
 
 - Add mica 0.1
-
-- Add new module requests 1.0.3 for doing HTTP requests easily.
-
-- Update Ska.Matplotlib 0.09 to 0.10
-
-  - ??
 
 - Chandra.Time 0.13 to 0.14
 
@@ -34,13 +36,14 @@ Ska Runtime Environment Changes
 
 - IPython 0.12.1 to 0.13.1: major improvements to IPython notebook
 
-- Matplotlib 1.1 to 1.2: ??
+- Matplotlib 1.1 to 1.2: http://matplotlib.org/users/whats_new.html
 
 - Other additions / upgrades: Django, BeautifulSoup4, psycopg2,
-  virtualenvwrapper
+  virtualenvwrapper, Ska.Matplotlib, requests
 
-0.13
------
+
+0.13 - 2012-Jul-12
+------------------
 
 Content changes overview
 ------------------------
