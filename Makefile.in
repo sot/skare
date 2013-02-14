@@ -72,6 +72,9 @@ libyaml:
 mpich2:
 	./install.py $(STDCONF) --config mpich2.cfg 
 
+psycopg2:
+	./install.py $(STDCONF) --config psycopg2.cfg 
+
 wcstools:
 	./install.py $(STDCONF) --config wcstools.cfg 
 
