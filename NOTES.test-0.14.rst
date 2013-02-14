@@ -9,8 +9,7 @@ Ska Runtime Environment 0.14
 Review
 ------
 
-Notes and testing were reviewed by Jean Connelly.  Command states and module
-testing were run independently by Jean.
+Notes and testing were reviewed by Jean Connelly.
 
 Build
 -------
@@ -34,7 +33,7 @@ Install (or git pull) skare on 32-bit or 64-bit virtual CentOS-5 machine.
   make all_64
   make all_32  # on quango
 
-Pre-install testing in development area
+Pre-install testing in Ska test 
 ----------------------------------------
 
 Starcheck
@@ -49,7 +48,7 @@ Starcheck
   make test
   diff test-flight.txt test.txt
 
-==> 
+==> OK
 
 Eng_archive
 ^^^^^^^^^^^^
@@ -59,7 +58,7 @@ Eng_archive
 
 Follow the steps for "Regression test for new skare (..) in $ska/dev" in NOTES.test.
 
-==> 
+==> SKIP (No changes to modules that affect eng_archive)
 
 Commanded states
 ^^^^^^^^^^^^^^^^^^
@@ -75,77 +74,117 @@ Commanded states
 
   nosetests
 
-==> 
+==> SKIP (No changes to modules that affect cmd_states)
 
 psmc_check
 ^^^^^^^^^^
 ::
 
   skatest
-  cd ~/hg/psmc
+  cd ~/git/psmc_check
   export ENG_ARCHIVE=/proj/sot/ska/data/eng_archive
-  make install
-  python ./psmc_check.py --run_start_time='2011:001' --outdir regress_skatest
+  python ./psmc_check.py --run-start='2013:003' --oflsdir=/data/mpcrit1/mplogs/2013/JAN0713/ofls \
+         --outdir=regress_skatest
 
   # NEW WINDOW
   ska
-  python ./psmc_check.py --run_start_time='2011:001' --outdir regress_ska
+  python ./psmc_check.py --run-start='2013:003' --oflsdir=/data/mpcrit1/mplogs/2013/JAN0713/ofls \
+         --outdir=regress_ska
 
   diff regress_ska{,test}/validation_quant.csv
+  diff regress_ska{,test}/temperatures.dat
 
-==> 
+==> SKIP (not possible in this version because flight Ska xija package doesn't support PSMC model)
+    Did confirm functionality in Ska-test and flight Ska however.
+
+Other ACIS thermal load review
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Tested by ACIS ops for dpa_check, dea_check, acisfp_check (2013 Feb 11)
+
+::
+
+  Window 1 (FLIGHT):
+
+  % ska
+  % cd /path/to/tool (e.g. ~/git/dpa_check)
+  Run the tool, e.g.
+  % python ./dpa_check.py --outdir=feb0413a-flight \
+   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
+   --run-start=2013:031
+
+  Window 2 (TEST):
+
+  % cd /path/to/tool (e.g. ~/git/dpa_check)
+  % skatest # OR  source /proj/sot/ska/test/bin/ska_envs.csh
+  % setenv ENG_ARCHIVE /proj/sot/ska/data/eng_archive
+  % python ./dpa_check.py --outdir=feb0413a-test \
+    --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
+    --run-start=2013:031
+
+  DIFFS:
+
+  % diff feb0413a-flight/index.rst feb0413a-test/index.rst
+  % diff feb0413a-flight/temperatures.dat feb0413a-test/temperatures.dat
+
+  # Visually inspect the output web pages and plots in a browser
+  # for any obvious diffs
 
 Other modules
 ^^^^^^^^^^^^^
 
-**Ska.Table** - ::
+**Ska.Table** - OK ::
 
   cd ~/git/Ska.Table
+  git fetch origin
   python test.py
 
-**Ska.DBI** - ::   
+**Ska.DBI** - OK ::
 
-  su -l aca
-  ln -s $ska/data/aspect_authorization $ska/test/data/
-  cd ~/hg/Ska.DBI
-  hg pull
-  source /proj/sot/ska/test/bin/ska_envs.csh
-  
-**Quaternion** - : 
+  cd ~/git/Ska.DBI
+  git fetch origin
+  python test.py
 
-  cd ~/hg/Quaternion
+**Quaternion** - OK ::
+
+  cd ~/git/Quaternion
+  git fetch origin
   nosetests
 
-**Ska.ftp** - : 
+**Ska.ftp** - OK ::
 
   cd ~/git/Ska.ftp
+  git fetch origin
   nosetests
 
-**Ska.Numpy** - ::
+**Ska.Numpy** - OK ::
 
   cd ~/git/Ska.Numpy
+  git fetch origin
   nosetests
 
-**Ska.ParseCM** - ::
+**Ska.ParseCM** - OK ::
 
   cd ~/hg/Ska.ParseCM
+  hg incoming
   python test.py
 
-**Ska.quatutil** - ::
+**Ska.quatutil** - OK ::
 
   cd ~/hg/Ska.quatutil
+  hg incoming
   nosetests
 
-**Ska.Shell** - ::
+**Ska.Shell** - OK ::
 
   cd ~/hg/Ska.Shell
+  hg incoming
   python test.py
 
-**asciitable** - ::
+**asciitable** - OK ::
 
   cd ~/git/asciitable
   git checkout 0.8.0
-  py.test asciitable/tests
+  nosetests
 
 Installation on GRETA network (test)
 -------------------------------------
@@ -178,156 +217,47 @@ On chimchim as SOT::
   ln -s skare-${version}/x86_64-linux_CentOS-5 ./
 
 
-Installation on GRETA network (flight)
---------------------------------------
-
-Ensure that the HEAD flight distribution has been installed and tested.
-
-On ccosmos::
-
-  ska
-  version=`ska_version`  
-  cd /proj/sot/ska/dist
-  mkdir skare-${version}
-  cd skare-${version}
-  cp -rp ../arch/x86_64-linux_CentOS-5 ../arch/i686-linux_CentOS-5 ./
-
-On chimchim as SOT::
-
-  set version= ??
-  rysnc -azv aldcroft@ccosmos:/proj/sot/ska/dist/skare-${version} /proj/sot/ska/tmp/
-
-On chimchim as FOT CM::
-
-  cd /proj/sot/ska/arch
-  set version= ??
-  cp -rp /proj/sot/ska/tmp/skare-?? ./
-  rm i686-linux_CentOS-5
-  rm x86_64-linux_CentOS-5
-  ln -s skare-??/i686-linux_CentOS-5 ./
-  ln -s skare-??/x86_64-linux_CentOS-5 ./
-
-Smoke test on chimchim::
-
-  source /proj/sot/ska/arch/x86_64-linux_CentOS-5/bin/ska_envs.csh
-  ipython --pylab
-  import Ska.engarchive.fetch as fetch
-  dat = fetch.Msid('tephin', '2012:001', stat='5min')
-  dat.plot()
-
-Smoke test on snowman::
-
-  source /proj/sot/ska/arch/i686-linux_CentOS-5/bin/ska_envs.csh
-  ipython --pylab
-  import Ska.engarchive.fetch as fetch
-  dat = fetch.Msid('tephin', '2012:001', stat='5min')
-  dat.plot()
-
-One-time cleanup for a change in directory structure convention.  (Note that
-the "r100" and "r200" are fictitious, the code that generated these SVN-like
-revision numbers didn't exist for these earlier versions)::
-
-  cd /proj/sot/ska/arch
-
-  mkdir skare-0.11-r100-c0195da
-  mv x86_64-linux_CentOS-5-0.11  skare-0.11-r100-c0195da/x86_64-linux_CentOS-5
-  mv i686-linux_CentOS-5-0.11  skare-0.11-r100-c0195da/i686-linux_CentOS-5
-
-  mkdir skare-0.12-r200-0512af5
-  mv x86_64-linux_CentOS-5-0.12  skare-0.12-r200-0512af5/x86_64-linux_CentOS-5
-  mv i686-linux_CentOS-5-0.12  skare-0.12-r200-0512af5/i686-linux_CentOS-5
-
-Fallback::
-
-  cd /proj/sot/ska/arch
-  rm i686-linux_CentOS-5
-  rm x86_64-linux_CentOS-5
-  ln -s skare-0.12-r200-0512af5/i686-linux_CentOS-5 ./
-  ln -s skare-0.12-r200-0512af5/x86_64-linux_CentOS-5 ./
-  
-Install eng_archive 0.19.1 executable scripts on chimchim as SOT::
-
-  ska
-  cd ~/git/eng_archive
-  git pull origin master
-  git checkout 0.19.1
-  make install
-
-
-Test on GRETA network (flight)
---------------------------------------
-
-Test xija as SOT::
-
-  ska
-  cd ~/git/xija
-  py.test xija/tests/
-
-Test eng_archive::
-
-  ska
-  cd ~/git/eng_archive
-  py.test tests/
-
-
-Installation on GRETA network (test)
--------------------------------------
-
-On ccosmos::
-
-  # Create tarfile output for distribution to GRETA (after local testing)
-  cd ~/git/skare
-  version=`./ska_version.py`
-  cd /proj/sot/ska/test
-  tar zcf skare-${version}-test.tar.gz bin lib
-  tar zcf skare-${version}-test-build.tar.gz build/*/*/.installed
-  tar zcf skare-${version}-test-32.tar.gz arch/i686-linux_CentOS-5 
-  tar zcf skare-${version}-test-64.tar.gz arch/x86_64-linux_CentOS-5
-  mv skare-${version}*.tar.gz /proj/sot/ska/dist/
-
-On chimchim::
-
-  set version=??
-  cd /proj/sot/ska/tmp
-  scp -p aldcroft@ccosmos:/proj/sot/ska/dist/skare-${version}-test* ./
-  # then install
-
 Installation on HEAD network (flight)
 -------------------------------------
+The updates from the currently running flight Ska on HEAD are minor::
 
-Copy the skare tar distribution binary to /proj/sot/ska/dist.
-::
+  * ebf9f03 (tag: refs/tags/0.14) Update Skare version from 0.13 to 0.14
+  * d07ffa6 Add virtualenvwrapper 3.6
+  * 9cf1fb8 Update psycopg2 2.0.8 to 2.4.6 and add psycopg2.cfg and Makefile entry
+  * cd1d2ee Update ipython 0.12.1 to 0.13.1
+  * b2a9524 Update matplotlib 1.1.0 to 1.2.0
+  * 99ab4b2 Add BeautifulSoup4 4.1.3 (BeautifulSoup3 is still also available)
+  * 3d370c2 Update xija from 0.2.4 to 0.2.7
+  * 06d40f1 (refs/remotes/origin/master, refs/remotes/origin/HEAD, refs/heads/master) Update Django
+
+Installation::
 
   # Do everything as aca
   su -l aca
   ska
 
-  # Make copy of current arch dirs
-  cd /proj/sot/ska/arch
-  set version=`ska_version`
-  mkdir -p skare-${version}
-  cp -rp x86_64-linux_CentOS-5 skare-${version}/
-  # Normally do this for i686, but it doesn't exist yet for skare-0.12
-  cp -rp i686-linux_CentOS-5 skare-${version}/
+  # SKIP this for 0.14 because it is a small delta from the current Ska
+  #   # Make copy of current arch dirs
+  #   cd /proj/sot/ska/arch
+  #   set version=`ska_version`
+  #   mkdir -p skare-${version}
+  #   cp -rp x86_64-linux_CentOS-5 skare-${version}/
+  #   # Normally do this for i686, but it doesn't exist yet for skare-0.12
+  #   cp -rp i686-linux_CentOS-5 skare-${version}/
 
   # Prepare for in-place installation
   cd ~/git/skare
-  git pull
-  git log  
+  git checkout 0.14  # Note: skare-0.14 branch has post-install updates vs. 0.14 tag
+  git log
 
-  # Stop all cron jobs
-  touch /proj/sot/ska/data/task_schedule/master_heart_attack
-  # Wait at least a minute
+  # SKIP this for 0.14
+  #   # Stop all cron jobs
+  #   touch /proj/sot/ska/data/task_schedule/master_heart_attack
+  #   # Wait at least a minute
 
   # Build updated skare on ccosmos
   ./configure --prefix=/proj/sot/ska
-  make all_64
-
-  # For skare-0.13 ONLY:  (CHECK THIS for 0.14!)
-  # Need to install an update to the eng_archive "update_archive.py" script
-  # in $ska/share/eng_archive.
-  cd ~/git/eng_archive
-  make install
+  make python_modules  # Could be "make all_64" for a bigger update
 
   # Build 32-bit version on quango
   ssh aca@quango
@@ -351,7 +281,7 @@ Starcheck
   /proj/sot/ska/bin/starcheck -dir AUG0104A -fid_char fid_CHARACTERIS_JUL01 -out test.new
   diff test.7cb31b.txt test.new.txt
 
-==> 
+==> OK
 
 Eng_archive
 ^^^^^^^^^^^^
@@ -361,7 +291,7 @@ Eng_archive
 
 Follow the steps for "Regression test for new skare in /proj/sot/ska" in NOTES.test.
 
-==> 
+==> SKIP (no impact from update)
 
 Commanded states
 ^^^^^^^^^^^^^^^^^^^
@@ -370,20 +300,20 @@ Commanded states
   cd ~/git/timelines
   nosetests
 
-==> 
+==> OK
 
 Other modules
 ^^^^^^^^^^^^^
 
-- Ska.Table: 
-- Ska.DBI: 
-- Quaternion (nose): 
-- Ska.ftp (nose): 
-- Ska.Numpy: 
-- Ska.ParseCM: 
-- Ska.quatutil: 
-- Ska.Shell: 
-- asciitable: 
+- Ska.Table: OK
+- Ska.DBI: OK
+- Quaternion (nose): OK
+- Ska.ftp (nose): OK
+- Ska.Numpy: OK
+- Ska.ParseCM: OK
+- Ska.quatutil: OK
+- Ska.Shell: OK
+- asciitable: OK
 
 
 Notes
@@ -391,3 +321,85 @@ Notes
 
 REMEMBER to "make install" eng archive!
 
+psmc_check
+^^^^^^^^^^
+::
+
+  ska
+  /proj/sot/ska/psmc_check_xija --run-start='2013:003' --oflsdir=/data/mpcrit1/mplogs/2013/JAN0713/ofls \
+         --outdir=regress_flight-0.14
+
+==> Functional test looks OK
+
+
+Installation on GRETA network (flight)
+--------------------------------------
+
+Ensure that the HEAD flight distribution has been installed and tested.
+
+
+  cp -rp ../arch/x86_64-linux_CentOS-5 ../arch/i686-linux_CentOS-5 ./
+
+On chimchim as SOT::
+
+  set version=0.14-r272-ebf9f03
+  cd /proj/sot/ska/dist
+  mkdir skare-${version}
+  rysnc -azv aldcroft@ccosmos:/proj/sot/ska/arch/x86_64-linux_CentOS-5/ \
+        skare-${version}/x86_64-linux_CentOS-5/
+  rysnc -azv aldcroft@ccosmos:/proj/sot/ska/arch/i686-linux_CentOS-5/ \
+        skare-${version}/i686-linux_CentOS-5/
+
+On chimchim as FOT CM::
+
+  cd /proj/sot/ska/arch
+  set version=0.14-r272-ebf9f03
+  mkdir skare-${version}
+  ls /proj/sot/ska/dist/skare-${version}
+  rsync -av /proj/sot/ska/dist/skare-${version}/ skare-${version}/
+
+  rm i686-linux_CentOS-5
+  rm x86_64-linux_CentOS-5
+  ln -s skare-${version}/i686-linux_CentOS-5 ./
+  ln -s skare-${version}/x86_64-linux_CentOS-5 ./
+
+Smoke test on chimchim::
+
+  source /proj/sot/ska/arch/x86_64-linux_CentOS-5/bin/ska_envs.csh
+  ipython --pylab
+  import Ska.engarchive.fetch as fetch
+  dat = fetch.Msid('tephin', '2012:001', stat='5min')
+  dat.plot()
+
+Smoke test on snowman::
+
+  source /proj/sot/ska/arch/i686-linux_CentOS-5/bin/ska_envs.csh
+  ipython --pylab
+  import Ska.engarchive.fetch as fetch
+  dat = fetch.Msid('tephin', '2012:001', stat='5min')
+  dat.plot()
+
+Fallback::
+
+  set version=0.13-r241-427bb9c
+  cd /proj/sot/ska/arch
+  rm i686-linux_CentOS-5
+  rm x86_64-linux_CentOS-5
+  ln -s skare-${version}/i686-linux_CentOS-5 ./
+  ln -s skare-${version}/x86_64-linux_CentOS-5 ./
+
+
+Test on GRETA network (flight)
+--------------------------------------
+
+Test xija as SOT::
+
+  ska
+  cd ~/git/xija
+  py.test xija/tests/
+
+Test eng_archive::
+
+  ska
+  cd ~/git/eng_archive
+  py.test tests/
