@@ -24,7 +24,10 @@ python_64: activepython_64 libpython_so64 num_sci_src swig pygtk python_modules
 
 std_extras: meld git sherpaX
 
-perl: perl_modules perl_dbi
+perl: perl_from_source perl_modules perl_dbi
+
+perl_from_source:
+	./install.py $(STDCONF) --config perl_from_source.cfg
 
 # Packages in support of python modules (req'd for operational Ska RE)
 activepython_32:
