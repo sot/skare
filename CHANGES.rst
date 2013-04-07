@@ -1,6 +1,18 @@
 Ska Runtime Environment Changes
 ===========================================
 
+0.15 - TBD
+------------------
+
+- Ska.engarchive 0.21 to 0.22: Allow remote Windows access to archive (M. Baski)
+- Chandra.taco 0.1 to 0.2: Allow for reproducible ACIS FP predictions
+- Xija 0.2.7 to 0.3: Allow for different pitch bins in SolarHeat model
+- Chandra.Time 1.14 to 1.15: Fix a bug in GRETA time conversion
+- Matplotlib 1.2 to 1.2.1: bug fix release
+- Pyger 0.2.7 to 0.3.0: Add Xija MinusZ model
+- Astropy 0.2: http://astropy.org
+
+
 0.14 - 2013-Jan-13
 ------------------
 
