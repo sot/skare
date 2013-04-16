@@ -80,58 +80,113 @@ Commanded states
 
 ==> SKIP (No changes to modules that affect cmd_states)
 
-psmc_check
-^^^^^^^^^^
-::
 
-  skatest
-  cd ~/git/psmc_check
-  export ENG_ARCHIVE=/proj/sot/ska/data/eng_archive
-  python ./psmc_check.py --run-start='2013:003' --oflsdir=/data/mpcrit1/mplogs/2013/JAN0713/ofls \
-         --outdir=regress_skatest
-
-  # NEW WINDOW
-  ska
-  python ./psmc_check.py --run-start='2013:003' --oflsdir=/data/mpcrit1/mplogs/2013/JAN0713/ofls \
-         --outdir=regress_ska
-
-  diff regress_ska{,test}/validation_quant.csv
-  diff regress_ska{,test}/temperatures.dat
-
-==> SKIP (not possible in this version because flight Ska xija package doesn't support PSMC model)
-    Did confirm functionality in Ska-test and flight Ska however.
-
-Other ACIS thermal load review
+ACIS thermal load review
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Tested by ACIS ops for dpa_check, dea_check, acisfp_check (2013 Feb 11)
+Tested by TLA for dpa_check, dea_check, acisfp_check, and psmc_check (2013 April 16)
 
-::
+DPA
+~~~~~~~~
 
-  Window 1 (FLIGHT):
+Window 1 (FLIGHT)::
 
-  % ska
-  % cd /path/to/tool (e.g. ~/git/dpa_check)
+  % source /proj/sot/ska/bin/ska_envs.csh
+  % cd /pool14/aldcroft/acis_regression  # Use your own area here
   Run the tool, e.g.
-  % python ./dpa_check.py --outdir=feb0413a-flight \
+  % python /proj/sot/ska/share/dpa/dpa_check.py \
+   --outdir=dpa-feb0413a-flight \
    --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
    --run-start=2013:031
 
-  Window 2 (TEST):
+Window 2 (TEST)::
 
-  % cd /path/to/tool (e.g. ~/git/dpa_check)
-  % skatest # OR  source /proj/sot/ska/test/bin/ska_envs.csh
+  % cd /pool14/aldcroft/acis_regression  # Use your own area here
+  % source /proj/sot/ska/test/bin/ska_envs.csh
   % setenv ENG_ARCHIVE /proj/sot/ska/data/eng_archive
-  % python ./dpa_check.py --outdir=feb0413a-test \
-    --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
-    --run-start=2013:031
+  % python /proj/sot/ska/share/dpa/dpa_check.py \
+   --outdir=dpa-feb0413a-test \
+   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
+   --run-start=2013:031
 
-  DIFFS:
+DIFFS::
 
-  % diff feb0413a-flight/index.rst feb0413a-test/index.rst
-  % diff feb0413a-flight/temperatures.dat feb0413a-test/temperatures.dat
+  % diff dpa-feb0413a-flight/index.rst dpa-feb0413a-test/index.rst
+  % diff dpa-feb0413a-flight/temperatures.dat \
+         dpa-feb0413a-test/temperatures.dat
 
-  # Visually inspect the output web pages and plots in a browser
-  # for any obvious diffs
+DEA
+~~~~~~~~
+
+Window 1 (FLIGHT)::
+
+  % python /proj/sot/ska/share/dea/dea_check.py \
+   --outdir=dea-feb0413a-flight \
+   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
+   --run-start=2013:031
+
+Window 2 (TEST)::
+
+  % python /proj/sot/ska/share/dea/dea_check.py \
+   --outdir=dea-feb0413a-test \
+   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
+   --run-start=2013:031
+
+DIFFS::
+
+  % diff dea-feb0413a-flight/index.rst dea-feb0413a-test/index.rst
+  % diff dea-feb0413a-flight/temperatures.dat \
+         dea-feb0413a-test/temperatures.dat
+
+PSMC
+~~~~~~~~
+
+Window 1 (FLIGHT)::
+
+  % python /proj/sot/ska/share/psmc_check/psmc_check.py \
+   --outdir=psmc-feb0413a-flight \
+   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
+   --run-start=2013:031
+
+Window 2 (TEST)::
+
+  % python /proj/sot/ska/share/psmc_check/psmc_check.py \
+   --outdir=psmc-feb0413a-test \
+   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
+   --run-start=2013:031
+
+DIFFS::
+
+  % diff psmc-feb0413a-flight/index.rst psmc-feb0413a-test/index.rst
+  % diff psmc-feb0413a-flight/temperatures.dat \
+         psmc-feb0413a-test/temperatures.dat
+
+ACIS_FP
+~~~~~~~~
+
+Window 1 (FLIGHT)::
+
+  % python /proj/sot/ska/share/acisfp/acisfp_check.py \
+   --outdir=acisfp-feb0413a-flight \
+   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
+   --run-start=2013:031
+
+Window 2 (TEST)::
+
+  % python /proj/sot/ska/share/acisfp/acisfp_check.py \
+   --outdir=acisfp-feb0413a-test \
+   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
+   --run-start=2013:031
+
+DIFFS::
+
+  ## There are small expected diffs in both cases because of the random
+  ## sampling in the flight Earth solid angle code.  This is changed
+  ## in Skare 0.15, so subsequent regression testing will match.
+
+  % diff acisfp-feb0413a-flight/index.rst acisfp-feb0413a-test/index.rst
+  % diff acisfp-feb0413a-flight/temperatures.dat \
+         acisfp-feb0413a-test/temperatures.dat
+
 
 Other modules
 ^^^^^^^^^^^^^
@@ -196,16 +251,16 @@ Installation on GRETA network (test)
 On ccosmos::
 
   skatest
-  ska_version  # 0.14-r272-ebf9f03
+  ska_version  # 0.15-r293-e754375
 
 On quango (32-bit)::
 
   skatest
-  ska_version  # 0.14-r272-ebf9f03
+  ska_version  # 0.15-r293-e754375
 
 On chimchim as SOT::
 
-  set version=0.14-r272-ebf9f03
+  set version=0.15-r293-e754375
   mkdir /proj/sot/ska/test/arch/skare-${version}
   rysnc -av aldcroft@ccosmos:/proj/sot/ska/test/arch/x86_64-linux_CentOS-5 \
                              /proj/sot/ska/test/arch/skare-${version}/
