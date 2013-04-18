@@ -1,7 +1,7 @@
 Ska Runtime Environment Changes
 ===========================================
 
-0.15 - TBD
+0.15 - 2013-Apr-18
 ------------------
 
 - Ska.engarchive 0.21 to 0.22.1: Allow remote Windows access to archive (M. Baski)
