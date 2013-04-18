@@ -9,7 +9,8 @@ NOTE: this code copied from astropy.version and simplified.  Any license
 restrictions therein are applicable.
 """
 
-version = '0.15dev'
+version = '0.15'
+
 
 def _get_git_devstr():
     """Determines the number of revisions in this repository and returns "" if
