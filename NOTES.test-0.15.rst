@@ -458,9 +458,9 @@ On chimchim as SOT::
   set version=0.15-r293-e754375
   cd /proj/sot/ska/dist
   mkdir skare-${version}
-  rysnc -azv aldcroft@ccosmos:/proj/sot/ska/arch/x86_64-linux_CentOS-5/ \
+  rsync -azv aldcroft@ccosmos:/proj/sot/ska/arch/x86_64-linux_CentOS-5/ \
         skare-${version}/x86_64-linux_CentOS-5/
-  rysnc -azv aldcroft@ccosmos:/proj/sot/ska/arch/i686-linux_CentOS-5/ \
+  rsync -azv aldcroft@ccosmos:/proj/sot/ska/arch/i686-linux_CentOS-5/ \
         skare-${version}/i686-linux_CentOS-5/
 
 On chimchim as FOT CM::
@@ -478,7 +478,7 @@ On chimchim as FOT CM::
 
 Smoke test on chimchim::
 
-  source /proj/sot/ska/arch/x86_64-linux_CentOS-5/bin/ska_envs.csh
+  source /proj/sot/ska/bin/ska_envs.csh
   ipython --pylab
   import Ska.engarchive.fetch as fetch
   dat = fetch.Msid('tephin', '2012:001', stat='5min')
@@ -486,7 +486,7 @@ Smoke test on chimchim::
 
 Smoke test on snowman::
 
-  source /proj/sot/ska/arch/i686-linux_CentOS-5/bin/ska_envs.csh
+  source /proj/sot/ska/bin/ska_envs.csh
   ipython --pylab
   import Ska.engarchive.fetch as fetch
   dat = fetch.Msid('tephin', '2012:001', stat='5min')
@@ -505,23 +505,24 @@ Fallback::
 Test on GRETA network (flight)
 --------------------------------------
 
-Test xija as SOT::
+Test xija as SOT (32 and 64 bit)::
 
   ska
-  cd ~/git/xija
-  py.test xija/tests/
+  cd
+  ipython
+  import xija
+  xija.test()
 
-Test eng_archive::
+Test eng_archive (32 and 64 bit)::
 
   ska
-  cd ~/git/eng_archive
-  py.test tests/
+  ipython
+  import Ska.engarchive
+  Ska.engarchive.test()
 
 ESA view tool (basic functional checkout)::
 
+  # On chimchim only
+  ska
   cd
   python /proj/sot/ska/share/taco/esaview.py MAR2513
-
-
-
-
