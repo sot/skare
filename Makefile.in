@@ -24,7 +24,7 @@ python_64: activepython_64 libpython_so64 num_sci_src swig pygtk python_modules
 
 std_extras: meld git sherpaX
 
-perl: perl_from_source perl_modules perl_dbi
+perl: perl_from_source perl_modules libmysql perl_dbi
 
 perl_from_source:
 	./install.py $(STDCONF) --config perl_from_source.cfg
@@ -65,6 +65,9 @@ meld:
 
 num_libs:
 	./install.py $(STDCONF) --config num_libs.cfg 
+
+libmysql:
+	./install.py $(STDCONF) --config mysql.cfg
 
 num_libs_bin:
 	./install.py $(STDCONF) --config num_libs_bin.cfg 
