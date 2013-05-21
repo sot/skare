@@ -131,7 +131,7 @@ git-1.7.10.tar.gz
 # Perl and C
 #
 App-Env-0.25.tar.gz
-App-Env-ASCDS-0.03.tar.gz
+App-Env-ASCDS-0.04_ska.tar.gz
 App-Env-CIAO-0.12.tar.gz
 App-Env-Funtools-0.01.tar.gz
 App-Env-HEADAS-0.08.tar.gz
@@ -215,7 +215,7 @@ Readonly-1.03.tar.gz
 Regexp-Common-2.120.tar.gz
 Schedule-Cron-0.97.tar.gz
 Shell-GetEnv-0.07.tar.gz
-Ska-AGASC-3.3.tar.gz
+Ska-AGASC-3.4.tar.gz
 Ska-Convert-0.01.tar.gz
 Ska-DatabaseUtil-2.6.tar.gz
 Ska-HashTable-0.05.tar.gz
