@@ -115,6 +115,44 @@ machine as the test code.  Since the flight code needed to be run from
 CentOS 5 and the test code was running from CentOS 6, I used a
 pre-existing copy of the release outputs and checked the diffs. JMC)
 
+arc5gl
+^^^^^^^
+::
+
+  # on c3po-v
+  echo $APP_ENV_ASCDS_STR
+  /proj/cm/Release/install.linux64.DS10/config/system/.ascrc -r
+  /proj/cm/Release/install.linux64.DS10
+
+  perl /proj/sot/ska/bin/arc5gl
+
+  ARC5GL> obsid = 2121
+  ARC5GL> get asp1{fidprops}
+  Retrieved files:
+  pcadf090549491N003_fidpr1.fits.gz
+
+  unsetenv APP_ENV_ASCDS_STR
+  perl /proj/sot/ska/bin/arc5gl
+
+  ARC5GL> obsid=1426
+  ARC5GL> get asp1{fidprops}
+  Retrieved files:
+  pcadf057297145N004_fidpr1.fits.gz
+
+
+  # on fido
+  echo $SKA
+
+  /data/fido/reds10
+
+  perl /proj/sot/ska/bin/arc5gl
+
+  ARC5GL> obsid=14206
+  ARC5GL> get asp1{gsprops}
+  Retrieved files:
+  pcadf485360268N002_gspr1.fits.gz
+
+==> OK (JC)
 
 Eng_archive
 ^^^^^^^^^^^^
