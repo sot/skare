@@ -79,16 +79,35 @@ Starcheck
 ^^^^^^^^^^^^
 ::
 
-  # after manually editing /data/fido/reds10/lib/perl/App/Env/ASCDS.pm
-  # to point to the DS10 test area (effectively breaking App::Env for CentOS5)
+  # on c3po-v, testing CentOS 6
   source /data/fido/reds10/bin/ska_envs.csh
   cd ~/git/starcheck
   git checkout 10.0
+  setenv APP_ENV_ASCDS_STR \
+  "/proj/cm/Release/install.linux64.DS10/config/system/.ascrc \
+  -r /proj/cm/Release/install.linux64.DS10"
   make regress
+  mv regress/90ece962c9f598078f62b6d1c0ef74b35680dc95 regress/c3po-v_ds10
+  unsetenv APP_ENV_ASCDS_STR
+  make regress
+  mv regress/90ece962c9f598078f62b6d1c0ef74b35680dc95 regress/c3po-v_ds85
+
+  # on fido, confirming back-compatible CentOS 5
+  make regress
+  mv regress/90ece962c9f598078f62b6d1c0ef74b35680dc95 regress/fido_ds85
 
 ==> OK 
 
-(The "release" products needed to be present for this to work
+In this testing, starcheck's calls to mp_get_agasc have been tested on
+the expected platforms and DS releases:
+
+   * CentOS-6 DS10
+   * CentOS-6 DS8.5
+   * CentOS-5 DS8.5
+
+The regression outputs for each reveal no regressions.
+
+(The "release" products needed to be present for these tests work
 (starcheck/regress/release at the time), as the
 from-scratch method of regression testing calls
 /proj/sot/ska/bin/starcheck.pl to run the "flight" code from the same
