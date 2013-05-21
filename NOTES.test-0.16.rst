@@ -42,6 +42,18 @@ Install (or git pull) skare on 32-bit or 64-bit virtual CentOS-5 machine.
   ln -s x86_64-linux_CentOS-5 x86_64-linux_CentOS-6
 
 
+Additional setup detail:
+
+This release hits how the runtime environment works with the ASCDS
+environment.  As Ska.arc5gl is hard-coded to run
+/proj/sot/ska/bin/arc5gl, which is, in turn, hard-coded to call
+/proj/sot/ska/bin/perl, a local path edit was performed in the test
+skare to call arc5gl from the test perl.  The test copy of Ska.arc5gl
+was edited to call "arc5gl" instead of "/proj/sot/ska/bin/arc5gl", and
+/proj/sot/ska/bin/arc5gl was copied into $SKA/bin with an edited
+top-line to use whatever perl is in the path.
+
+
 Pre-install testing in Ska test
 ----------------------------------------
 
@@ -153,6 +165,22 @@ arc5gl
   pcadf485360268N002_gspr1.fits.gz
 
 ==> OK (JC)
+
+Aspect Pipeline
+^^^^^^^^^^^^^^^^
+
+Ran the DS10 CentOS-6 aspect pipeline on one obsid (14206) to confirm
+that it runs::
+
+  flt_run_pipe -i ./ASP_L1_STD_485360268/in1 \
+    -o ./ASP_L1_STD_485360268/out1 \
+    -r f485360268 -t asp_l1_std.ped \
+    -a "INTERVAL_START"=485360268.701222 \
+    -a "INTERVAL_STOP"=485422452.37959 \
+    -a obiroot=f14206_000N001 -a revision=1
+
+==> OK (JC)
+
 
 Eng_archive
 ^^^^^^^^^^^^
