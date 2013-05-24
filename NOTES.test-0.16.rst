@@ -193,10 +193,9 @@ Eng_archive
   Ska.engarchive.test()
 
 
-OK
+==> OK (JC)
 
-Haven't done: "Follow the steps for "Regression test for new skare (..) in $ska/dev" in NOTES.test."
-
+Regression test for new skare done by TLA.
 
 
 Commanded states
@@ -361,9 +360,10 @@ Ran 8 tests in 0.971s
   git fetch origin
   nosetests
 
-Ran 2 tests in 1.355s
-FAILED (errors=2)
-==> NOT OK (JC)
+==> OK (TLA)
+
+This test failed for JC as it is set to use TLA account information in
+the ftp test.
 
 **Ska.Numpy** -  ::
 
@@ -371,10 +371,7 @@ FAILED (errors=2)
   git fetch origin
   nosetests
 
-NameError: global name 'fastss' is not defined
-Ran 6 tests in 1.071s
-FAILED (errors=2)
-==> NOT OK (JC)
+==> OK (TLA)
 
 **Ska.ParseCM** -  ::
 
