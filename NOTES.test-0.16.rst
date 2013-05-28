@@ -10,6 +10,37 @@ for skare-0.16, based on a copy of the 0.15 version.
         --embed-stylesheet NOTES.skare-0.14.rst NOTES.skare-0.14.html
    cp NOTES.skare-0.14.html /proj/sot/ska/www/ASPECT/skare-0.14.html
 
+Changes
+-------
+
+Perl-Only
+^^^^^^^^^
+
+   * Include a source-built Perl (5.8.9)
+   * Update to patch PDL 2.4.4
+      * this fixes a broken test in PDL
+   * Update DBD::SQLite to 1.37 from 1.14
+   * Add JSON (perl) 2.54
+   * Update Date::Tie to 0.20 from 0.18
+   * Add Bit::Vector 7.2 and Carp::Clan 6.04 to skare
+      * needed by splat and previously part of system Perl
+   * Add Pod::Usage 1.61
+      * previously part of system Perl
+   * Update App::Env::ASCDS to 0.04_ska
+      * this local customization pins CentOS5 at DS8.5
+   * Update Ska::AGASC to 3.4
+      * This works with App::Env::ASCDS 0.04_ska
+
+Library and Binary Changes
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+   * Include the built xpa tools in skare
+   * Add MySQL library
+      * Needed by DBD::mysql
+   * Add expat library
+   * Include pgplot build fixes that work on CentOS 5 and CentOS 6
+      * This produces no changes in current CentOS 5 build
+
 Review
 ------
 
