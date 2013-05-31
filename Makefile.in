@@ -16,7 +16,7 @@ all_64: basedirs libs python_64 perl std_extras
 basedirs:
 	./install.py --prefix $(PREFIX) --config template.cfg
 
-libs: xtime wcstools cfitsio pgplot gsl hdf5 libyaml mpich2 gtk num_libs_bin zmq
+libs: xtime wcstools cfitsio pgplot gsl hdf5 expat libyaml mpich2 gtk num_libs_bin zmq
 
 python_32: activepython_32 libpython_so32 num_sci_src swig pygtk python_modules
 
@@ -24,7 +24,10 @@ python_64: activepython_64 libpython_so64 num_sci_src swig pygtk python_modules
 
 std_extras: meld git sherpaX
 
-perl: perl_modules perl_dbi
+perl: perl_from_source perl_modules libmysql perl_dbi
+
+perl_from_source:
+	./install.py $(STDCONF) --config perl_from_source.cfg
 
 # Packages in support of python modules (req'd for operational Ska RE)
 activepython_32:
@@ -63,8 +66,14 @@ meld:
 num_libs:
 	./install.py $(STDCONF) --config num_libs.cfg 
 
+libmysql:
+	./install.py $(STDCONF) --config mysql.cfg
+
 num_libs_bin:
 	./install.py $(STDCONF) --config num_libs_bin.cfg 
+
+expat:
+	./install.py $(STDCONF) --config expat.cfg
 
 libyaml:
 	./install.py $(STDCONF) --config libyaml.cfg 

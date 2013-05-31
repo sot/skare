@@ -317,6 +317,11 @@ for dirname, subdirs in (('build_dir', ['']),
             print 'Making dir', path
             os.makedirs(path)
 
+# Create link to system perl from arch dir if perl hasn't been built
+arch_perl = os.path.join(os.environ['prefix_arch'], 'bin/perl')
+if not os.path.exists(arch_perl):
+    os.symlink(opt.perl, arch_perl)
+
 # Get pkgs manifest and copy to prefix
 pkgs = [x.strip() for x in open(opt.manifest)]
 bash('cp -p ' + opt.manifest + ' ${prefix_arch}/')
