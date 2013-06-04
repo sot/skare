@@ -447,3 +447,82 @@ Ran 106 tests in 3.868s
 
 ==> Doesn't crash. (JC)
 
+HEAD Install Notes
+-------------------
+
+Install was delayed by issues with the perl install process:
+
+   * Astro::FITS::CFITSIO did not build without specifying libcfitsio.a
+      * This was not a problem in testing
+      * patched
+   * Install process into a pre-existing perl lib directory had not been tested.  Options included removing the ".installed" files inthe perl build directories or moving /proj/sot/ska/lib/perl and then restoring anything in there that isn't installed as part of skare.  Second option selected:
+      * mv /proj/sot/ska/lib/perl /proj/sot/ska/lib/perl_0.15
+      * do skare build of perl and modules
+      * rsync -aruvz --dry-run /proj/sot/ska/lib/perl_0.15/* /proj/sot/ska/lib/perl/
+      * rsync -aruvz /proj/sot/ska/lib/perl_0.15/* /proj/sot/ska/lib/perl/
+
+Added symbolic links to /usr/bin/perl and /usr/bin/perldoc in $SKA_ARCH_OS for the *unsupported* platforms.  Has not been tested on these solaris or debian platforms.
+
+HEAD Checkout Testing
+----------------------
+
+Starcheck
+^^^^^^^^^^
+::
+
+  cd ~/JUN1013/oflsa
+  /proj/sot/ska/bin/starcheck.pl
+
+Run test to confirm that starcheck's modules are still available in /proj/sot/ska/lib/perl.  Run on fido and c3po-v.::
+
+  cd ~/git/starcheck
+  make test
+
+Run on fido and c3po-v
+
+arc5gl
+^^^^^^^
+
+Confirmed engineering data browse and fetch on fido.
+Confirmed engineering data browse and fetch on c3po-v.
+
+timelines
+^^^^^^^^^^
+::
+
+  cd ~/git/timelines
+  nosetests timelines_test.py
+
+Done on c3po-v in sybase mode
+===> OK
+
+
+Python modules
+^^^^^^^^^^^^^^
+
+Tested on c3po-v
+::
+
+  Ska.Table (python test.py) ===> OK
+  Ska.DBI (python test.py) ===> OK
+  Quaternion (nosetests) ===> OK
+  Ska.Numpy (nosetests test.py) ===> OK
+  Ska.ParseCM (python test.py) ===> OK
+  Ska.quatutil (nosetests) ===> OK
+  asciitable (nosetests) ===> OK
+  Ska.Shell (python test.py) ===> OK (0.2 tested though not installed)
+  esaview ===> OK
+
+acisfp
+^^^^^^^
+
+Window 1 (New Flight)
+::
+
+  % python /proj/sot/ska/share/acisfp/acisfp_check.py \
+  --outdir=acisfp-feb0413a-new \
+  --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
+  --run-start=2013:031
+
+Diff'd this against flight result created during regression testing.  No diffs.
+===> OK
