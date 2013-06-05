@@ -457,7 +457,10 @@ Install was delayed by issues with the perl install process:
       * patched
    * Install process into a pre-existing perl lib directory had not been tested.  Options included removing the ".installed" files inthe perl build directories or moving /proj/sot/ska/lib/perl and then restoring anything in there that isn't installed as part of skare.  Second option selected:
       * mv /proj/sot/ska/lib/perl /proj/sot/ska/lib/perl_0.15
-      * do skare build of perl and modules
+      * (in ~aca/git/skare)
+      * make basedirs (to get the updated $SKA/bin/perl launcher)
+      * make expat (to get the one updated library)
+      * make perl (to build perl from source and all modules)
       * rsync -aruvz --dry-run /proj/sot/ska/lib/perl_0.15/* /proj/sot/ska/lib/perl/
       * rsync -aruvz /proj/sot/ska/lib/perl_0.15/* /proj/sot/ska/lib/perl/
 
