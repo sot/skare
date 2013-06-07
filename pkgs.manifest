@@ -33,7 +33,7 @@ psycopg2-2.4.6.tar.gz
 pycuda-0.93.tar.gz
 pyds9-1.0.tar.gz
 pyfits-3.0.7.tar.gz
-pyger-0.5.tar.gz
+pyger-0.6.tar.gz
 Pygments-1.5.tar.gz
 pyparsing-1.5.5.tar.gz
 Pyrex-0.9.9.tar.gz
