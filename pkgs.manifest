@@ -21,6 +21,7 @@ cosmocalc-0.1.2.tar.gz
 distribute-0.6.27.tar.gz
 Django-1.4.3.tar.gz
 docutils-0.9.tar.gz
+ecdsa-0.10.tar.gz
 egenix-mx-base-3.0.0.tar.gz
 ipython-0.13.1.tar.gz
 Jinja2-2.6.tar.gz
@@ -29,8 +30,10 @@ mpi4py-1.3.tar.gz
 numexpr-2.0.1.tar.gz
 numpy-1.6.2.tar.gz
 odict-1.0.tar.gz
+paramiko-1.12.0.tar.gz
 pexpect-2.4.tar.gz
 psycopg2-2.4.6.tar.gz
+pycrypto-2.6.1.tar.gz
 pycuda-0.93.tar.gz
 pyds9-1.0.tar.gz
 pyfits-3.0.7.tar.gz
