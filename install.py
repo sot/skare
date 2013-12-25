@@ -20,11 +20,12 @@ except NameError:
 
 VERSION = '$Id: install.py 366 2008-12-09 15:40:03Z aldcroft $'
 
+
 def get_options():
     """Get options.
     Output: (opt, args)"""
     from optparse import OptionParser
-    parser = OptionParser(usage='fetch.py [options] col_spec1 [col_spec2 ...]')
+    parser = OptionParser()
     parser.set_defaults()
 
     parser.add_option("--prefix",
@@ -47,9 +48,10 @@ def get_options():
                       help="Packages manifest",
                       )
     parser.add_option("--config",
-                      default=[],
+                      default=['env_vars'],
                       action="append",
-                      help="Installation configuration",
+                      help=("Installation config with optional module name "
+                            "<config>:<module_name>"),
                       )
     parser.add_option("--python",
                       default='/usr/bin/python',
@@ -63,7 +65,10 @@ def get_options():
                       action="store_true",
                       help="Verbose output",
                       )
-
+    parser.add_option("--no-env-vars",
+                      action="store_true",
+                      help="Do not do default env var setup prior to processing",
+                      )
     parser.add_option("--allow-errors",
                       action="store_true",
                       help="Allow build/test errors and automatically continue",
@@ -328,14 +333,30 @@ bash('cp -p ' + opt.manifest + ' ${prefix_arch}/')
 
 make_version_file(os.path.join(os.environ['prefix_arch'], 'bin', 'ska_version'))
 
+# Remove the default 'env_vars' configuration if --no-env-var specified
+if opt.no_env_vars:
+    opt.config.pop(0)
+
 # Do the modules installation by iterating over the yaml 'install' sections
 # (delimited by '---' in the yaml cfg file) in each config file
 for configfile in opt.config:
     print_header('#', 'Config file: ' + configfile)
 
+    # Config file can accept a single additional module_name arg like:
+    # <config_file>:<module_name>.  In this case only that module will
+    # be processed.
+    if ':' in configfile:
+        configfile, module_name = configfile.split(':')
+    else:
+        module_name = None
+
+    # Allow for skipping the '.cfg' extension
+    if os.path.splitext(configfile)[1] == '':
+        configfile = configfile + '.cfg'
+
     for install in yaml.load_all(open(os.path.join('cfg', configfile)).read()):
         # Save each content type installation spec for subsequent use
-        Module.installcfgs[ install.get('content', 'default') ] = install
+        Module.installcfgs[install.get('content', 'default')] = install
         # Append any 'configfiles' list elements to the list of config files to be read
         opt.config.extend(install.get('configfiles', []))
 
@@ -345,6 +366,9 @@ for configfile in opt.config:
         # Install each module for the content type
         for modcfg in install.get('modules', []):
             module = Module(modcfg, install)
+            # If module name was supplied then only process that module
+            if module_name is not None and module.name != module_name:
+                continue
             print_header('-', 'Module: ' + module.name)
             os.environ['module'] = module.name
 
