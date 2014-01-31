@@ -166,7 +166,7 @@ Compress-Raw-Zlib-2.004.tar.gz
 Compress-Zlib-2.004.tar.gz
 Config-General-2.26.tar.gz
 CXC-Envs-0.59.tar.gz
-CXC-Envs-Flight-1.99.tar.gz
+CXC-Envs-Flight-2.00.tar.gz
 CXC-SysArch-1.00.tar.gz
 Data-DumpXML-1.06.tar.gz
 Data-ParseTable-0.06.tar.gz
@@ -176,6 +176,7 @@ DBD-Sybase-1.09.tar.gz
 DBI-1.607.tar.gz
 DbiSimple-1.0.tar.gz
 Decision-Depends-0.17.tar.gz
+Digest-MD5-2.53.tar.gz
 Digest-SHA-5.32.tar.gz
 Env-Path-0.16.tar.gz
 eps2png-2.2.tar.gz
@@ -185,6 +186,7 @@ ExtUtils-F77-1.16.tar.gz
 ExtUtils-PkgConfig-1.13.tar.gz
 File-chdir-0.1002.tar.gz
 File-MMagic-1.25.tar.gz
+File-Slurp-9999.19.tar.gz
 Font-AFM-1.20.tar.gz
 GrabEnv-0.08.tar.gz
 Hash-Merge-0.07.tar.gz
@@ -196,6 +198,8 @@ HTML-Tree-3.23.tar.gz
 HTML-Format-2.04.tar.gz
 ImageMagick-5.3.0
 ImageMagick-6.2.0
+Inline-0.53.tar.gz
+Inline-Python-0.43_patch.tar.gz
 IO-All-0.35.tar.gz
 IO-Compress-Base-2.004.tar.gz
 IO-Compress-Zlib-2.004.tar.gz
@@ -213,6 +217,7 @@ Module-Signature-0.52.tar.gz
 PAR-0.90.tar.gz
 Params-Validate-0.79.tar.gz
 PAR-Dist-0.07.tar.gz
+Parse-RecDescent-1.94.tar.gz
 ParseTable-1.4.tar.gz
 PDL-2.4.4_patch.tar.gz
 PGPLOT-2.19_patch.tar.gz
@@ -234,9 +239,10 @@ Ska-Process-0.04.tar.gz
 Ska-RDB-0.03.tar.gz
 Ska-Run-0.02.tar.gz
 Ska-Web-0.02.tar.gz
-Sub-Uplevel-0.09.tar.gz
-Test-Exception-0.21.tar.gz
-Test-Simple-0.62.tar.gz
+Sub-Uplevel-0.24.tar.gz
+Test-Exception-0.32.tar.gz
+Test-Simple-1.001002.tar.gz
+Test-Warn-0.24.tar.gz
 Text-FixedLength-0.12.tar.gz
 Text-Glob-0.06.tar.gz
 Text-RecordParser-v1.2.1.tar.gz
@@ -246,6 +252,7 @@ Time-DayOfYear-0.01.tar.gz
 Time-Local-1.10.tar.gz
 Time-modules-2003.1126.tar.gz
 Time-Out-0.10.tar.gz
+Tree-DAG_Node-1.18.tgz
 Tk-804.028.tar.gz
 URI-1.37.tar.gz
 version-0.53.tar.gz
