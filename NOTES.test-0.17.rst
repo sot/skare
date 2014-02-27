@@ -1,14 +1,14 @@
-Ska Runtime Environment 0.16
+Ska Runtime Environment 0.17
 ===========================================
 
 THIS IS THE CURRENTLY-INCOMPLETE version of test / install procedures
-for skare-0.16, based on a copy of the 0.15 version.
+for skare-0.17, based on a copy of the 0.16 version.
 
 
 .. Build and install this document with:
    rst2html.py --stylesheet=/proj/sot/ska/www/ASPECT/aspect.css \
-        --embed-stylesheet NOTES.skare-0.14.rst NOTES.skare-0.14.html
-   cp NOTES.skare-0.14.html /proj/sot/ska/www/ASPECT/skare-0.14.html
+        --embed-stylesheet NOTES.skare-0.17.rst NOTES.skare-0.17.html
+   cp NOTES.skare-0.17.html /proj/sot/ska/www/ASPECT/skare-0.17.html
 
 Changes
 -------
@@ -93,10 +93,10 @@ Scientific Python
 ::
 
   python -c "import numpy; numpy.test()"
-  OK (KNOWNFAIL=5)
+  
 
   python -c "import numpy; import scipy; scipy.test()"
-  OK (KNOWNFAIL=13, SKIP=41)
+  
 
 Perl Plotting
 ^^^^^^^^^^^^^
@@ -116,7 +116,7 @@ Xija
   xija.test()
 
 4 passed, 1 skipped in 4.54 seconds
-==> OK
+==> 
 
 Starcheck
 ^^^^^^^^^^^^
@@ -139,7 +139,7 @@ Starcheck
   make regress
   mv regress/90ece962c9f598078f62b6d1c0ef74b35680dc95 regress/fido_ds85
 
-==> OK 
+==> 
 
 In this testing, starcheck's calls to mp_get_agasc have been tested on
 the expected platforms and DS releases:
@@ -195,7 +195,7 @@ arc5gl
   Retrieved files:
   pcadf485360268N002_gspr1.fits.gz
 
-==> OK (JC)
+==> 
 
 Aspect Pipeline
 ^^^^^^^^^^^^^^^^
@@ -210,7 +210,7 @@ that it runs::
     -a "INTERVAL_STOP"=485422452.37959 \
     -a obiroot=f14206_000N001 -a revision=1
 
-==> OK (JC)
+==> 
 
 
 Eng_archive
@@ -224,7 +224,7 @@ Eng_archive
   Ska.engarchive.test()
 
 
-==> OK (JC)
+==> 
 
 Regression test for new skare done by TLA.
 
@@ -246,7 +246,7 @@ Commanded states
  
   nosetests timelines_test.py
 
-==> OK (JC)
+==> 
 (ran this in both sqlite and sybase modes)
 
 
@@ -255,7 +255,7 @@ ACIS thermal load review
 
 Test for for dpa_check, dea_check, acisfp_check, and psmc_check
 
-==> OK (
+==> 
 
 DPA
 ~~~~~~~~
@@ -263,7 +263,7 @@ DPA
 Window 1 (FLIGHT on fido)::
 
   % source /proj/sot/ska/bin/ska_envs.csh
-  % cd ~/git/skare/tests/0.16/acis_regression  # Use your own area here
+  % cd ~/git/skare/tests/0.17/acis_regression  # Use your own area here
   Run the tool, e.g.
   % python /proj/sot/ska/share/dpa/dpa_check.py \
    --outdir=dpa-feb0413a-flight \
@@ -272,7 +272,7 @@ Window 1 (FLIGHT on fido)::
 
 Window 2 (TEST on c3po-v)::
 
-  % cd ~/git/skare/tests/0.16/acis_regression  # Use your own area here
+  % cd ~/git/skare/tests/0.17/acis_regression  # Use your own area here
   % source /proj/sot/ska/test/bin/ska_envs.csh
   % setenv ENG_ARCHIVE /proj/sot/ska/data/eng_archive
   % python /proj/sot/ska/share/dpa/dpa_check.py \
@@ -365,16 +365,16 @@ Other modules
   cd ~/git/Ska.Table
   python test.py
 
-Ran 4 tests in 2.280s
-==> OK (JC)
+
+==> 
 
 **Ska.DBI** -  ::
 
   cd ~/git/Ska.DBI
   python test.py
 
-Ran 56 tests in 3.858s
-==> OK (JC)
+
+==> 
 
 **Quaternion** -  ::
 
@@ -382,8 +382,8 @@ Ran 56 tests in 3.858s
   git fetch origin
   nosetests
 
-Ran 8 tests in 0.971s
-==> OK (NC)
+
+==> 
 
 **Ska.ftp** -  ::
 
@@ -391,7 +391,7 @@ Ran 8 tests in 0.971s
   git fetch origin
   nosetests
 
-==> OK (TLA)
+==> 
 
 This test failed for JC as it is set to use TLA account information in
 the ftp test.
@@ -402,7 +402,7 @@ the ftp test.
   git fetch origin
   nosetests
 
-==> OK (TLA)
+==> 
 
 **Ska.ParseCM** -  ::
 
@@ -411,7 +411,7 @@ the ftp test.
   python test.py
 
 Ran 4 tests in 25.038s
-==> OK (JC)
+==> 
 
 **Ska.quatutil** -  ::
 
@@ -420,7 +420,7 @@ Ran 4 tests in 25.038s
   nosetests
 
 Ran 4 tests in 0.497s
-==> OK (JC)
+==> 
 
 **Ska.Shell** -  ::
 
@@ -429,7 +429,7 @@ Ran 4 tests in 0.497s
   python test.py
 
 Ran 6 tests in 1.404s
-==> OK (JC)
+==> 
 
 **asciitable** -  ::
 
@@ -438,7 +438,7 @@ Ran 6 tests in 1.404s
   nosetests
 
 Ran 106 tests in 3.868s
-==> OK (JC)
+==> 
 
 **esa_view** - ::
 
@@ -497,7 +497,7 @@ timelines
   nosetests timelines_test.py
 
 Done on c3po-v in sybase mode
-===> OK
+===> 
 
 
 Python modules
@@ -506,15 +506,15 @@ Python modules
 Tested on c3po-v
 ::
 
-  Ska.Table (python test.py) ===> OK
-  Ska.DBI (python test.py) ===> OK
-  Quaternion (nosetests) ===> OK
-  Ska.Numpy (nosetests test.py) ===> OK
-  Ska.ParseCM (python test.py) ===> OK
-  Ska.quatutil (nosetests) ===> OK
-  asciitable (nosetests) ===> OK
-  Ska.Shell (python test.py) ===> OK (0.2 tested though not installed)
-  esaview ===> OK
+  Ska.Table (python test.py) ===> 
+  Ska.DBI (python test.py) ===> 
+  Quaternion (nosetests) ===> 
+  Ska.Numpy (nosetests test.py) ===> 
+  Ska.ParseCM (python test.py) ===> 
+  Ska.quatutil (nosetests) ===> 
+  asciitable (nosetests) ===> 
+  Ska.Shell (python test.py) ===>  (0.2 tested though not installed)
+  esaview ===> 
 
 acisfp
 ^^^^^^^
@@ -528,4 +528,4 @@ Window 1 (New Flight)
   --run-start=2013:031
 
 Diff'd this against flight result created during regression testing.  No diffs.
-===> OK
+===> 
