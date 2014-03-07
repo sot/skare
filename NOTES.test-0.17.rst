@@ -10,10 +10,40 @@ for skare-0.17, based on a copy of the 0.16 version.
         --embed-stylesheet NOTES.skare-0.17.rst NOTES.skare-0.17.html
    cp NOTES.skare-0.17.html /proj/sot/ska/www/ASPECT/skare-0.17.html
 
-Changes
--------
+Changes from 0.15 (current GRETA Ska flight)
+---------------------------------------------
 
-Perl-Only
+Python
+^^^^^^^^^^^
+
+===================  =======  =======  ======================================
+Package               0.15     0.17       Comment
+===================  =======  =======  ======================================
+agasc                   -      0.2
+astropy                0.2.1   0.3
+chandra_models          -      0.2
+Chandra.cmd_states    0.08.1   0.09
+Chandra.Time          1.15.1   1.16.1
+Django                1.4.3    1.6.1
+ecdsa                   -      0.10      Lucky sftp
+kadi                    -      0.7
+paramiko                -      1.12.0    Lucky sftp
+pip                     -      1.4.1
+pycrypto                -      2.6.1     Lucky sftp
+pyyaks                 0.2.1   0.3.1
+setuptools              -      2.0.2     Formerly distribute
+six                     -      1.5.2     Python 3 compatibility
+Ska.engarchive         0.22.1  0.28
+Ska.DBI                0.07    0.08
+Ska.ftp                0.02    0.04      Lucky sftp
+Ska.Matplotlib         0.10    0.11
+Ska.Shell              0.01    0.03
+Ska.tdb                0.1     0.2
+stevedore               -      0.13
+xija                   0.3.2   0.3.4
+===================  =======  =======  ======================================
+
+Perl
 ^^^^^^^^^
 
    * Include a source-built Perl (5.8.9)
