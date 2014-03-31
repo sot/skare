@@ -1,14 +1,31 @@
 Ska Runtime Environment 0.17
 ===========================================
 
-THIS IS THE CURRENTLY-INCOMPLETE version of test / install procedures
-for skare-0.17, based on a copy of the 0.16 version.
-
-
 .. Build and install this document with:
    rst2html.py --stylesheet=/proj/sot/ska/www/ASPECT/aspect.css \
-        --embed-stylesheet NOTES.skare-0.17.rst NOTES.skare-0.17.html
-   cp NOTES.skare-0.17.html /proj/sot/ska/www/ASPECT/skare-0.17.html
+        --embed-stylesheet NOTES.test-0.17.rst NOTES.test-0.17.html
+   cp NOTES.test-0.17.html /proj/sot/ska/www/ASPECT/skare-0.17.html
+
+Summary
+---------
+
+Version 0.17 of the Ska Runtime environment is a significant upgrade for the GRETA
+Ska-flight environment (64, 32 bit) and GRETA Ska-test 32-bit.  There were last updated
+around April 2013.
+
+Highlights include version 0.7 of Kadi (first production release) and version 0.28 of the
+engineering archive (many improvements since the previous 0.22.1).
+
+For the other targets (HEAD Ska-flight-64, GRETA Ska-test-64) there is no update provided
+since they have been incrementally updated and tested to correspond to verison 0.17.
+
+Testing overview
+^^^^^^^^^^^^^^^^^
+
+Pre-install testing is focused on GRETA Ska-test-32.  This is the test version of the
+flight image that will be installed for GRETA / MCC operations.  In addition the
+HEAD Ska-flight-32 image that will be directly rsynced to GRETA Ska-flight is also
+tested.
 
 Changes from 0.15 (current GRETA Ska flight)
 ---------------------------------------------
@@ -22,11 +39,11 @@ Package               0.15     0.17       Comment
 agasc                   -      0.2
 astropy                0.2.1   0.3
 chandra_models          -      0.2
-Chandra.cmd_states    0.08.1   0.09
-Chandra.Time          1.15.1   1.16.1
+Chandra.cmd_states    0.08.1   0.09      Lucky sftp
+Chandra.Time          1.15.1   1.16.1    Add plotdate format
 Django                1.4.3    1.6.1
 ecdsa                   -      0.10      Lucky sftp
-kadi                    -      0.7
+kadi                    -      0.7       First production release
 paramiko                -      1.12.0    Lucky sftp
 pip                     -      1.4.1
 pycrypto                -      2.6.1     Lucky sftp
@@ -38,38 +55,10 @@ Ska.DBI                0.07    0.08
 Ska.ftp                0.02    0.04      Lucky sftp
 Ska.Matplotlib         0.10    0.11
 Ska.Shell              0.01    0.03
-Ska.tdb                0.1     0.2
+Ska.tdb                0.1     0.2       P010 and all previous
 stevedore               -      0.13
-xija                   0.3.2   0.3.4
+xija                   0.3.2   0.3.4     Minor fixes, better testing
 ===================  =======  =======  ======================================
-
-Perl
-^^^^^^^^^
-
-   * Include a source-built Perl (5.8.9)
-   * Update to patch PDL 2.4.4
-      * this fixes a broken test in PDL
-   * Update DBD::SQLite to 1.37 from 1.14
-   * Add JSON (perl) 2.54
-   * Update Date::Tie to 0.20 from 0.18
-   * Add Bit::Vector 7.2 and Carp::Clan 6.04 to skare
-      * needed by splat and previously part of system Perl
-   * Add Pod::Usage 1.61
-      * previously part of system Perl
-   * Update App::Env::ASCDS to 0.04_ska
-      * this local customization pins CentOS5 at DS8.5
-   * Update Ska::AGASC to 3.4
-      * This works with App::Env::ASCDS 0.04_ska
-
-Library and Binary Changes
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-   * Include the built xpa tools in skare
-   * Add MySQL library
-      * Needed by DBD::mysql
-   * Add expat library
-   * Include pgplot build fixes that work on CentOS 5 and CentOS 6
-      * This produces no changes in current CentOS 5 build
 
 Review
 ------
@@ -79,19 +68,19 @@ Notes and testing were reviewed by Jean Connelly.
 Build
 -------
 
-/data/fido/reds10
+/proj/sot/ska/test
 ^^^^^^^^^^^^^^^^^^
 
-Install (or git pull) skare on 32-bit or 64-bit virtual CentOS-5 machine.
+Install skare on 32-bit or 64-bit HEAD CentOS-5 machine.
 ::
 
   # Get skare repository on virtual CentOS-5 machine
   cd ~/git/skare
   git fetch
-  git checkout centos_rc1
+  git checkout 0.17-rc1
 
   # Choose prefix (dev or flight) and configure
-  prefix=/data/fido/reds10
+  prefix=/proj/sot/ska/test
   ./configure --prefix=$prefix
 
   # Make 64 or 32-bit installation
@@ -99,45 +88,86 @@ Install (or git pull) skare on 32-bit or 64-bit virtual CentOS-5 machine.
   make all_32  # on quango
 
   # Create arch link for CentOS-6
-  cd /data/fido/reds10/arch
+  cd /proj/sot/ska/test/arch
   ln -s x86_64-linux_CentOS-5 x86_64-linux_CentOS-6
 
+/proj/sot/ska (32-bit)
+^^^^^^^^^^^^^^^^^^^^^^
+On quango as aca::
 
-Additional setup detail:
+  # Get skare repository on virtual CentOS-5 machine
+  cd ~/git/skare
+  git fetch
+  git checkout 0.17-rc1
 
-This release hits how the runtime environment works with the ASCDS
-environment.  As Ska.arc5gl is hard-coded to run
-/proj/sot/ska/bin/arc5gl, which is, in turn, hard-coded to call
-/proj/sot/ska/bin/perl, a local path edit was performed in the test
-skare to call arc5gl from the test perl.  The test copy of Ska.arc5gl
-was edited to call "arc5gl" instead of "/proj/sot/ska/bin/arc5gl", and
-/proj/sot/ska/bin/arc5gl was copied into $SKA/bin with an edited
-top-line to use whatever perl is in the path.
+  # Choose prefix (dev or flight) and configure
+  prefix=/proj/sot/ska
+  ./configure --prefix=$prefix
 
+  # Make 32-bit flight installation
+  make all_32  # on quango
 
-Pre-install testing in Ska test
-----------------------------------------
+Installation on GRETA network (test)
+-------------------------------------
 
-Scientific Python
-^^^^^^^^^^^^^^^^^
-::
+On HEAD ccosmos::
 
-  python -c "import numpy; numpy.test()"
-  
+  skatest
+  ska_version  # 0.17-r390-f1e6c5e
 
-  python -c "import numpy; import scipy; scipy.test()"
-  
+Note that 64-bit version is incrementally updated so that the link is actually
+from the previous binary install 0.15-r293::
 
-Perl Plotting
-^^^^^^^^^^^^^
-Manually ran PGPLOT and PDL "make test" in those build directories.
+  x86_64-linux_CentOS-5 -> skare-0.15-r293-e754375/x86_64-linux_CentOS-5
 
+On HEAD quango (32-bit)::
+
+  skatest
+  ska_version  # 0.17-r390-f1e6c5e
+
+On GRETA chimchim as SOT install new 32-bit binary::
+
+  set version=0.17-r390-f1e6c5e
+  mkdir /proj/sot/ska/test/arch/skare-${version}
+  rysnc -av aldcroft@ccosmos:/proj/sot/ska/test/arch/i686-linux_CentOS-5 \
+                             /proj/sot/ska/test/arch/skare-${version}/
+
+  cd /proj/sot/ska/test/arch
+  ls -l  # make sure everything looks good
+  ls -l skare-${version}
+  rm i686-linux_CentOS-5
+  ln -s skare-${version}/i686-linux_CentOS-5 ./
+
+Stub out perl, perldoc::
+
+  cd skare-${version}/i686-linux_CentOS-5/bin
+  rm perl*
+  ln -s /usr/bin/perl* ./
+
+Confirm that /proj/sot/ska/test/bin/perl and perldoc both point to /usr/bin/ versions.
+
+OK: Mar-6 TLA, JC; Mar-30 TLA
+
+Esa_view
+^^^^^^^^
+
+Check that ESA view tool passes basic functional checkout on chimchim (64).
+Not supported on 32-bit::
+
+  skatest
+  cd
+  python /proj/sot/ska/share/taco/esaview.py MAR2513
+
+OK: Mar-28 TLA
+
+Pre-install testing on GRETA in Ska test 32-bit
+-----------------------------------------------
 
 Xija
 ^^^^^^^^
 ::
 
-  source /data/fido/reds10/bin/ska_envs.csh
+  source /proj/sot/ska/test/bin/ska_envs.csh
   cd
   python
   import os
@@ -146,102 +176,15 @@ Xija
   xija.test()
 
 4 passed, 1 skipped in 4.54 seconds
-==> 
+==> OK: Mar-30 TLA
 
 Starcheck
 ^^^^^^^^^^^^
-::
+Skare 0.17 does not affect starcheck, but for completeness::
 
-  # on c3po-v, testing CentOS 6
-  source /data/fido/reds10/bin/ska_envs.csh
-  cd ~/git/starcheck
-  git checkout 10.0
-  setenv APP_ENV_ASCDS_STR \
-  "/proj/cm/Release/install.linux64.DS10/config/system/.ascrc \
-  -r /proj/cm/Release/install.linux64.DS10"
-  make regress
-  mv regress/90ece962c9f598078f62b6d1c0ef74b35680dc95 regress/c3po-v_ds10
-  unsetenv APP_ENV_ASCDS_STR
-  make regress
-  mv regress/90ece962c9f598078f62b6d1c0ef74b35680dc95 regress/c3po-v_ds85
+  /proj/sot/ska/bin/starcheck -dir /home/SOT/tmp/JAN3111C
 
-  # on fido, confirming back-compatible CentOS 5
-  make regress
-  mv regress/90ece962c9f598078f62b6d1c0ef74b35680dc95 regress/fido_ds85
-
-==> 
-
-In this testing, starcheck's calls to mp_get_agasc have been tested on
-the expected platforms and DS releases:
-
-   * CentOS-6 DS10
-   * CentOS-6 DS8.5
-   * CentOS-5 DS8.5
-
-The regression outputs for each reveal no regressions.
-
-(The "release" products needed to be present for these tests work
-(starcheck/regress/release at the time), as the
-from-scratch method of regression testing calls
-/proj/sot/ska/bin/starcheck.pl to run the "flight" code from the same
-machine as the test code.  Since the flight code needed to be run from
-CentOS 5 and the test code was running from CentOS 6, I used a
-pre-existing copy of the release outputs and checked the diffs. JMC)
-
-arc5gl
-^^^^^^^
-::
-
-  # on c3po-v
-  echo $APP_ENV_ASCDS_STR
-  /proj/cm/Release/install.linux64.DS10/config/system/.ascrc -r
-  /proj/cm/Release/install.linux64.DS10
-
-  perl /proj/sot/ska/bin/arc5gl
-
-  ARC5GL> obsid = 2121
-  ARC5GL> get asp1{fidprops}
-  Retrieved files:
-  pcadf090549491N003_fidpr1.fits.gz
-
-  unsetenv APP_ENV_ASCDS_STR
-  perl /proj/sot/ska/bin/arc5gl
-
-  ARC5GL> obsid=1426
-  ARC5GL> get asp1{fidprops}
-  Retrieved files:
-  pcadf057297145N004_fidpr1.fits.gz
-
-
-  # on fido
-  echo $SKA
-
-  /data/fido/reds10
-
-  perl /proj/sot/ska/bin/arc5gl
-
-  ARC5GL> obsid=14206
-  ARC5GL> get asp1{gsprops}
-  Retrieved files:
-  pcadf485360268N002_gspr1.fits.gz
-
-==> 
-
-Aspect Pipeline
-^^^^^^^^^^^^^^^^
-
-Ran the DS10 CentOS-6 aspect pipeline on one obsid (14206) to confirm
-that it runs::
-
-  flt_run_pipe -i ./ASP_L1_STD_485360268/in1 \
-    -o ./ASP_L1_STD_485360268/out1 \
-    -r f485360268 -t asp_l1_std.ped \
-    -a "INTERVAL_START"=485360268.701222 \
-    -a "INTERVAL_STOP"=485422452.37959 \
-    -a obiroot=f14206_000N001 -a revision=1
-
-==> 
-
+==> OK: Mar-30 TLA
 
 Eng_archive
 ^^^^^^^^^^^^
@@ -253,309 +196,178 @@ Eng_archive
   import Ska.engarchive
   Ska.engarchive.test()
 
+==> OK: Mar-30 TLA with usual regression miscompare for DP_SUN_XZ_ANGLE
 
-==> 
-
-Regression test for new skare done by TLA.
-
-
-Commanded states
-^^^^^^^^^^^^^^^^^^
+Kadi
+^^^^^^
 ::
 
-  skatest
-  cd ~/git/Chandra.cmd_states
-  python setup.py install
-  cd ~/git/cmd_states
-  make install
-  cd ~/git/timelines
-  make install
-  cd ~/git/starcheck
-  make install
-  # timelines needed Ska::Parse_CM_File from starcheck
- 
-  nosetests timelines_test.py
+  cd ~/git/kadi
+  git checkout 0.07
+  py.test kadi
 
-==> 
-(ran this in both sqlite and sybase modes)
+==> OK: Mar-30 TLA
 
+Pre-install testing on HEAD in Ska flight 32-bit
+------------------------------------------------
 
-ACIS thermal load review
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Xija
+^^^^^^^^
+::
 
-Test for for dpa_check, dea_check, acisfp_check, and psmc_check
+  source /proj/sot/ska/bin/ska_envs.csh
+  cd
+  python
+  import os
+  os.environ['ENG_ARCHIVE'] = '/proj/sot/ska/data/eng_archive'
+  import xija
+  xija.__version__  # 0.3.4
+  xija.test()
 
-==> 
+4 passed, 1 skipped in 4.54 seconds
+==> OK: Mar-30 TLA
 
-DPA
-~~~~~~~~
+Eng_archive
+^^^^^^^^^^^^
+::
 
-Window 1 (FLIGHT on fido)::
+  source /proj/sot/ska/bin/ska_envs.csh
+  cd
+  python
+  import Ska.engarchive
+  import Ska.engarchive.fetch
+  Ska.engarchive.__version__  # 0.28
+  Ska.engarchive.test()
 
-  % source /proj/sot/ska/bin/ska_envs.csh
-  % cd ~/git/skare/tests/0.17/acis_regression  # Use your own area here
-  Run the tool, e.g.
-  % python /proj/sot/ska/share/dpa/dpa_check.py \
-   --outdir=dpa-feb0413a-flight \
-   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
-   --run-start=2013:031
+==> OK: Mar-30 TLA (regression fully passes)
 
-Window 2 (TEST on c3po-v)::
+Kadi
+^^^^^^
+::
 
-  % cd ~/git/skare/tests/0.17/acis_regression  # Use your own area here
-  % source /proj/sot/ska/test/bin/ska_envs.csh
-  % setenv ENG_ARCHIVE /proj/sot/ska/data/eng_archive
-  % python /proj/sot/ska/share/dpa/dpa_check.py \
-   --outdir=dpa-feb0413a-test \
-   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
-   --run-start=2013:031
+  cd ~/git/kadi
+  git checkout 0.07
+  py.test kadi
 
-DIFFS::
+==> OK: Mar-30 TLA
 
-  % diff dpa-feb0413a-flight/index.rst dpa-feb0413a-test/index.rst
-  % diff dpa-feb0413a-flight/temperatures.dat \
-         dpa-feb0413a-test/temperatures.dat
 
-DEA
-~~~~~~~~
+Installation on GRETA network (flight)
+--------------------------------------
 
-Window 1 (FLIGHT on fido)::
+Ensure that the HEAD flight distribution has been installed and tested.
 
-  % python /proj/sot/ska/share/dea/dea_check.py \
-   --outdir=dea-feb0413a-flight \
-   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
-   --run-start=2013:031
+On GRETA chimchim as SOT::
 
-Window 2 (TEST on c3po-v)::
+  set version=0.17-r390-f1e6c5e
+  cd /proj/sot/ska/dist
+  mkdir skare-${version}
+  rsync -azv aldcroft@ccosmos:/proj/sot/ska/arch/x86_64-linux_CentOS-5/ \
+        skare-${version}/x86_64-linux_CentOS-5/
+  rsync -azv aldcroft@ccosmos:/proj/sot/ska/arch/i686-linux_CentOS-5/ \
+        skare-${version}/i686-linux_CentOS-5/
 
-  % python /proj/sot/ska/share/dea/dea_check.py \
-   --outdir=dea-feb0413a-test \
-   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
-   --run-start=2013:031
+Stub out perl, perldoc::
 
-DIFFS::
+  cd /proj/sot/ska/dist/skare-${version}/i686-linux_CentOS-5/bin
+  rm perl*
+  ln -s /usr/bin/perl* ./
 
-  % diff dea-feb0413a-flight/index.rst dea-feb0413a-test/index.rst
-  % diff dea-feb0413a-flight/temperatures.dat \
-         dea-feb0413a-test/temperatures.dat
+  cd /proj/sot/ska/dist/skare-${version}/x86_64-linux_CentOS-5/bin
+  rm perl*
+  ln -s /usr/bin/perl* ./
 
-PSMC
-~~~~~~~~
+ - Confirm that /proj/sot/ska/bin/perl and perldoc both point to /usr/bin/ versions.
 
-Window 1 (FLIGHT on fido)::
+==> OK: Mar-30 TLA
 
-  % python /proj/sot/ska/share/psmc_check/psmc_check.py \
-   --outdir=psmc-feb0413a-flight \
-   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
-   --run-start=2013:031
+On chimchim as FOT CM::
 
-Window 2 (TEST on c3po-v)::
+  cd /proj/sot/ska/arch
+  set version=0.17-r390-f1e6c5e
+  mkdir skare-${version}
+  ls /proj/sot/ska/dist/skare-${version}
+  rsync -av /proj/sot/ska/dist/skare-${version}/ skare-${version}/
 
-  % python /proj/sot/ska/share/psmc_check/psmc_check.py \
-   --outdir=psmc-feb0413a-test \
-   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
-   --run-start=2013:031
+  rm i686-linux_CentOS-5
+  rm x86_64-linux_CentOS-5
+  ln -s skare-${version}/i686-linux_CentOS-5 ./
+  ln -s skare-${version}/x86_64-linux_CentOS-5 ./
 
-DIFFS::
+Smoke test on chimchim::
 
-  % diff psmc-feb0413a-flight/index.rst psmc-feb0413a-test/index.rst
-  % diff psmc-feb0413a-flight/temperatures.dat \
-         psmc-feb0413a-test/temperatures.dat
+  source /proj/sot/ska/bin/ska_envs.csh
+  ska_version  # 0.17-r390-f1e6c5e
+  ipython --pylab
+  >>> import Ska.engarchive.fetch as fetch
+  >>> fetch.__version__
+  >>> dat = fetch.Msid('tephin', '2012:001', stat='5min')
+  >>> dat.plot()
 
-ACIS_FP
-~~~~~~~~
+  >>> from kadi import events
+  >>> print events.safe_suns.all()
 
-Window 1 (FLIGHT on fido)::
+  >>> import xija
+  >>> xija.__version__
 
-  % python /proj/sot/ska/share/acisfp/acisfp_check.py \
-   --outdir=acisfp-feb0413a-flight \
-   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
-   --run-start=2013:031
+Smoke test on snowman::
 
-Window 2 (TEST on c3po-v)::
+  source /proj/sot/ska/bin/ska_envs.csh
+  ska_version  # 0.17-r390-f1e6c5e
+  ipython --pylab
+  >>> import Ska.engarchive.fetch as fetch
+  >>> fetch.__version__
+  >>> dat = fetch.Msid('tephin', '2012:001', stat='5min')
+  >>> dat.plot()
 
-  % python /proj/sot/ska/share/acisfp/acisfp_check.py \
-   --outdir=acisfp-feb0413a-test \
-   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
-   --run-start=2013:031
+  >>> from kadi import events
+  >>> print events.safe_suns.all()
 
-DIFFS::
+  >>> import xija
+  >>> xija.__version__
 
-  % diff acisfp-feb0413a-flight/index.rst acisfp-feb0413a-test/index.rst
-  % diff acisfp-feb0413a-flight/temperatures.dat \
-         acisfp-feb0413a-test/temperatures.dat
+Fallback::
 
+  set version=0.15-r293-e754375
+  cd /proj/sot/ska/arch
+  rm i686-linux_CentOS-5
+  rm x86_64-linux_CentOS-5
+  ln -s skare-${version}/i686-linux_CentOS-5 ./
+  ln -s skare-${version}/x86_64-linux_CentOS-5 ./
 
 
-Other modules
-^^^^^^^^^^^^^
+Test on GRETA network (flight)
+--------------------------------------
 
-**Ska.Table** -  ::
+Test xija as SOT (32 and 64 bit)::
 
-  cd ~/git/Ska.Table
-  python test.py
+  ska
+  cd
+  ipython
+  import xija
+  xija.test()
 
+Test eng_archive (32 and 64 bit)::
 
-==> 
+  ska
+  ipython
+  import Ska.engarchive
+  Ska.engarchive.test()
 
-**Ska.DBI** -  ::
 
-  cd ~/git/Ska.DBI
-  python test.py
+Test kadi (32 and 64 bit)
+::
 
+  cd ~/git/kadi
+  git checkout 0.07
+  py.test kadi
 
-==> 
+==> OK: Mar-30 TLA
 
-**Quaternion** -  ::
 
-  cd ~/git/Quaternion
-  git fetch origin
-  nosetests
+ESA view tool (basic functional checkout)::
 
-
-==> 
-
-**Ska.ftp** -  ::
-
-  cd ~/git/Ska.ftp
-  git fetch origin
-  nosetests
-
-==> 
-
-This test failed for JC as it is set to use TLA account information in
-the ftp test.
-
-**Ska.Numpy** -  ::
-
-  cd ~/git/Ska.Numpy
-  git fetch origin
-  nosetests
-
-==> 
-
-**Ska.ParseCM** -  ::
-
-  cd ~/hg/Ska.ParseCM
-  hg incoming
-  python test.py
-
-Ran 4 tests in 25.038s
-==> 
-
-**Ska.quatutil** -  ::
-
-  cd ~/hg/Ska.quatutil
-  hg incoming
-  nosetests
-
-Ran 4 tests in 0.497s
-==> 
-
-**Ska.Shell** -  ::
-
-  cd ~/hg/Ska.Shell
-  hg incoming
-  python test.py
-
-Ran 6 tests in 1.404s
-==> 
-
-**asciitable** -  ::
-
-  cd ~/git/asciitable
-  git checkout 0.8.0
-  nosetests
-
-Ran 106 tests in 3.868s
-==> 
-
-**esa_view** - ::
-
+  # On chimchim only
+  ska
   cd
   python /proj/sot/ska/share/taco/esaview.py MAR2513
-
-==> Doesn't crash. (JC)
-
-HEAD Install Notes
--------------------
-
-Install was delayed by issues with the perl install process:
-
-   * Astro::FITS::CFITSIO did not build without specifying libcfitsio.a
-      * This was not a problem in testing
-      * patched
-   * Install process into a pre-existing perl lib directory had not been tested.  Options included removing the ".installed" files inthe perl build directories or moving /proj/sot/ska/lib/perl and then restoring anything in there that isn't installed as part of skare.  Second option selected:
-      * mv /proj/sot/ska/lib/perl /proj/sot/ska/lib/perl_0.15
-      * (in ~aca/git/skare)
-      * make basedirs (to get the updated $SKA/bin/perl launcher)
-      * make expat (to get the one updated library)
-      * make perl (to build perl from source and all modules)
-      * rsync -aruvz --dry-run /proj/sot/ska/lib/perl_0.15/* /proj/sot/ska/lib/perl/
-      * rsync -aruvz /proj/sot/ska/lib/perl_0.15/* /proj/sot/ska/lib/perl/
-
-Added symbolic links to /usr/bin/perl and /usr/bin/perldoc in $SKA_ARCH_OS for the *unsupported* platforms.  Has not been tested on these solaris or debian platforms.
-
-HEAD Checkout Testing
-----------------------
-
-Starcheck
-^^^^^^^^^^
-::
-
-  cd ~/JUN1013/oflsa
-  /proj/sot/ska/bin/starcheck.pl
-
-Run test to confirm that starcheck's modules are still available in /proj/sot/ska/lib/perl.  Run on fido and c3po-v.::
-
-  cd ~/git/starcheck
-  make test
-
-Run on fido and c3po-v
-
-arc5gl
-^^^^^^^
-
-Confirmed engineering data browse and fetch on fido.
-Confirmed engineering data browse and fetch on c3po-v.
-
-timelines
-^^^^^^^^^^
-::
-
-  cd ~/git/timelines
-  nosetests timelines_test.py
-
-Done on c3po-v in sybase mode
-===> 
-
-
-Python modules
-^^^^^^^^^^^^^^
-
-Tested on c3po-v
-::
-
-  Ska.Table (python test.py) ===> 
-  Ska.DBI (python test.py) ===> 
-  Quaternion (nosetests) ===> 
-  Ska.Numpy (nosetests test.py) ===> 
-  Ska.ParseCM (python test.py) ===> 
-  Ska.quatutil (nosetests) ===> 
-  asciitable (nosetests) ===> 
-  Ska.Shell (python test.py) ===>  (0.2 tested though not installed)
-  esaview ===> 
-
-acisfp
-^^^^^^^
-
-Window 1 (New Flight)
-::
-
-  % python /proj/sot/ska/share/acisfp/acisfp_check.py \
-  --outdir=acisfp-feb0413a-new \
-  --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
-  --run-start=2013:031
-
-Diff'd this against flight result created during regression testing.  No diffs.
-===> 
