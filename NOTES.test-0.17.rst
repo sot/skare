@@ -50,7 +50,7 @@ pycrypto                -      2.6.1     Lucky sftp
 pyyaks                 0.2.1   0.3.1
 setuptools              -      2.0.2     Formerly distribute
 six                     -      1.5.2     Python 3 compatibility
-Ska.engarchive         0.22.1  0.28
+Ska.engarchive        0.22.1   0.28
 Ska.DBI                0.07    0.08
 Ska.ftp                0.02    0.04      Lucky sftp
 Ska.Matplotlib         0.10    0.11
