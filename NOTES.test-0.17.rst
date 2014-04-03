@@ -294,6 +294,8 @@ On chimchim as FOT CM::
   ln -s skare-${version}/i686-linux_CentOS-5 ./
   ln -s skare-${version}/x86_64-linux_CentOS-5 ./
 
+==> OK: Apr-3 TLA and Brad Bissell
+
 Smoke test on chimchim::
 
   source /proj/sot/ska/bin/ska_envs.csh
@@ -310,6 +312,8 @@ Smoke test on chimchim::
   >>> import xija
   >>> xija.__version__
 
+==> OK: Apr-3 TLA
+
 Smoke test on snowman::
 
   source /proj/sot/ska/bin/ska_envs.csh
@@ -325,6 +329,8 @@ Smoke test on snowman::
 
   >>> import xija
   >>> xija.__version__
+
+==> OK: Apr-3 TLA
 
 Fallback::
 
@@ -347,6 +353,8 @@ Test xija as SOT (32 and 64 bit)::
   import xija
   xija.test()
 
+==> OK: Apr-3 TLA
+
 Test eng_archive (32 and 64 bit)::
 
   ska
@@ -355,6 +363,8 @@ Test eng_archive (32 and 64 bit)::
   Ska.engarchive.test()
 
 
+==> OK: Apr-3 TLA
+
 Test kadi (32 and 64 bit)
 ::
 
@@ -362,7 +372,7 @@ Test kadi (32 and 64 bit)
   git checkout 0.07
   py.test kadi
 
-==> OK: Mar-30 TLA
+==> OK: Apr-3 TLA
 
 
 ESA view tool (basic functional checkout)::
@@ -371,3 +381,5 @@ ESA view tool (basic functional checkout)::
   ska
   cd
   python /proj/sot/ska/share/taco/esaview.py MAR2513
+
+==> OK: Apr-3 TLA
