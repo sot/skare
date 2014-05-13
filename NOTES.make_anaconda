@@ -1,0 +1,13 @@
+version=1.9.2
+cd ~/tmp
+
+mkdir Anaconda-64-$version
+tar zcf Anaconda-64-$version.tar.gz Anaconda-64-$version
+mv Anaconda-64-$version.tar.gz /proj/sot/ska/pkgs/
+rmdir Anaconda-64-$version
+
+mkdir Anaconda-32-$version
+tar zcf Anaconda-32-$version.tar.gz Anaconda-32-$version
+mv Anaconda-32-$version.tar.gz /proj/sot/ska/pkgs/
+rmdir Anaconda-32-$version
+

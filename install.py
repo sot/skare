@@ -73,6 +73,10 @@ def get_options():
                       action="store_true",
                       help="Allow build/test errors and automatically continue",
                       )
+    parser.add_option("--installing-anaconda",
+                      action="store_true",
+                      help="If installing anaconda do not touch prefix_arch files",
+                      )
 
     return parser.parse_args()
 
@@ -316,22 +320,28 @@ os.environ['LD_RUN_PATH'] = os.path.join(os.environ['prefix_arch'], 'lib')
 for dirname, subdirs in (('build_dir', ['']),
                          ('prefix', ['bin', 'lib/perl/lib', 'include']),
                          ('prefix_arch', ['bin', 'lib', 'include'])):
+    if dirname == 'prefix_arch' and opt.installing_anaconda:
+        # Don't make prefix_arch and sub-dirs if installing anaconda, this must
+        # not exist for the Anaconda install script to work.
+        continue
     for subdir in subdirs:
         path = os.path.join(os.environ[dirname], subdir)
         if not os.path.exists(path):
             print 'Making dir', path
             os.makedirs(path)
 
-# Create link to system perl from arch dir if perl hasn't been built
-arch_perl = os.path.join(os.environ['prefix_arch'], 'bin/perl')
-if not os.path.exists(arch_perl):
-    os.symlink(opt.perl, arch_perl)
-
 # Get pkgs manifest and copy to prefix
 pkgs = [x.strip() for x in open(opt.manifest)]
-bash('cp -p ' + opt.manifest + ' ${prefix_arch}/')
 
-make_version_file(os.path.join(os.environ['prefix_arch'], 'bin', 'ska_version'))
+if not opt.installing_anaconda:
+    # Create link to system perl from arch dir if perl hasn't been built
+    arch_perl = os.path.join(os.environ['prefix_arch'], 'bin/perl')
+    if not os.path.exists(arch_perl):
+        os.symlink(opt.perl, arch_perl)
+
+    bash('cp -p ' + opt.manifest + ' ${prefix_arch}/')
+
+    make_version_file(os.path.join(os.environ['prefix_arch'], 'bin', 'ska_version'))
 
 # Remove the default 'env_vars' configuration if --no-env-var specified
 if opt.no_env_vars:
