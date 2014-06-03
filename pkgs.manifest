@@ -112,6 +112,7 @@ libpython_so32-2.7.tar.gz
 #
 # Misc supporting C libraries
 # 
+libg2c_bin-0.0.0.tar.gz
 mpich2-1.4.tar.gz
 yaml-0.1.4.tar.gz
 swig-1.3.40.tar.gz
