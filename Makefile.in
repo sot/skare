@@ -16,7 +16,7 @@ all_64: basedirs libs python_64 perl std_extras
 basedirs:
 	./install.py --prefix $(PREFIX) --no-env-vars --config template
 
-libs: xtime wcstools cfitsio pgplot gsl hdf5 expat libyaml mpich2 gtk num_libs_bin zmq
+libs: xtime wcstools cfitsio libg2c_bin pgplot gsl hdf5 expat libyaml mpich2 gtk num_libs_bin zmq
 
 python_32: activepython_32 libpython_so32 num_sci_src swig pygtk python_modules
 
@@ -71,6 +71,9 @@ libmysql:
 
 num_libs_bin:
 	./install.py $(STDCONF) --config num_libs_bin
+
+libg2c_bin:
+	./install.py $(STDCONF) --config libg2c_bin
 
 expat:
 	./install.py $(STDCONF) --config expat
