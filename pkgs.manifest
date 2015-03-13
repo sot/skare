@@ -72,14 +72,11 @@ Ska.tdb-0.3.tar.gz
 Ska.TelemArchive-0.08.tar.gz
 Sphinx-1.1.3.tar.gz
 Ska.quatutil-0.02.tar.gz
-stevedore-0.13.tar.gz
 tables-2.3.1.tar.gz
 tornado-2.1.1.tar.gz
 Cython-0.16.tar.gz
 Chandra.acis_esa-0.01.tar.gz
 Ska.report_ranges-0.01.tar.gz
-virtualenv-1.7.1.2.tar.gz
-virtualenvwrapper-3.6.tar.gz
 xija-0.3.4.tar.gz
 #
 # Testing and code validation
