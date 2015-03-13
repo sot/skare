@@ -85,7 +85,8 @@ xija-0.3.4.tar.gz
 # Testing and code validation
 #
 nose-1.1.2.tar.gz
-pytest-2.2.4.tar.gz
+pytest-2.6.4.tar.gz
+py-1.4.26.tar.gz
 logilab-astng-0.23.0.tar.gz
 logilab-common-0.57.1.tar.gz 
 pyflakes-0.5.0.tar.gz
