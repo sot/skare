@@ -6,6 +6,7 @@ Anaconda-64-2.2.0.tar.gz
 Anaconda-32-2.2.0.tar.gz
 agasc-0.3.1.tar.gz
 asciitable-0.8.0.tar.gz
+autopep8-1.1.1.tar.gz
 chandra_models-0.5.tar.gz
 Chandra.cmd_states-0.09.1.tar.gz
 Chandra.ECF-0.02.tar.gz
@@ -18,7 +19,9 @@ egenix-mx-base-3.0.0.tar.gz
 find_attitude-0.1.tar.gz
 kadi-0.12.1.tar.gz
 matplotlib-1.4.3-local-qhull.tar.gz
+numexpr-2.0.1.tar.gz
 pexpect-3.3.tar.gz
+pyfits-3.3.tar.gz
 pyger-0.6.tar.gz
 python-sybase-0.39-patch.tar.gz
 pyyaks-0.3.1.tar.gz
@@ -46,7 +49,6 @@ Chandra.acis_esa-0.01.tar.gz
 Ska.report_ranges-0.01.tar.gz
 xija-0.3.4.tar.gz
 #
-<<<<<<< HEAD
 # Testing and code validation
 #
 nose-1.1.2.tar.gz
@@ -58,8 +60,6 @@ pyflakes-0.5.0.tar.gz
 pylint-0.25.0.tar.gz
 pep8-1.3.3.tar.gz
 #
-=======
->>>>>>> Use Anaconda
 # gtk+ and pygtk
 # 
 atk-1.28.0.tar.gz

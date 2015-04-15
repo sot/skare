@@ -21,12 +21,14 @@ python_32: anaconda_32 basedirs python_libs_32 python_modules
 python_64: anaconda_64 basedirs python_libs_64 python_modules std_extras_64
 
 # Git is required for some version.py (this dependency should be changed!)
-python_libs_64: xtime gtk pygtk git
+python_libs_64: xtime git
+# gtk pygtk
 
 # No support for Gtk in 32-bit
 python_libs_32: xtime git
 
-std_extras_64: sherpaX meld
+std_extras_64: sherpaX
+# meld
 
 perl_libs: xtime pgplot gsl expat cfitsio
 
