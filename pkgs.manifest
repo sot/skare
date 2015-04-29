@@ -19,7 +19,7 @@ egenix-mx-base-3.0.0.tar.gz
 find_attitude-0.1.tar.gz
 kadi-0.12.1.tar.gz
 matplotlib-1.4.3-local-qhull.tar.gz
-numexpr-2.0.1.tar.gz
+numexpr-2.2.2.tar.gz
 pexpect-3.3.tar.gz
 pyfits-3.3.tar.gz
 pyger-0.6.tar.gz
@@ -64,7 +64,7 @@ pep8-1.3.3.tar.gz
 # 
 atk-1.28.0.tar.gz
 cairo-1.8.8.tar.gz
-fontconfig-2.7.3.tar.gz
+fontconfig-2.11.1_patched.tar.gz
 glib-2.22.2.tar.gz
 gtk+-2.18.3.tar.gz
 pango-1.26.0.tar.gz
@@ -170,7 +170,7 @@ HTML-Format-2.04.tar.gz
 ImageMagick-5.3.0
 ImageMagick-6.2.0
 Inline-0.53.tar.gz
-Inline-Python-0.43_patch.tar.gz
+Inline-Python-0.48_patch.tar.gz
 IO-All-0.35.tar.gz
 IO-Compress-Base-2.004.tar.gz
 IO-Compress-Zlib-2.004.tar.gz
