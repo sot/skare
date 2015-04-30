@@ -159,8 +159,16 @@ Timelines/cmd_states
 
   nosetests timelines_test.py
 
-
 ==> OK: (Ran sybase version of tests on fido, 30-Apr JC)
+
+  # Check cmd_states fetch on quango 32 bit
+  python
+  >>> from Chandra.cmd_states import fetch_states
+  >>> states = fetch_states('2011:100', '2011:101', vals=['obsid', 'simpos'])
+  >>> print states[['obsid', 'simpos']]
+  [(13255L, 75624L) (13255L, 91272L) (12878L, 91272L)]
+
+===> OK: (30-Apr JC. A little surprised that obsid displays as a Long)
 
 
 ACIS thermal load review
