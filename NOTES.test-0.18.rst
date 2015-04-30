@@ -290,15 +290,15 @@ Other modules
   git fetch origin
   python test.py
 
-==> OK:
+==> OK: (30-Apr JC, quango and fido)
 
 **Ska.DBI** -  ::
 
   cd ~/git/Ska.DBI
   git fetch origin
-  python test.py
+  py.test test.py
 
-==> OK:
+==> OK: (30-Apr JC, fido.  quango fails with "ImportError: No module named Sybase")
 
 **Quaternion** -  ::
 
@@ -306,7 +306,7 @@ Other modules
   git fetch origin
   nosetests
 
-==> OK:
+==> OK: (30-Apr JC, quango and fido)
 
 **Ska.ftp** -  ::
 
@@ -314,7 +314,7 @@ Other modules
   git fetch origin
   nosetests
 
-==> OK:
+==> Not OK:
 
 **Ska.Numpy** -  ::
 
@@ -322,31 +322,31 @@ Other modules
   git fetch origin
   nosetests
 
-==> OK:
+==> OK: (30-Apr JC, fido and quango)
 
 **Ska.ParseCM** -  ::
 
-  cd ~/hg/Ska.ParseCM
-  hg incoming
+  cd ~/git/Ska.ParseCM
+  git fetch origin
   python test.py
 
-==> OK:
+==> OK: (30-Apr JC, fido and quango)
 
 **Ska.quatutil** -  ::
 
-  cd ~/hg/Ska.quatutil
-  hg incoming
+  cd ~/git/Ska.quatutil
+  git fetch origin
   nosetests
 
-==> OK:
+==> Not OK:
 
 **Ska.Shell** -  ::
 
-  cd ~/hg/Ska.Shell
-  hg incoming
+  cd ~/git/Ska.Shell
+  git fetch origin
   python test.py
 
-==> OK:
+==> OK: (30-Apr JC, fido and quango)
 
 **asciitable** -  ::
 
@@ -354,7 +354,7 @@ Other modules
   git checkout 0.8.0
   nosetests
 
-==> OK:
+==> Fails on quango: OK on fido (30-Apr JC)
 
 **esa_view** - ::
 
