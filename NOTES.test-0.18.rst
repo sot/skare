@@ -103,15 +103,30 @@ Starcheck
 ^^^^^^^^^^^^
 ::
 
+Window 1 (DEV)::
+
   skadev
   cd ~/git/starcheck
-  git checkout master
-  git pull origin master
-  (unska; /proj/sot/ska/bin/starcheck -dir AUG0104A -fid_char fid_CHARACTERIS_JUL01 -out test-flight)
-  make test
-  diff test-flight.txt test.txt
+  git checkout 11.4
+  setenv ENG_ARCHIVE /proj/sot/ska/data/eng_archive
+  cp /proj/sot/ska/data/cmd_states/cmd_states.h5 /proj/sot/ska/dev/data/cmd_states/
+  # Run the tool, e.g.
+  ./sandbox_starcheck -dir /data/mpcrit1/mplogs/2015/APR2015/oflsa/ -out test_apr2015a
 
-==> OK:
+Window 2 (FLIGHT)::
+
+  ska
+  /proj/sot/ska/bin/starcheck -dir /data/mpcrit1/mplogs/2015/APR2015/oflsa/ -out flight_apr2015a
+
+DIFFS::
+
+  diff flight_apr2015a.txt test_apr2015a.txt
+  # And check that plots have been made
+
+==> OK (64 bit on fido, 30-Apr JC)
+==> OK (32 bit on quango, flight ska fails to load mica.aca_dark or Sybase,
+       dev ska fails to load Sybase, which is acceptable, 30-Apr-JC)
+
 
 Eng_archive
 ^^^^^^^^^^^^
