@@ -151,7 +151,7 @@ ACIS thermal load review
 
 Test for for dpa_check, dea_check, acisfp_check, and psmc_check
 
-==> OK:
+==> OK: TLA 2015-Apr-30
 
 DPA
 ~~~~~~~~
