@@ -144,21 +144,23 @@ Follow the steps for "Regression test for new skare (..) in $ska/dev" in NOTES.t
 
 ==>  OK:
 
-Commanded states
-^^^^^^^^^^^^^^^^^^
+Timelines/cmd_states
+^^^^^^^^^^^^^^^^^^^^^^^
 ::
-
   skadev
-  cd ~/git/Chandra.cmd_states
-  python setup.py install
-  cd ~/git/cmd_states
-  make install
+  # Command states scripts and module already installed in skadev
+  # cd ~/git/Chandra.cmd_states
+  # python setup.py install
+  # cd ~/git/cmd_states
+  # make install
   cd ~/git/timelines
-  make install
+  # And no need to install to test
+  # make install
 
-  nosetests
+  nosetests timelines_test.py
 
-==> OK:
+
+==> OK: (Ran sybase version of tests on fido, 30-Apr JC)
 
 
 ACIS thermal load review
