@@ -276,6 +276,8 @@ def print_header(symbol, message):
     print symbol * 40
 
 def make_version_file(version_file):
+    if os.path.exists(version_file):
+        os.remove(version_file)
     f = open(version_file, 'w')
     f.write("#!/bin/sh\n")
     f.write("echo '%s'\n" % ska_version.version)
