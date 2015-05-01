@@ -159,7 +159,7 @@ Timelines/cmd_states
 
   nosetests timelines_test.py
 
-==> OK: (Ran sybase version of tests on fido, 30-Apr JC)
+==> OK: (Ran sybase version of tests on fido, 1-May JC)
 
   # Check cmd_states fetch on quango 32 bit
   python
