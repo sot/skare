@@ -123,9 +123,9 @@ DIFFS::
   diff flight_apr2015a.txt test_apr2015a.txt
   # And check that plots have been made
 
-==> OK (64 bit on fido, 30-Apr JC)
+==> OK (64 bit on fido, 1-May JC)
 ==> OK (32 bit on quango, flight ska fails to load mica.aca_dark or Sybase,
-       dev ska fails to load Sybase, which is acceptable, 30-Apr-JC)
+       dev ska fails to load Sybase, which is acceptable, 1-May JC)
 
 
 Eng_archive
