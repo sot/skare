@@ -168,7 +168,7 @@ Timelines/cmd_states
   >>> print states[['obsid', 'simpos']]
   [(13255L, 75624L) (13255L, 91272L) (12878L, 91272L)]
 
-===> OK: (30-Apr JC. A little surprised that obsid displays as a Long)
+===> OK: (1-May JC. A little surprised that obsid displays as a Long)
 
 
 ACIS thermal load review
@@ -290,7 +290,7 @@ Other modules
   git fetch origin
   python test.py
 
-==> OK: (30-Apr JC, quango and fido)
+==> OK: (1-May JC, quango and fido)
 
 **Ska.DBI** -  ::
 
@@ -298,7 +298,7 @@ Other modules
   git fetch origin
   py.test test.py
 
-==> OK: (30-Apr JC, fido.  quango fails with "ImportError: No module named Sybase")
+==> OK: (1-May JC, fido.  quango fails with "ImportError: No module named Sybase")
 
 **Quaternion** -  ::
 
@@ -306,7 +306,7 @@ Other modules
   git fetch origin
   nosetests
 
-==> OK: (30-Apr JC, quango and fido)
+==> OK: (1-May JC, quango and fido)
 
 **Ska.ftp** -  ::
 
@@ -322,7 +322,7 @@ Other modules
   git fetch origin
   nosetests
 
-==> OK: (30-Apr JC, fido and quango)
+==> OK: (1-May JC, quango and fido)
 
 **Ska.ParseCM** -  ::
 
@@ -330,7 +330,7 @@ Other modules
   git fetch origin
   python test.py
 
-==> OK: (30-Apr JC, fido and quango)
+==> OK: (1-May JC, quango and fido)
 
 **Ska.quatutil** -  ::
 
@@ -346,7 +346,7 @@ Other modules
   git fetch origin
   python test.py
 
-==> OK: (30-Apr JC, fido and quango)
+==> OK: (1-May JC, quango and fido)
 
 **asciitable** -  ::
 
@@ -354,14 +354,14 @@ Other modules
   git checkout 0.8.0
   nosetests
 
-==> Fails on quango: OK on fido (30-Apr JC)
+==> Fails on quango: OK on fido (1-May JC)
 
 **esa_view** - ::
 
   cd
   python /proj/sot/ska/share/taco/esaview.py MAR2513
 
-==> OK:
+==> Not OK (due to Ska.quatutil errors, 1-May JC)
 
 Installation on GRETA network (dev)
 -------------------------------------
