@@ -339,7 +339,7 @@ Other modules
   git fetch origin
   nosetests
 
-==> Not OK:
+==> OK: (1-May JC, quango and fido after Ska.quatutil 0.03 update)
 
 **Ska.Shell** -  ::
 
@@ -362,7 +362,7 @@ Other modules
   cd
   python /proj/sot/ska/share/taco/esaview.py MAR2513
 
-==> Not OK (due to Ska.quatutil errors, 1-May JC)
+==> OK: (works quango and fido after Ska.quatutil 0.03 update, 1-May JC)
 
 Installation on GRETA network (dev)
 -------------------------------------
