@@ -66,6 +66,26 @@ Install skare on 32-bit or 64-bit HEAD CentOS-5 machine.
   cd /proj/sot/ska/dev/arch
   ln -s x86_64-linux_CentOS-5 x86_64-linux_CentOS-6
 
+  # Install applications that are not included in skare
+  # The two python modules need to be installed on 32 and 64 bit
+  cd ~/git/starcheck
+  git checkout 11.4
+  python setup.py install
+  make install
+
+  cd ~/git/cmd_states
+  git checkout master
+  make install
+
+  cd ~/git/mica
+  git checkout master
+  python setup.py install
+
+  cd ~/git/taco
+  git checkout master
+  make install # doc build broken, so commented out in local install
+  # Also note that the esaview wrapper is hard-coded to flight skare
+
 /proj/sot/ska (32-bit)
 ^^^^^^^^^^^^^^^^^^^^^^
 On quango as aca::
