@@ -333,9 +333,11 @@ Other modules
 
   cd ~/git/Ska.ftp
   git fetch origin
-  nosetests
+  py.test
 
-==> Not OK:
+==> OK: (1-May JC, quango and fido.  Doesn't pass tests/test_tar.py
+        which is still set up for plain ftp. The test is correctly
+        skipped by py.test.)
 
 **Ska.Numpy** -  ::
 
