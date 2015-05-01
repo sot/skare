@@ -168,7 +168,8 @@ Timelines/cmd_states
   >>> print states[['obsid', 'simpos']]
   [(13255L, 75624L) (13255L, 91272L) (12878L, 91272L)]
 
-===> OK: (1-May JC. A little surprised that obsid displays as a Long)
+===> OK: (1-May JC. A little surprised that obsid displays as a Long,
+          but this is also true on 32 bit current ska, so not a regression)
 
 
 ACIS thermal load review
