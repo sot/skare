@@ -207,6 +207,15 @@ Timelines/cmd_states
 ===> OK: (1-May JC. A little surprised that obsid displays as a Long,
           but this is also true on 32 bit current ska, so not a regression)
 
+Kadi
+^^^^
+::
+  cd ~/git/kadi
+  git checkout master
+  cd kadi/tests
+  py.test .
+  
+==> OK: kadi, quango, chimchim, gretasot (TLA 2015-May-3)
 
 ACIS thermal load review
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
