@@ -174,6 +174,8 @@ Follow the steps for "Regression test for new skare (..) in $ska/dev" in NOTES.t
 
 ==>  OK: 64-bit on kadi 2015-May-03 TLA
 
+Note: saw a few failures in 5min and daily stats due to np.mean diff.
+
 Timelines/cmd_states
 ^^^^^^^^^^^^^^^^^^^^^^^
 ::
