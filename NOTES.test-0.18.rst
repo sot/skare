@@ -154,15 +154,25 @@ Eng_archive
 
   cd
   skadev
+  export ENG_ARCHIVE=/proj/sot/ska/data/eng_archive
   python
   import Ska.engarchive
-  Ska.engarchive.test()
+  Ska.engarchive.test(args='-s')  # skip extended regr test with args='-k "not test_fetch_regr"'
+
+==> OK: (64-bit on kadi, 32-bit on quango, 2015-May-03 TLA)
+
+Note: regression tests originally failed due to (1) np.mean output differences
+      and (2) latent failures due to addition of new MSIDs.  Separate tests
+      confirmed np.mean diff of O(0.01) for 100000 samples of 32-bit value.  The
+      numpy 1.9 behavior is correct, numpy 1.6 had problems.
+
+Archive update (ingest) testing::
 
   cd ~/git/eng_archive
 
 Follow the steps for "Regression test for new skare (..) in $ska/dev" in NOTES.test.
 
-==>  OK:
+==>  OK: 64-bit on kadi 2015-May-03 TLA
 
 Timelines/cmd_states
 ^^^^^^^^^^^^^^^^^^^^^^^
