@@ -166,6 +166,10 @@ Note: regression tests originally failed due to (1) np.mean output differences
       confirmed np.mean diff of O(0.01) for 100000 samples of 32-bit value.  The
       numpy 1.9 behavior is correct, numpy 1.6 had problems.
 
+==> OK: (64-bit on chimchim, 32-bit on gretasot, 2015-May-03 TLA)
+
+Note: Usual GRETA test_fetch_regr for DP_SUN_XZ_ANGLE was seen.
+
 Archive update (ingest) testing::
 
   cd ~/git/eng_archive
