@@ -117,7 +117,7 @@ Xija
   import xija
   xija.test()
 
-==> OK:
+==> OK: 64-bit kadi, chimchim and 32-bit quango, gretasot (2015-May-3, TLA)
 
 Starcheck
 ^^^^^^^^^^^^
