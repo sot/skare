@@ -195,7 +195,7 @@ Timelines/cmd_states
 
   nosetests timelines_test.py
 
-==> OK: (Ran sybase version of tests on fido, 1-May JC)
+==> OK: (Ran sybase version of tests on fido, 5-May JC)
 
   # Check cmd_states fetch on quango 32 bit
   python
@@ -204,7 +204,7 @@ Timelines/cmd_states
   >>> print states[['obsid', 'simpos']]
   [(13255L, 75624L) (13255L, 91272L) (12878L, 91272L)]
 
-===> OK: (1-May JC. A little surprised that obsid displays as a Long,
+===> OK: (5-May JC. A little surprised that obsid displays as a Long,
           but this is also true on 32 bit current ska, so not a regression)
 
 Kadi
