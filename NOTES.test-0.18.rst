@@ -336,7 +336,7 @@ Other modules
   git fetch origin
   python test.py
 
-==> OK: (1-May JC, quango and fido)
+==> OK: (5-May JC, quango and fido)
 
 **Ska.DBI** -  ::
 
@@ -344,7 +344,7 @@ Other modules
   git fetch origin
   py.test test.py
 
-==> OK: (1-May JC, fido.  quango fails with "ImportError: No module named Sybase")
+==> OK: (5-May JC, fido.  quango fails with "ImportError: No module named Sybase")
 
 **Quaternion** -  ::
 
@@ -352,7 +352,7 @@ Other modules
   git fetch origin
   nosetests
 
-==> OK: (1-May JC, quango and fido)
+==> OK: (5-May JC, quango and fido)
 
 **Ska.ftp** -  ::
 
@@ -360,7 +360,7 @@ Other modules
   git fetch origin
   py.test
 
-==> OK: (1-May JC, quango and fido.  Doesn't pass tests/test_tar.py
+==> OK: (5-May JC, quango and fido.  Doesn't pass tests/test_tar.py
         which is still set up for plain ftp. The test is correctly
         skipped by py.test.)
 
@@ -370,7 +370,7 @@ Other modules
   git fetch origin
   nosetests
 
-==> OK: (1-May JC, quango and fido)
+==> OK: (5-May JC, quango and fido)
 
 **Ska.ParseCM** -  ::
 
@@ -378,7 +378,7 @@ Other modules
   git fetch origin
   python test.py
 
-==> OK: (1-May JC, quango and fido)
+==> OK: (5-May JC, quango and fido)
 
 **Ska.quatutil** -  ::
 
@@ -386,7 +386,7 @@ Other modules
   git fetch origin
   nosetests
 
-==> OK: (1-May JC, quango and fido after Ska.quatutil 0.03 update)
+==> OK: (5-May JC, quango and fido after Ska.quatutil 0.03 update)
 
 **Ska.Shell** -  ::
 
@@ -394,7 +394,7 @@ Other modules
   git fetch origin
   python test.py
 
-==> OK: (1-May JC, quango and fido)
+==> OK: (5-May JC, quango and fido)
 
 **asciitable** -  ::
 
@@ -402,14 +402,14 @@ Other modules
   git checkout 0.8.0
   nosetests
 
-==> Fails on quango: OK on fido (1-May JC)
+==> Fails on quango: OK on fido (5-May JC)
 
 **esa_view** - ::
 
   cd
   python /proj/sot/ska/share/taco/esaview.py MAR2513
 
-==> OK: (works quango and fido after Ska.quatutil 0.03 update, 1-May JC)
+==> OK: (works quango and fido after Ska.quatutil 0.03 update, 5-May JC)
 
 Installation on GRETA network (dev)
 -------------------------------------
