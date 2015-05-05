@@ -21,11 +21,11 @@ python_32: anaconda_32 basedirs python_libs_32 python_modules
 python_64: anaconda_64 basedirs python_libs_64 python_modules std_extras_64
 
 # Git is required for some version.py (this dependency should be changed!)
-python_libs_64: xtime git
+python_libs_64: hdf5 xtime git
 # gtk pygtk
 
 # No support for Gtk in 32-bit
-python_libs_32: xtime git
+python_libs_32: hdf5 xtime git
 
 std_extras_64: sherpaX
 # meld
@@ -42,6 +42,9 @@ anaconda_32:
 
 anaconda_64:
 	./install.py --prefix $(PREFIX) --no-env-vars --installing-anaconda --config anaconda-64
+
+hdf5:
+	./install.py $(STDCONF) --config hdf5
 
 gtk:
 	./install.py $(STDCONF) --config gtk
