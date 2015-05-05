@@ -66,8 +66,12 @@ Install skare on 32-bit or 64-bit HEAD CentOS-5 machine.
   cd /proj/sot/ska/dev/arch
   ln -s x86_64-linux_CentOS-5 x86_64-linux_CentOS-6
 
+  # Fix libg2c linking as needed
+  # Remove libg2c.so link and relink to Ska libg2c.so.0
+
   # Install applications that are not included in skare
   # The two python modules need to be installed on 32 and 64 bit
+  source /proj/sot/ska/dev/bin/ska_envs.sh
   cd ~/git/starcheck
   git checkout 11.4
   python setup.py install
