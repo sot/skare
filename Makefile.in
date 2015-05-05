@@ -30,7 +30,7 @@ python_libs_32: hdf5 xtime git
 std_extras_64: sherpaX
 # meld
 
-perl_libs: xtime pgplot gsl expat cfitsio
+perl_libs: libg2c_bin xtime pgplot gsl expat cfitsio
 
 perl: perl_libs perl_from_source perl_modules libmysql perl_dbi
 
@@ -66,6 +66,9 @@ psycopg2:
 
 wcstools:
 	./install.py $(STDCONF) --config wcstools
+
+libg2c_bin:
+	./install.py $(STDCONF) --config libg2c_bin
 
 xtime:
 	./install.py $(STDCONF) --config xtime
