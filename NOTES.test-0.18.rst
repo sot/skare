@@ -32,14 +32,72 @@ Python
 ===================  =======  =======  ======================================
 Package               0.17     0.18       Comment
 ===================  =======  =======  ======================================
-  ...                  ...     ...        ....
+astropy              0.2      1.0.2
+atk                  1.28.0   ---      gtk support removed
+atlas                3.8.2    ---      local numerical libraries not needed
+autopep8             0.8.0    1.1.1
+beautiful soup       3.2.1    4.3.2
+cairo                1.8.8    1.12.18
+configobj            4.7.2    5.0.6
+cython               0.16     0.22
+dateutil             1.5      2.1
+fftw                 3.2.1    ---      local numerical libraries not needed
+fontconfig           2.7.3    2.11.1
+glib                 2.22.2   ---      gtk support removed
+gtk+                 2.18.3   ---      gtk support removed
+h5py                 ---      2.4.0
+ipython              0.13.1   3.1.0
+jinja2               2.6      2.7.3
+lapack               3.1.1    ---      local numerical libraries not needed
+libpng               1.2.5    1.5.13   libpng 1.2.5 was from CentOS not skare
+matplotlib           1.2.1    1.4.3
+meld                 1.5.1    ---
+mpich2               1.4      1.4.1p1
+nose                 1.1.2    1.3.4
+numexpr              2.0.1    2.2.2
+numpy                1.6.2    1.9.2
+pandas               ---      0.15.2
+pango                1.26.0   ---      gtk support removed
+paramiko             1.12.0   1.15.2
+pep8                 1.3.3    1.6.2
+pexpect              2.4      3.3
+pip                  1.4.1    6.0.8
+ply                  ---      3.4
+psutil               ---      2.2.1
+pycairo              1.8.8    ---      gtk support removed
+pyfits               3.0.7    3.3
+pyflakes             0.5.0    0.8.1
+pygments             1.5      2.0.2
+pygobject            2.20.0   ---      gtk support removed
+pygtk                2.16.0   ---      gtk support removed
+pylint               0.25     ---
+pyparsing            1.5.5    2.0.3
+python               2.7.1    2.7.9
+pyyaml               3.10     3.11
+pyzmq                2.1.11   14.5.0
+requests             1.0.3    2.6.0
+runipy               ---      0.1.3
+scipy                0.10.1   0.15.1
+sherpa               4.4      4.7
+six                  1.5.2    1.9.0
+sphinx               1.1.3    1.2.3
+swig                 1.3.40   ---
+zeromq               2.1.11   4.0.4
+
+Chandra.Time         1.16.1   3.18
+Ska.engarchive       0.36     0.36.2
+Ska.quatutil         0.02     0.03
+agasc                0.20     0.30
+chandra_models       0.4      0.5
+xija                 0.3.4    0.4
+pyyaks               0.3.1    3.3.3
+
 ===================  =======  =======  ======================================
 
 Review
 ------
 
-Testing was performed by Tom Aldcroft and Jean Connelly.  Each reviewed the
-work of the other.
+Notes and testing were reviewed by Jean Connelly.
 
 Build
 -------
@@ -122,7 +180,7 @@ Xija
   import xija
   xija.test()
 
-==> OK: 64-bit kadi, chimchim and 32-bit quango, gretasot (2015-May-5, TLA)
+==> OK: 64-bit kadi, chimchim and 32-bit quango, gretasot (2015-May-3, TLA)
 
 Starcheck
 ^^^^^^^^^^^^
@@ -148,7 +206,7 @@ DIFFS::
   diff flight_apr2015a.txt test_apr2015a.txt
   # And check that plots have been made
 
-==> OK (64 bit on fido, 5-May JC; 64-bit on chimchim 5-May TLA/JC)
+==> OK (64 bit on fido, 5-May JC)
 ==> OK (32 bit on quango, flight ska fails to load mica.aca_dark or Sybase,
        dev ska fails to load Sybase, which is acceptable, 5-May JC)
 
@@ -164,14 +222,14 @@ Eng_archive
   import Ska.engarchive
   Ska.engarchive.test(args='-s')  # skip extended regr test with args='-k "not test_fetch_regr"'
 
-==> OK: (64-bit on kadi, chimchim, 32-bit on gretasot, 2015-May-05 TLA)
+==> OK: (64-bit on kadi, 32-bit on quango, 2015-May-03 TLA)
 
 Note: regression tests originally failed due to (1) np.mean output differences
       and (2) latent failures due to addition of new MSIDs.  Separate tests
       confirmed np.mean diff of O(0.01) for 100000 samples of 32-bit value.  The
       numpy 1.9 behavior is correct, numpy 1.6 had problems.
 
-==> OK: (64-bit on chimchim, 32-bit on gretasot, 2015-May-05 TLA)
+==> OK: (64-bit on chimchim, 32-bit on gretasot, 2015-May-03 TLA)
 
 Note: Usual GRETA test_fetch_regr for DP_SUN_XZ_ANGLE was seen.
 
@@ -181,7 +239,7 @@ Archive update (ingest) testing::
 
 Follow the steps for "Regression test for new skare (..) in $ska/dev" in NOTES.test.
 
-==>  OK: 
+==>  OK: 64-bit on kadi 2015-May-03 TLA
 
 Note: saw a few failures in 5min and daily stats due to np.mean diff.
 
@@ -220,7 +278,7 @@ Kadi
   cd kadi/tests
   py.test .
   
-==> OK: kadi, chimchim, gretasot (TLA 2015-May-5)
+==> OK: kadi, quango, chimchim, gretasot (TLA 2015-May-3)
 
 ACIS thermal load review
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -341,7 +399,7 @@ Other modules
   git fetch origin
   python test.py
 
-==> OK: (5-May JC, quango and fido; 5-May TLA, chimchim)
+==> OK: (5-May JC, quango and fido)
 
 **Ska.DBI** -  ::
 
@@ -349,8 +407,7 @@ Other modules
   git fetch origin
   py.test test.py
 
-==> OK: (5-May JC, fido.  quango fails with "ImportError: No module named Sybase"
-         5-May TLA, chimchim (expected failures related to Sybase))
+==> OK: (5-May JC, fido.  quango fails with "ImportError: No module named Sybase")
 
 **Quaternion** -  ::
 
@@ -358,7 +415,7 @@ Other modules
   git fetch origin
   nosetests
 
-==> OK: (5-May JC, quango and fido; 5-May TLA, chimchim)
+==> OK: (5-May JC, quango and fido)
 
 **Ska.ftp** -  ::
 
@@ -368,8 +425,7 @@ Other modules
 
 ==> OK: (5-May JC, quango and fido.  Doesn't pass tests/test_tar.py
         which is still set up for plain ftp. The test is correctly
-        skipped by py.test.
-        5-May TLA, chimchim)
+        skipped by py.test.)
 
 **Ska.Numpy** -  ::
 
@@ -377,7 +433,7 @@ Other modules
   git fetch origin
   nosetests
 
-==> OK: (5-May JC, quango and fido; 5-May TLA, chimchim)
+==> OK: (5-May JC, quango and fido)
 
 **Ska.ParseCM** -  ::
 
@@ -385,8 +441,7 @@ Other modules
   git fetch origin
   python test.py
 
-==> OK: (5-May JC, quango and fido; 5-May TLA, chimchim (expected fails 
-         from missing files))
+==> OK: (5-May JC, quango and fido)
 
 **Ska.quatutil** -  ::
 
@@ -394,8 +449,7 @@ Other modules
   git fetch origin
   nosetests
 
-==> OK: (5-May JC, quango and fido after Ska.quatutil 0.03 update;
-         5-May TLA, chimchim)
+==> OK: (5-May JC, quango and fido after Ska.quatutil 0.03 update)
 
 **Ska.Shell** -  ::
 
@@ -403,7 +457,7 @@ Other modules
   git fetch origin
   python test.py
 
-==> OK: (5-May JC, quango and fido; 5-May TLA, chimchim)
+==> OK: (5-May JC, quango and fido)
 
 **asciitable** -  ::
 
@@ -411,15 +465,14 @@ Other modules
   git checkout 0.8.0
   nosetests
 
-==> Fails on quango: OK on fido (5-May JC); chimchim (5-May TLA)
+==> Fails on quango: OK on fido (5-May JC)
 
 **esa_view** - ::
 
   cd
   python /proj/sot/ska/share/taco/esaview.py MAR2513
 
-==> OK: (works quango and fido after Ska.quatutil 0.03 update, 5-May JC;
-      5-May TLA, chimchim)
+==> OK: (works quango and fido after Ska.quatutil 0.03 update, 5-May JC)
 
 Installation on GRETA network (dev)
 -------------------------------------
