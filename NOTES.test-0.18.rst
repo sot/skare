@@ -32,15 +32,16 @@ Packages
 ===================  =======  =======  ======================================
 Package               0.17     0.18       Comment
 ===================  =======  =======  ======================================
-astropy              0.2      1.0.2
+astropy              0.3      1.0.2
 atk                  1.28.0   ---      gtk support removed
 atlas                3.8.2    ---      local numerical libraries not needed
-autopep8             0.8.0    1.1.1
+autopep8             0.8.7    1.1.1
 beautiful soup       3.2.1    4.3.2
 cairo                1.8.8    1.12.18
 configobj            4.7.2    5.0.6
 cython               0.16     0.22
 dateutil             1.5      2.1
+decorator            ---      3.4.0
 fftw                 3.2.1    ---      local numerical libraries not needed
 fontconfig           2.7.3    2.11.1
 glib                 2.22.2   ---      gtk support removed
@@ -65,6 +66,7 @@ pip                  1.4.1    6.0.8
 ply                  ---      3.4
 psutil               ---      2.2.1
 pycairo              1.8.8    ---      gtk support removed
+pyds9                1.0      ---
 pyfits               3.0.7    3.3
 pyflakes             0.5.0    0.8.1
 pygments             1.5      2.0.2
@@ -79,18 +81,33 @@ requests             1.0.3    2.6.0
 runipy               ---      0.1.3
 scipy                0.10.1   0.15.1
 sherpa               4.4      4.7
+stevedore            0.13     ---
 six                  1.5.2    1.9.0
 sphinx               1.1.3    1.2.3
 swig                 1.3.40   ---
+virtualenv           1.7.1.2  ---
+virtualenvwrapper    3.6      ---
 zeromq               2.1.11   4.0.4
 
+Chandra.cmd_states   0.09     0.09.1
+Chandra.Maneuver     0.04     0.05
 Chandra.Time         1.16.1   3.18
-Ska.engarchive       0.36     0.36.2
+Ska.engarchive       0.28     0.36.2
+Ska.Matplotlib       0.11     0.11.1
 Ska.quatutil         0.02     0.03
+Ska.tdb              0.2      0.3
 agasc                0.20     0.30
-chandra_models       0.4      0.5
-xija                 0.3.4    0.4
+chandra_models       0.2      0.5
+kadi                 0.7      0.12.1
 pyyaks               0.3.1    3.3.3
+ska_path             ---      0.1
+xija                 0.3.4    0.4
+
+CXC::Envs::Flight    1.99     2.01
+Ska::AGASC           3.4      3.4.1
+Inline::Python       0.43     0.48dev
+
+
 
 ===================  =======  =======  ======================================
 
