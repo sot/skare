@@ -129,7 +129,7 @@ Astro-Cosmology-0.90.tar.gz
 BayesianBlocks-0.02.tar.gz
 cfitsio3020.tar.gz
 CFITSIO-Simple-0.10.tar.gz
-Chandra-Time-0.09.tar.gz
+Chandra-Time-0.09.1.tar.gz
 Chandra-Tools-dmcoords-0.28.tar.gz
 Chandra-Tools-ECF-0.01.tar.gz
 Class-Accessor-0.30.tar.gz
@@ -240,7 +240,7 @@ TimeDate-1.16.tar.gz
 wcstools-3.7.8.tar.gz
 XML-Simple-2.18.tar.gz
 XML-Parser-2.36.tar.gz
-XTime-1.2.0.tar.gz
+XTime-1.2.1.tar.gz
 Ska-RunAsp-0.03.tar.gz
 CXC-Archive-2.2.0_ska.tar.gz
 Capture-Tiny-0.15.tar.gz
