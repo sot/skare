@@ -491,6 +491,228 @@ Other modules
 
 ==> OK: (works quango and fido after Ska.quatutil 0.03 update, 5-May JC)
 
+
+
+Post install testing in HEAD /proj/sot/ska
+-------------------------------------------
+
+Xija
+^^^^^^^^
+::
+
+  ska
+  cd
+  python
+  import os
+  import xija
+  xija.test()
+
+==> OK: 64-bit fido (2015-Jun-3, JC)
+==> minusz.npz failure on 32-bit quango (2015-Jun-3, JC)
+
+Starcheck
+^^^^^^^^^^^^
+::
+
+  ska
+  /proj/sot/ska/bin/starcheck -dir /data/mpcrit1/mplogs/2015/APR2015/oflsa/ -out new_flight_apr2015a
+
+DIFFS::
+
+  # diff the test version we made in dev testing
+  diff test_apr2015a.txt new_flight_apr2015a.txt
+  # and diff the flight version that was actually used
+  diff /data/mpcrit1/mplogs/2015/APR2015/oflsa/starcheck.txt new_flight_apr2015a.txt
+  # And check that plots have been made
+
+==> OK (64 bit on fido, 3-Jun JC)
+==> OK (32 bit on quango, fails to load Sybase which is acceptable, 3-Jun JC)
+
+
+Eng_archive
+^^^^^^^^^^^^
+::
+
+  cd
+  ska
+  python
+  import Ska.engarchive
+  Ska.engarchive.test(args='-s')  # skip extended regr test with args='-k "not test_fetch_regr"'
+
+==> OK: (64-bit on fido 2015-Jun-3 JC)
+
+
+Timelines/cmd_states
+^^^^^^^^^^^^^^^^^^^^^^^
+::
+  ska
+  # Command states scripts and module already installed in skadev
+  # cd ~/git/Chandra.cmd_states
+  # python setup.py install
+  # cd ~/git/cmd_states
+  # make install
+  cd ~/git/timelines
+  # And no need to install to test
+  # make install
+
+  nosetests timelines_test.py
+
+==> OK: (Ran sybase version of tests on fido, 3-Jun JC)
+
+  # Check cmd_states fetch on quango 32 bit
+  python
+  >>> from Chandra.cmd_states import fetch_states
+  >>> states = fetch_states('2011:100', '2011:101', vals=['obsid', 'simpos'])
+  >>> print states[['obsid', 'simpos']]
+  [(13255L, 75624L) (13255L, 91272L) (12878L, 91272L)]
+
+===> OK: (3-Jun JC. A little surprised that obsid displays as a Long,
+          but this is also true on 32 bit current ska, so not a regression)
+
+Kadi
+^^^^
+::
+  cd ~/git/kadi
+  git checkout master
+  cd kadi/tests
+  py.test .
+
+==> OK: fido, quango (3-Jun JC)
+
+ACIS thermal load review
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+These were basically run as "run" tests, not diff/regression tests for dpa_check, dea_check, acisfp_check, and
+psmc_check.  I did diff against TLA's "test" output from DEV testing in his working skare directory.
+Confirmed no errors and plots made for each tool.
+
+==> OK: JC 2015-Jun-03
+
+DPA
+~~~~~~~~
+
+
+  % ska
+  % cd ~/git/skare/tests/0.18_install/acis_regression  # Use your own area here
+  Run the tool, e.g.
+  % python /proj/sot/ska/share/dpa/dpa_check.py \
+   --outdir=dpa-feb0413a-flight \
+   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
+   --run-start=2013:031
+
+DEA
+~~~~~~~~
+
+  % python /proj/sot/ska/share/dea/dea_check.py \
+   --outdir=dea-feb0413a-flight \
+   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
+   --run-start=2013:031
+
+
+PSMC
+~~~~~~~~
+
+  % python /proj/sot/ska/share/psmc_check/psmc_check.py \
+   --outdir=psmc-feb0413a-flight \
+   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
+   --run-start=2013:031
+
+ACIS_FP
+~~~~~~~~
+
+  % python /proj/sot/ska/share/acisfp/acisfp_check.py \
+   --outdir=acisfp-feb0413a-flight \
+   --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
+   --run-start=2013:031
+
+
+
+Other modules
+^^^^^^^^^^^^^
+
+**Ska.Table** -  ::
+
+  cd ~/git/Ska.Table
+  git fetch origin
+  python test.py
+
+==> OK: (3-Jun JC, quango and fido)
+
+**Ska.DBI** -  ::
+
+  cd ~/git/Ska.DBI
+  git fetch origin
+  py.test test.py
+
+==> OK: (3-Jun JC, fido.  quango fails with "ImportError: No module named Sybase")
+
+**Quaternion** -  ::
+
+  cd ~/git/Quaternion
+  git fetch origin
+  nosetests
+
+==> OK: (3-Jun JC, quango and fido)
+
+**Ska.ftp** -  ::
+
+  cd ~/git/Ska.ftp
+  git fetch origin
+  py.test
+
+==> OK: (3-Jun JC, quango and fido.  Doesn't pass tests/test_tar.py
+        which is still set up for plain ftp. The test is correctly
+        skipped by py.test.)
+
+**Ska.Numpy** -  ::
+
+  cd ~/git/Ska.Numpy
+  git fetch origin
+  nosetests
+
+==> OK: (3-Jun JC, quango and fido)
+
+**Ska.ParseCM** -  ::
+
+  cd ~/git/Ska.ParseCM
+  git fetch origin
+  python test.py
+
+==> OK: (3-Jun JC, quango and fido)
+
+**Ska.quatutil** -  ::
+
+  cd ~/git/Ska.quatutil
+  git fetch origin
+  nosetests
+
+==> OK: (3-Jun JC, quango and fido after Ska.quatutil 0.03 update)
+
+**Ska.Shell** -  ::
+
+  cd ~/git/Ska.Shell
+  git fetch origin
+  python test.py
+
+==> OK: (3-Jun JC, quango and fido)
+
+**asciitable** -  ::
+
+  cd ~/git/asciitable
+  git checkout 0.8.0
+  nosetests
+
+==> Fails on quango: OK on fido (3-Jun JC)
+
+**esa_view** - ::
+
+  cd
+  python /proj/sot/ska/share/taco/esaview.py MAR2513
+
+==> OK: (works quango and fido after Ska.quatutil 0.03 update, 3-Jun-2015 JC)
+
+
+
 Installation on GRETA network (dev)
 -------------------------------------
 
