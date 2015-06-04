@@ -9,7 +9,7 @@ NOTE: this code copied from astropy.version and simplified.  Any license
 restrictions therein are applicable.
 """
 
-version = '0.18dev'
+version = '0.18'
 
 
 def _get_git_devstr():
