@@ -508,7 +508,10 @@ Xija
   xija.test()
 
 ==> OK: 64-bit fido (2015-Jun-3, JC)
-==> minusz.npz failure on 32-bit quango (2015-Jun-3, JC)
+==> OK: minusz.npz failure on 32-bit quango, problem with test not xija
+        Test needed a local xija checkout.  Worked on 64 bit because of 
+        incorrectly-writeable arch site-packages dir on 64-bit arch
+        (2015-Jun-3, JC and TLA)
 
 Starcheck
 ^^^^^^^^^^^^
