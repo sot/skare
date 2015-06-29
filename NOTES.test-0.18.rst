@@ -762,38 +762,95 @@ Installation on GRETA network (flight)
 
 Ensure that the HEAD flight distribution has been installed and tested.
 
-On GRETA chimchim as SOT (chimchim required for local disk access)::
+On or before live-install day as SOT user::
+
+  # copy virtual-box built "candidate" directory into a temp directory on chimchim disk
+  cd /proj/sot/ska/tmp
+  rsync -av jeanconn@ccosmos:/proj/sot/ska/ska_0.18_candidate .
+  # this has previously been done in /proj/sot/ska/dist and that would be fine as well
+
+
+On chimchim as FOT CM (chimchim required for local disk access for copy)::
 
   set version=0.18-r460-06aafd2
-  cd /proj/sot/ska/tmp/ska_0.18_candidates
-  mkdir skare-${version}
-  rsync -azv aldcroft@ccosmos:/proj/sot/ska/arch/x86_64-linux_CentOS-5/ \
-        skare-${version}/x86_64-linux_CentOS-5/
-  rsync -azv aldcroft@ccosmos:/proj/sot/ska/arch/i686-linux_CentOS-5/ \
-        skare-${version}/i686-linux_CentOS-5/
-
-chgrp -R fotcm skare-${version}
-chmod g+w -R skare-${version}
-
-On chimchim as FOT CM::
-
   cd /proj/sot/ska/arch
-  set version=0.18-r442-7a8c037
   mkdir skare-${version}
-  ls /proj/sot/ska/dist/skare-${version}
-  rsync -av /proj/sot/ska/dist/skare-${version}/ skare-${version}/
 
+  rsync -av /proj/sot/ska/tmp/ska_0.18_candidate/arch skare-${version}
+  # change these from 'pegasus' group
+  chgrp -R fotcm skare-${version}
+  chmod g+w -R skare-${version}
+
+  # do the actual linking
   rm i686-linux_CentOS-5
   rm x86_64-linux_CentOS-5
   ln -s skare-${version}/i686-linux_CentOS-5 ./
   ln -s skare-${version}/x86_64-linux_CentOS-5 ./
-  
+
+
+On GRETA chimchim as SOT
+
+Complete non-arch install::
+
+  cd /proj/sot/ska/lib
+  mv perl perl_pre_0.18
+  cd /proj/sot/ska/tmp/ska_0.18_candidate
+  rsync -av --dry-run lib/perl /proj/sot/ska/lib/
+  rsync -av lib/perl /proj/sot/ska/lib/
+  rsync -av --dry-run bin/ /proj/sot/ska/bin/
+  rsync -av bin/ /proj/sot/ska/bin/
+  rsync -av build/ /proj/sot/ska/build/
+
+  # Remove data directories that would be no-ops
+  rm -r data/cmd_states
+  rm -r data/eng_archive
+  rm dir data/pyger
+
+  # Remove kadi data directory as we don't want to update task schedule now
+  rm -r data/kadi/
+
+  # Double check remaining data to sync
+
+   SOT@chimchim% tree data
+   data
+   |-- starcheck
+   |   |-- A.tlr
+   |   |-- ACABadPixels
+   |   |-- B.tlr
+   |   |-- aca_spec.json
+   |   |-- agasc.bad
+   |   |-- bad_acq_stars.rdb
+   |   |-- bad_gui_stars.rdb
+   |   |-- characteristics.yaml
+   |   |-- down.gif
+   |   |-- fid_CHARACTERISTICS
+   |   |-- fid_CHARACTERIS_FEB07
+   |   |-- fid_CHARACTERIS_JAN07
+   |   |-- fid_CHARACTERIS_JUL01
+   |   |-- overlib.js
+   |   |-- tlr.cfg
+   |   `-- up.gif
+   `-- taco
+       |-- task_schedule.cfg
+       `-- task_schedule_occ.cfg
+
+  # Sync data
+  rsync -av data/ /proj/sot/ska/data/
+
+  # Skip no-op include files
+  rm -r include
+
+  # Syncing share, but while this updated files
+  # it is also basically a no-op as the running cron task
+  # versions of the tasks are being called from /proj/sot/ska/test/share
+  rsync -av share/ /proj/sot/ska/share/
+
+
 ==> OK: TLA/JC 2015-Jun-29
 
 Smoke test on chimchim::
 
   source /proj/sot/ska/bin/ska_envs.csh
-  ska_version  # 0.18-r442-7a8c037
   ipython --pylab
   >>> import Ska.engarchive.fetch as fetch
   >>> fetch.__version__
@@ -811,7 +868,6 @@ Smoke test on chimchim::
 Smoke test on snowman::
 
   source /proj/sot/ska/bin/ska_envs.csh
-  ska_version  # 0.18-r442-7a8c037
   ipython --pylab
   >>> import Ska.engarchive.fetch as fetch
   >>> fetch.__version__
@@ -826,14 +882,6 @@ Smoke test on snowman::
 
 ==> OK: TLA/JC 2015-Jun-29
 
-Fallback::
-
-  set version=0.15-r293-e754375
-  cd /proj/sot/ska/arch
-  rm i686-linux_CentOS-5
-  rm x86_64-linux_CentOS-5
-  ln -s skare-${version}/i686-linux_CentOS-5 ./
-  ln -s skare-${version}/x86_64-linux_CentOS-5 ./
 
 
 Test on GRETA network (flight)
@@ -877,4 +925,10 @@ ESA view tool (basic functional checkout)::
 
 ==> OK: TLA/JC 64 bit 2015-Jun-29
 
-Test starcheck (64 bit)
+Test starcheck (64 bit)::
+
+  # On chimchim only
+  ska
+  cd /tmp
+  starcheck -dir /home/SOT/tmp/JAN3111C -out test
+
