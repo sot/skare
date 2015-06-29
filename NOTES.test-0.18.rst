@@ -762,29 +762,18 @@ Installation on GRETA network (flight)
 
 Ensure that the HEAD flight distribution has been installed and tested.
 
-On GRETA chimchim as SOT::
+On GRETA chimchim as SOT (chimchim required for local disk access)::
 
-  set version=0.18-r442-7a8c037
-  cd /proj/sot/ska/dist
+  set version=0.18-r460-06aafd2
+  cd /proj/sot/ska/tmp/ska_0.18_candidates
   mkdir skare-${version}
   rsync -azv aldcroft@ccosmos:/proj/sot/ska/arch/x86_64-linux_CentOS-5/ \
         skare-${version}/x86_64-linux_CentOS-5/
   rsync -azv aldcroft@ccosmos:/proj/sot/ska/arch/i686-linux_CentOS-5/ \
         skare-${version}/i686-linux_CentOS-5/
 
-Stub out perl, perldoc::
-
-  cd /proj/sot/ska/dist/skare-${version}/i686-linux_CentOS-5/bin
-  rm perl*
-  ln -s /usr/bin/perl* ./
-
-  cd /proj/sot/ska/dist/skare-${version}/x86_64-linux_CentOS-5/bin
-  rm perl*
-  ln -s /usr/bin/perl* ./
-
- - Confirm that /proj/sot/ska/bin/perl and perldoc both point to /usr/bin/ versions.
-
-==> OK:
+chgrp -R fotcm skare-${version}
+chmod g+w -R skare-${version}
 
 On chimchim as FOT CM::
 
@@ -798,8 +787,8 @@ On chimchim as FOT CM::
   rm x86_64-linux_CentOS-5
   ln -s skare-${version}/i686-linux_CentOS-5 ./
   ln -s skare-${version}/x86_64-linux_CentOS-5 ./
-
-==> OK:
+  
+==> OK: TLA/JC 2015-Jun-29
 
 Smoke test on chimchim::
 
@@ -817,7 +806,7 @@ Smoke test on chimchim::
   >>> import xija
   >>> xija.__version__
 
-==> OK:
+==> OK: TLA/JC 2015-Jun-29
 
 Smoke test on snowman::
 
@@ -835,7 +824,7 @@ Smoke test on snowman::
   >>> import xija
   >>> xija.__version__
 
-==> OK:
+==> OK: TLA/JC 2015-Jun-29
 
 Fallback::
 
@@ -858,7 +847,7 @@ Test xija as SOT (32 and 64 bit)::
   import xija
   xija.test()
 
-==> OK:
+==> OK: TLA/JC 64 bit, 32 bit  2015-Jun-29
 
 Test eng_archive (32 and 64 bit)::
 
@@ -868,17 +857,16 @@ Test eng_archive (32 and 64 bit)::
   Ska.engarchive.test()
 
 
-==> OK:
+==> OK: TLA/JC 64 bit, 32 bit but with usual fail on DP_SUN_XZ_ANGLE daily 2015-Jun-29
 
 Test kadi (32 and 64 bit)
 ::
 
   cd ~/git/kadi
-  git checkout 0.07
+  git checkout 0.12.2
   py.test kadi
 
-==> OK:
-
+==> OK: TLA/JC 64 bit, 32 bit  2015-Jun-29
 
 ESA view tool (basic functional checkout)::
 
@@ -887,4 +875,6 @@ ESA view tool (basic functional checkout)::
   cd
   python /proj/sot/ska/share/taco/esaview.py MAR2513
 
-==> OK: Apr-3 TLA
+==> OK: TLA/JC 64 bit 2015-Jun-29
+
+Test starcheck (64 bit)
