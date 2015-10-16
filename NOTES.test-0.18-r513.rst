@@ -1,3 +1,5 @@
+
+
 Ska Runtime Environment 0.18
 ===========================================
 
@@ -28,10 +30,26 @@ Changes from 0.17 (current GRETA Ska flight)
 
 Packages
 ^^^^^^^^^^^
+
+===================  =======  ==========  ======================================
+Package               0.18     0.18-r513       Comment
+===================  =======  ==========  ======================================
+chandra_models       0.5      0.7
+Chandra.Time         3.18     3.19
+kadi                 0.12.1   0.12.2
+Ska.report_ranges    0.01     0.2
+xija                 0.4      0.6
+
+Chandra-Time         0.09     0.09.1
+
+XTime                1.2.0    1.2.1
+===================  =======  ==========  ======================================
+
+
 Review
 ------
 
-Notes and testing were reviewed by Jean Connelly.
+Notes and testing were reviewed by Tom Aldcroft and Jean Connelly.
 
 Build
 -------
@@ -43,15 +61,11 @@ Installation on GRETA network (flight)
 
 On or before live-install day as SOT user::
 
-  # Copy flight installation
-  rsync -aruvz  skare-0.18-r460-06aafd2 skare-0.18-r460-06aafd2-copy
-
 On chimchim as FOT CM (chimchim required for local disk access for copy)::
 
   set version=0.18-r513-d20bade
   cd /proj/sot/ska/arch
-  mv skare-0.18-r460-06aafd2-copy skare-${version}
-  mkdir skare-${version}
+  rsync -aruv skare-0.18-r460-06aafd2/ skare-${version}
 
   # do the actual linking
   rm i686-linux_CentOS-5
@@ -61,10 +75,11 @@ On chimchim as FOT CM (chimchim required for local disk access for copy)::
 
   # do the actual update in 32 and 64 bit
   cd ~/git/skare
-  git checkout 0.18-r513-d20bade
+  git checkout ${version}
   ./configure --prefix=$prefix
+  make xtime
   make python_modules
-
+  make perl_modules
 
 
 Test on GRETA network (flight)
