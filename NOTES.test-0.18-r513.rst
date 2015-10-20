@@ -21,11 +21,10 @@ Testing overview
 ^^^^^^^^^^^^^^^^^
 
 Pre-install testing is focused on GRETA Ska-test-32.  This is the test version of the
-flight image that will be installed for GRETA / MCC operations.  In addition the
-HEAD Ska-flight-32 image that will be directly rsynced to GRETA Ska-flight is also
-tested.
+flight image that will be installed for GRETA / MCC operations.
 
-Changes from 0.17 (current GRETA Ska flight)
+
+Changes from 0.18 (current GRETA Ska flight)
 ---------------------------------------------
 
 Packages
