@@ -108,3 +108,12 @@ Check chandra_models version
   >>> import chandra_models
   >>> chandra_models.__version__
   '0.7'
+
+Run models
+::
+
+  cd ~/git/chandra_models
+  git checkout 0.7
+  ipython --matplotlib
+  > run xija/acisfp/calc_model.py
+  > run xija/psmc/calc_model.py
