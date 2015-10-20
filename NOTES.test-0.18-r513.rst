@@ -76,9 +76,9 @@ On chimchim as FOT CM (chimchim required for local disk access for copy)::
   cd ~/git/skare
   git checkout ${version}
   ./configure --prefix=$prefix
-  make xtime
-  make python_modules
-  make perl_modules
+  make xtime |& tee -a install_${version}.log
+  make python_modules |& tee -a install_${version}.log
+  make perl_modules |& tee -a install_${version}.log
 
 
 Test on GRETA network (flight)
