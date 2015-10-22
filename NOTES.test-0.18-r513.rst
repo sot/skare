@@ -33,12 +33,7 @@ Packages
 ===================  =======  ==========  ======================================
 Package              0.18     0.18-r513   Comment
 ===================  =======  ==========  ======================================
-astropy              1.0.2    1.0.3       leap second update
-bsddb                ---      1.0         added explicitly to pkgs.conda
-db                   ---      5.3.28      added explicitly to pkgs.conda
-jpeg                 ---      8d          added explicitly to pkgs.conda
-libtiff              ---      4.0.2       added explicitly to pkgs.conda
-pillow               ---      2.8.1       added explicitly to pkgs.conda
+astropy              1.0.2    1.0.3       leap second update (Windows Only)
 
 BeautifulSoup        ---      3.2.1
 chandra_models       0.5      0.7
@@ -87,11 +82,6 @@ On chimchim as FOT CM (chimchim required for local disk access for copy)::
   make xtime |& tee -a install_${version}.log
   make perl_modules |& tee -a install_${version}.log
   make python_modules |& tee -a install_${version}.log
-  ska # to get conda for install
-  conda install pillow=2.8.1 libtiff=4.0.2 jpeg=8d \
-        db=5.3.28 bsddb=1.0 astropy=1.0.3 --no-deps \
-        |& tee -a install_${version}.log
-
 
 
 Test on GRETA network (flight)
