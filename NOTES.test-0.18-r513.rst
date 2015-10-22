@@ -33,6 +33,14 @@ Packages
 ===================  =======  ==========  ======================================
 Package               0.18     0.18-r513       Comment
 ===================  =======  ==========  ======================================
+astropy              1.0.2    1.0.3       leap second update
+bsddb                ---      1.0         added explicitly to pkgs.conda
+db                   ---      5.3.28      added explicitly to pkgs.conda
+jpeg                 ---      8d          added explicitly to pkgs.conda
+libtiff              ---      4.0.2       added explicitly to pkgs.conda
+pillow               ---      2.8.1       added explicitly to pkgs.conda
+
+BeautifulSoup        ---      3.2.1
 chandra_models       0.5      0.7
 Chandra.Time         3.18     3.19
 kadi                 0.12.1   0.12.2
