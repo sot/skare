@@ -85,8 +85,13 @@ On chimchim as FOT CM (chimchim required for local disk access for copy)::
   git checkout ${version}
   ./configure --prefix=$prefix
   make xtime |& tee -a install_${version}.log
-  make python_modules |& tee -a install_${version}.log
   make perl_modules |& tee -a install_${version}.log
+  make python_modules |& tee -a install_${version}.log
+  ska # to get conda for install
+  conda install pillow=2.8.1 libtiff=4.0.2 jpeg=8d \
+        db=5.3.28 bsddb=1.0 astropy=1.0.3 --no-deps \
+        |& tee -a install_${version}.log
+
 
 
 Test on GRETA network (flight)
