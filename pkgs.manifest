@@ -10,11 +10,11 @@ autopep8-1.1.1.tar.gz
 BeautifulSoup-3.2.1.tar.gz
 chandra_aca-0.4.tar.gz
 chandra_models-0.6.tar.gz
-Chandra.cmd_states-0.09.1.tar.gz
-Chandra.ECF-0.02.tar.gz
-Chandra.Maneuver-0.05.tar.gz
-Chandra.taco-0.2.tar.gz
-Chandra.Time-3.19.tar.gz
+Chandra.cmd_states-0.9.2.tar.gz
+Chandra.ECF-0.2.1.tar.gz
+Chandra.Maneuver-0.5.1.tar.gz
+Chandra.taco-0.2.1.tar.gz
+Chandra.Time-3.19.1.tar.gz
 cosmocalc-0.1.2.tar.gz
 Django-1.6.1.tar.gz
 egenix-mx-base-3.0.0.tar.gz
@@ -52,7 +52,6 @@ Ska.tdb-0.3.tar.gz
 Ska.TelemArchive-0.08.tar.gz
 Ska.quatutil-0.03.tar.gz
 tables-2.3.1.tar.gz
-Chandra.acis_esa-0.01.tar.gz
 Ska.report_ranges-0.2.tar.gz
 xija-0.5.tar.gz
 #
