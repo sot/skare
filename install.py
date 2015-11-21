@@ -53,6 +53,10 @@ def get_options():
                       help=("Installation config with optional module name "
                             "<config>:<module_name>"),
                       )
+    parser.add_option("--confirm",
+                      action="store_true",
+                      help="Confirm before installing any package"
+                      )
     parser.add_option("--python",
                       default='/usr/bin/python',
                       help="Python used for building virtual python",
@@ -341,10 +345,6 @@ if not opt.installing_anaconda:
     if not os.path.exists(arch_perl):
         os.symlink(opt.perl, arch_perl)
 
-    bash('cp -p ' + opt.manifest + ' ${prefix_arch}/')
-
-    make_version_file(os.path.join(os.environ['prefix_arch'], 'bin', 'ska_version'))
-
 # Remove the default 'env_vars' configuration if --no-env-var specified
 if opt.no_env_vars:
     opt.config.pop(0)
@@ -409,6 +409,12 @@ for configfile in opt.config:
 
             print '\nInstalling', module.name
 
+            if opt.confirm:
+                print 'Confirm install (y/N)? ',
+                if not raw_input().lower().strip().startswith('y'):
+                    print 'Skipping installation'
+                    continue
+
             # Untar the module into the build directory
             module.untar(build_dir, pkg_dir, pkgs)
 
@@ -437,4 +443,15 @@ for configfile in opt.config:
                     print 'YES (auto)'
                 elif not raw_input().lower().strip().startswith('y'):
                     sys.exit(1)
-        
+
+if not opt.installing_anaconda:
+    ok = True
+    if opt.confirm:
+        print 'Update ska_version and pkgs.manifest (y/N)? ',
+        if not raw_input().lower().strip().startswith('y'):
+            ok = False
+
+    if ok:
+        print 'Updating pkgs.manifest and ska_version'
+        bash('cp -p ' + opt.manifest + ' ${prefix_arch}/')
+        make_version_file(os.path.join(os.environ['prefix_arch'], 'bin', 'ska_version'))
