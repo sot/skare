@@ -403,7 +403,7 @@ Install skare on 32-bit and 64-bit.
 
   # Set arch and lib directories to be not-writeable
   cd /proj/sot/ska/arch
-  chmod -w -R ska-0.18-r542
+  chmod -w -R ska-0.18-r542-f3fe1d4
   cd /proj/sot/ska
   chmod -w -R lib
 
