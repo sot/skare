@@ -54,7 +54,7 @@ setuptools           16.0     18.8.1
 Review
 ------
 
-Notes and testing were reviewed by Jean Connelly.
+Notes and testing were assembled by Jean Connelly and reviewed by Tom Aldcroft.
 
 Build
 -------
@@ -382,11 +382,9 @@ Install skare on 32-bit and 64-bit.
   # Create arch links
   cd /proj/sot/ska/arch
   rm x86_64-linux_CentOS-5
-  rm x86_64-linux_CentOS-6
   rm i686-linux_CentOS-5
   ln -s skare-0.18-r542-f3fe1d4/x86_64-linux_CentOS-5 .
   ln -s skare-0.18-r542-r3fe1d4/i686-linux_CentOS-5 .
-  ln -s x86_64-linux_CentOS-5 x86_64-linux_CentOS-6
 
   # Update other pieces
   cd /proj/sot/ska/lib
@@ -394,11 +392,13 @@ Install skare on 32-bit and 64-bit.
   rsync -aruv /proj/sot/ska/tmp/ska-0.18-r542/lib/perl .
 
   cd /proj/sot/ska
-  rm -r build
+  mv build build_bak
   rsync -aruv /proj/sot/ska/tmp/ska-0.18-r542/build .
 
   # Update data and bin directories for starcheck 11.5
+  rsync -aruv --dry-run /proj/sot/ska/tmp/ska-0.18-r542/data/* data/
   rsync -aruv /proj/sot/ska/tmp/ska-0.18-r542/data/* data/
+  rsync -aruv --dry-run /proj/sot/ska/tmp/ska-0.18-r542/bin/* bin/
   rsync -aruv /proj/sot/ska/tmp/ska-0.18-r542/bin/* bin/
 
   # Set arch and lib directories to be not-writeable
