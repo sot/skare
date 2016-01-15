@@ -363,7 +363,7 @@ Install skare on 32-bit and 64-bit.
   # Rsync to HEAD /proj/sot/ska/tmp
   mkdir /proj/sot/ska/tmp/ska-0.18-r542 # on HEAD
   rsync -aruvz 32.tar jeanconn@fido.cfa.harvard.edu:/proj/sot/ska/tmp/ska-0.18-r542/ # 32 bit VM
-  rsync -aruvz 64.tar jeanconn@fido.cfa.harvard.edu:/proj/sot/ska/tmp/ska-0.18-r542/ # 32 bit VM
+  rsync -aruvz 64.tar jeanconn@fido.cfa.harvard.edu:/proj/sot/ska/tmp/ska-0.18-r542/ # 64 bit VM
 
   # Rsync to from chimchim to GRETA tmp
   mkdir /proj/sot/ska/tmp/ska-0.18-r542  # on GRETA
@@ -372,19 +372,27 @@ Install skare on 32-bit and 64-bit.
   tar -xvpf 32.tar
   tar -xvpf 64.tar
 
-  # As FOT CM user (on chimchim for disk speed
+  # Verify outputs
+  # Confirm arch has correct directories
+  cd /proj/sot/ska/tmp/ska-0.18-r542
+  ls arch
+  ls bin
+  ls build
+  
+
+  # As FOT CM user (on chimchim for disk speed)
 
   # Copy content and link as needed
   cd /proj/sot/ska/arch
   mkdir skare-0.18-r542-f3fe1d4
-  rsync -aruv /proj/sot/ska/tmp/ska-0.18-r542/arch/* skare-0.18-r542-f3fe1d4
+  rsync -aruv /proj/sot/ska/tmp/ska-0.18-r542/arch/ skare-0.18-r542-f3fe1d4/
 
   # Create arch links
   cd /proj/sot/ska/arch
   rm x86_64-linux_CentOS-5
   rm i686-linux_CentOS-5
   ln -s skare-0.18-r542-f3fe1d4/x86_64-linux_CentOS-5 .
-  ln -s skare-0.18-r542-r3fe1d4/i686-linux_CentOS-5 .
+  ln -s skare-0.18-r542-f3fe1d4/i686-linux_CentOS-5 .
 
   # Update other pieces
   cd /proj/sot/ska/lib
@@ -395,17 +403,21 @@ Install skare on 32-bit and 64-bit.
   mv build build_bak
   rsync -aruv /proj/sot/ska/tmp/ska-0.18-r542/build .
 
-  # Update data and bin directories for starcheck 11.5
-  rsync -aruv --dry-run /proj/sot/ska/tmp/ska-0.18-r542/data/* data/
-  rsync -aruv /proj/sot/ska/tmp/ska-0.18-r542/data/* data/
-  rsync -aruv --dry-run /proj/sot/ska/tmp/ska-0.18-r542/bin/* bin/
-  rsync -aruv /proj/sot/ska/tmp/ska-0.18-r542/bin/* bin/
-
   # Set arch and lib directories to be not-writeable
   cd /proj/sot/ska/arch
-  chmod -w -R ska-0.18-r542-f3fe1d4
+  chmod a-w -R skare-0.18-r542-f3fe1d4
   cd /proj/sot/ska
-  chmod -w -R lib
+  chmod a-w -R lib/perl
+
+  #logout as FOT CM user
+
+  # Do as SOT user
+  # Update data and bin directories for starcheck 11.5
+  cd /proj/sot/ska/
+  rsync -aruv --dry-run /proj/sot/ska/tmp/ska-0.18-r542/data/* data/
+  rsync -aruv /proj/sot/ska/tmp/ska-0.18-r542/data/* data/
+  rsync -aruv --dry-run --size-only /proj/sot/ska/tmp/ska-0.18-r542/bin/* bin/
+  rsync -aruv --size-only /proj/sot/ska/tmp/ska-0.18-r542/bin/* bin/
 
 
 Test on GRETA network (flight)
@@ -415,28 +427,25 @@ Test xija as SOT (32 and 64 bit)::
 
   ska
   cd
-  ipython
+  ipython --pylab
   import xija
   xija.test()
   xija.__version__
   '0.7'
 
-
+==> OK chimchim, greta7b
 
 Check chandra_models version
 ::
 
-  python
   >>> import chandra_models
   >>> chandra_models.__version__
   '0.8'
 
+==> OK chimchim, greta7b
 
+Smoke tests:
 
-Smoke tests on chimchim::
-
-  source /proj/sot/ska/bin/ska_envs.csh
-  ipython --pylab
   >>> import Ska.engarchive.fetch as fetch
   >>> fetch.__version__
   >>> dat = fetch.Msid('tephin', '2012:001', stat='5min')
@@ -445,20 +454,7 @@ Smoke tests on chimchim::
   >>> from kadi import events
   >>> print events.safe_suns.all()
 
-
-
-Smoke test on snowman::
-
-  source /proj/sot/ska/bin/ska_envs.csh
-  ipython --pylab
-  >>> import Ska.engarchive.fetch as fetch
-  >>> fetch.__version__
-  >>> dat = fetch.Msid('tephin', '2012:001', stat='5min')
-  >>> dat.plot()
-
-  >>> from kadi import events
-  >>> print events.safe_suns.all()
-
+==> OK chimchim, greta7b
 
 Test kadi (32 and 64 bit)
 ::
@@ -468,6 +464,7 @@ Test kadi (32 and 64 bit)
   git checkout bb5b93f
   py.test kadi
 
+==> OK chimchim, greta7b
 
 Run models
 ::
@@ -475,21 +472,28 @@ Run models
   cd ~/git/chandra_models
   git checkout 0.8
   ipython --matplotlib
-  > import matplotlib.pyplot as plt
-  > cd chandra_models/xija/acisfp
-  > run calc_model.py
-  > plt.show() # close figure after viewing
-  > cd ../psmc
-  > run calc_model.py
-  > plt.show()
+  >>> import matplotlib.pyplot as plt
+  >>> cd chandra_models/xija/acisfp
+  >>> run calc_model.py
+  >>> plt.show()
+  >>> cd ../psmc
+  >>> plt.figure()
+  >>> run calc_model.py
+  >>> plt.show()
 
+==> OK chimchim, greta7b
 
-
-Run starcheck on chimchim and confirm successful run
+Run starcheck
 ::
 
   cd ~/tmp
-  starcheck -dir JAN3111C -out 0.18_r542_starcheck
+  starcheck -dir JAN3111C -out 0.18_r542_starcheck # 64
+  starcheck -dir JAN3111C -out 0.18_r542_starcheck32 # 32
+  
+  # Diff is possible when both have been run
+  diff 0.18_r542_starcheck{,32}.txt
+
+==> OK chimchim (expected errors/plots look good) and greta7b and diffs
 
 
 Check plotting for qt
@@ -500,4 +504,5 @@ Check plotting for qt
   >>> plot()
   >>> savefig('/tmp/junk.png')
 
+  display /tmp/junk.png
 
