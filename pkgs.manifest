@@ -2,8 +2,8 @@
 #
 # Python
 #
-Anaconda-64-2.2.0.tar.gz
-Anaconda-32-2.2.0.tar.gz
+Miniconda-64-3.19.0.tar.gz
+Miniconda-32-3.19.0.tar.gz
 agasc-0.3.1.tar.gz
 asciitable-0.8.0.tar.gz
 autopep8-1.1.1.tar.gz
