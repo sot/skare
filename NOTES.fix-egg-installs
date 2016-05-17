@@ -1,4 +1,4 @@
-Removing Egg packages that are not needed using Skare PR #86
+Removing Egg packages that are not needed using skare PR #86
 =============================================================
 
 Packages that are currently in the correct named directory and have
@@ -7,133 +7,149 @@ version update it will get fixed.
 
 Census of packages that currently have an Egg but should not
 ------------------------------------------------------------
-autopep8-1.1.1-py2.7.egg/
 
-chandra_aca-0.2-py2.7.egg/
-chandra_aca-0.3-py2.7.egg/
-chandra_aca-0.4-py2.7.egg/
-chandra_aca-0.5.1-py2.7.egg/
-chandra_aca-0.5-py2.7.egg/
-chandra_aca-0.6-py2.7.egg/
+  autopep8-1.1.1-py2.7.egg/
 
-cxotime-0.1-py2.7.egg/
+  chandra_aca-0.2-py2.7.egg/
+  chandra_aca-0.3-py2.7.egg/
+  chandra_aca-0.4-py2.7.egg/
+  chandra_aca-0.5.1-py2.7.egg/
+  chandra_aca-0.5-py2.7.egg/
+  chandra_aca-0.6-py2.7.egg/
 
-hopper-0.1-py2.7.egg/
+  cxotime-0.1-py2.7.egg/
 
-mica/
-mica-0.5.3-py2.7.egg/
+  hopper-0.1-py2.7.egg/
 
-mpld3-0.2-py2.7.egg/
+  mica/
+  mica-0.5.3-py2.7.egg/
 
-numexpr-2.2.2-py2.7-linux-x86_64.egg/
+  mpld3-0.2-py2.7.egg/
 
-pyfits-3.3-py2.7-linux-x86_64.egg/
+  numexpr-2.2.2-py2.7-linux-x86_64.egg/
 
-pyger/
-pyger-0.6-py2.7.egg-info
-pyger-1.0-py2.7.egg/
+  pyfits-3.3-py2.7-linux-x86_64.egg/
 
-python_sybase-0.39-py2.7-linux-x86_64.egg/
+  pyger/
+  pyger-0.6-py2.7.egg-info
+  pyger-1.0-py2.7.egg/
 
-pyyaks-3.3.3-py2.7.egg/
+  python_sybase-0.39-py2.7-linux-x86_64.egg/
 
-Quaternion-0.3.2-py2.7.egg/
+  pyyaks-3.3.3-py2.7.egg/
 
-# On HEAD
-# aca-unagi% grep -i sphinx *.pth
-# Sphinx.pth:./Sphinx-1.2.3-py2.7.egg
-# aca-unagi% rm -rf Sphinx.pth Sphinx-1.2.3-py2.7.egg/
-sphinx/
-Sphinx-1.2.3-py2.7.egg/
-Sphinx-1.2.3-py2.7.egg-info
-Sphinx.pth
+  Quaternion-0.3.2-py2.7.egg/
 
-# IGNORE starcheck for now, that gets installed out-of-skare
-# starcheck/
-# starcheck-11.4-py2.7.egg-info
-# starcheck-11.5-py2.7.egg-info
-# starcheck-11.6-py2.7.egg/
-# starcheck-11.7-py2.7.egg/
+  # On HEAD
+  # aca-unagi% grep -i sphinx *.pth
+  # Sphinx.pth:./Sphinx-1.2.3-py2.7.egg
+  # aca-unagi% rm -rf Sphinx.pth Sphinx-1.2.3-py2.7.egg/
+  sphinx/
+  Sphinx-1.2.3-py2.7.egg/
+  Sphinx-1.2.3-py2.7.egg-info
+  Sphinx.pth
+
+  # IGNORE starcheck for now, that gets installed out-of-skare
+  # starcheck/
+  # starcheck-11.4-py2.7.egg-info
+  # starcheck-11.5-py2.7.egg-info
+  # starcheck-11.6-py2.7.egg/
+  # starcheck-11.7-py2.7.egg/
 
 Update
 ------
 
-- As aca on unagi and SOT on chimchim
+- Run as aca on unagi (ska flight) and SOT on chimchim (ska test)
 
+  cd $SKA/build/x86_64-linux_CentOS-5/
+  rm autopep8-*/.installed
+  rm chandra_aca-*/.installed
+  rm cxotime-*/.installed
+  rm hopper-*/.installed
+  rm mica-*/.installed
+  rm mpld3-*/.installed
+  rm numexpr-*/.installed
+  rm parse_cm-*/.installed
+  rm pyfits-*/.installed   # Not on chimchim, pyfits doesn't build there
+  rm pyger-*/.installed
+  rm pyyaks-*/.installed
+  rm Quaternion-*/.installed
 
-cd $SKA/build/x86_64-linux_CentOS-5/
-rm autopep8-*/.installed
-rm chandra_aca-*/.installed
-rm cxotime-*/.installed
-rm hopper-*/.installed
-rm mica-*/.installed
-rm mpld3-*/.installed
-rm numexpr-*/.installed
-rm parse_cm-*/.installed
-rm pyfits-*/.installed
-rm pyger-*/.installed
-rm pyyaks-*/.installed
-rm Quaternion-*/.installed
+  cd ~/git/skare
+  git fetch origin
+  git checkout use-pip
+  touch fix.log
 
-cd ~/git/skare
-git fetch origin
-git checkout use-pip
-touch fix.log
+  ./install.py --prefix=$SKA --config=python_modules:autopep8 > fix.log
+  ./install.py --prefix=$SKA --config=python_modules:chandra_aca >> fix.log
+  ./install.py --prefix=$SKA --config=python_modules:cxotime >> fix.log
+  ./install.py --prefix=$SKA --config=python_modules:hopper >> fix.log
+  ./install.py --prefix=$SKA --config=python_modules:mica >> fix.log
+  ./install.py --prefix=$SKA --config=python_modules:mpld3 >> fix.log
+  ./install.py --prefix=$SKA --config=python_modules:numexpr >> fix.log
+  ./install.py --prefix=$SKA --config=python_modules:parse_cm >> fix.log
+  ./install.py --prefix=$SKA --config=python_modules:pyfits >> fix.log  # Not on chimchim
+  ./install.py --prefix=$SKA --config=python_modules:pyger >> fix.log
+  ./install.py --prefix=$SKA --config=python_modules:pyyaks >> fix.log
+  ./install.py --prefix=$SKA --config=python_modules:Quaternion >> fix.log
 
-./install.py --prefix=$SKA --config=python_modules:autopep8 >> fix.log
-./install.py --prefix=$SKA --config=python_modules:chandra_aca >> fix.log
-./install.py --prefix=$SKA --config=python_modules:cxotime >> fix.log
-./install.py --prefix=$SKA --config=python_modules:hopper >> fix.log
-./install.py --prefix=$SKA --config=python_modules:mica >> fix.log
-./install.py --prefix=$SKA --config=python_modules:mpld3 >> fix.log
-./install.py --prefix=$SKA --config=python_modules:numexpr >> fix.log
-./install.py --prefix=$SKA --config=python_modules:parse_cm >> fix.log
-./install.py --prefix=$SKA --config=python_modules:pyfits >> fix.log
-./install.py --prefix=$SKA --config=python_modules:pyger >> fix.log
-./install.py --prefix=$SKA --config=python_modules:pyyaks >> fix.log
-./install.py --prefix=$SKA --config=python_modules:Quaternion >> fix.log
+For these packages doing the installs does not make the new install
+active until easy-install.pth is updated to take the egg pointer out::
+
+  cd $SKA_ARCH_OS/lib/python2.7/site-packages
+  cp easy-install.pth{,-new}
+  cp easy-install.pth{,-old}
+  emacs easy-install.pth-new
+   < remove .egg/ dirs corresponding to the above list (remember pyfits) >
+  cp easy_install.pth{-new,}
 
 Functional test
 ---------------
 
-ipython
-import autopep8; print autopep8.__file__
-import chandra_aca; print chandra_aca.__file__
-import cxotime; print cxotime.__file__
-import hopper; print hopper.__file__
-import mica; print mica.__file__
-import mpld3; print mpld3.__file__
-import numexpr; print numexpr.__file__
-import parse_cm; print parse_cm.__file__
-import pyfits; print pyfits.__file__
-import pyger; print pyger.__file__
-import pyyaks; print pyyaks.__file__
-import Quaternion; print Quaternion.__file__
+  ipython
+  import autopep8; print autopep8.__file__
+  import chandra_aca; print chandra_aca.__file__
+  import cxotime; print cxotime.__file__
+  import hopper; print hopper.__file__
+  import mica; print mica.__file__
+  import mpld3; print mpld3.__file__
+  import numexpr; print numexpr.__file__
+  import parse_cm; print parse_cm.__file__
+  import pyfits; print pyfits.__file__
+  import pyger; print pyger.__file__
+  import pyyaks; print pyyaks.__file__
+  import Quaternion; print Quaternion.__file__
 
-Result: OK 2016-May-17, TLA
+Result: OK on HEAD, GRETA 2016-May-17, TLA
+
+Fallback
+--------
+
+  cd $SKA_ARCH_OS/lib/python2.7/site-packages
+  cp easy_install.pth{-old,}
 
 Regression test on HEAD
 -----------------------
 
 PRE-UPDATE::
 
-  % ska
-  % python $SKA/share/dpa/dpa_check.py \
+  ska
+  python $SKA/share/dpa/dpa_check.py \
    --outdir=dpa-feb0413a-flight \
    --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
    --run-start=2013:031
 
 POST-UPDATE::
 
-  % python $SKA/share/dpa/dpa_check.py \
+  python $SKA/share/dpa/dpa_check.py \
    --outdir=dpa-feb0413a-test \
    --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
    --run-start=2013:031
 
 DIFFS::
 
-  % diff dpa-feb0413a-flight/index.rst dpa-feb0413a-test/index.rst
-  % diff dpa-feb0413a-flight/temperatures.dat \
+  diff dpa-feb0413a-flight/index.rst dpa-feb0413a-test/index.rst
+  diff dpa-feb0413a-flight/temperatures.dat \
          dpa-feb0413a-test/temperatures.dat
 
-Result: OK 2016-May-17, TLA
+Result: OK on HEAD 2016-May-17, TLA
