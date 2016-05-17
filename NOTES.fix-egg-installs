@@ -60,7 +60,8 @@ Update
 
 - As aca on unagi and SOT on chimchim
 
-cd /proj/sot/ska/build/x86_64-linux_CentOS-5/
+
+cd $SKA/build/x86_64-linux_CentOS-5/
 rm autopep8-*/.installed
 rm chandra_aca-*/.installed
 rm cxotime-*/.installed
@@ -68,6 +69,7 @@ rm hopper-*/.installed
 rm mica-*/.installed
 rm mpld3-*/.installed
 rm numexpr-*/.installed
+rm parse_cm-*/.installed
 rm pyfits-*/.installed
 rm pyger-*/.installed
 rm pyyaks-*/.installed
@@ -78,17 +80,18 @@ git fetch origin
 git checkout use-pip
 touch fix.log
 
-./install.py --prefix=/proj/sot/ska --config=python_modules:autopep8 >> fix.log
-./install.py --prefix=/proj/sot/ska --config=python_modules:chandra_aca >> fix.log
-./install.py --prefix=/proj/sot/ska --config=python_modules:cxotime >> fix.log
-./install.py --prefix=/proj/sot/ska --config=python_modules:hopper >> fix.log
-./install.py --prefix=/proj/sot/ska --config=python_modules:mica >> fix.log
-./install.py --prefix=/proj/sot/ska --config=python_modules:mpld3 >> fix.log
-./install.py --prefix=/proj/sot/ska --config=python_modules:numexpr >> fix.log
-./install.py --prefix=/proj/sot/ska --config=python_modules:pyfits >> fix.log
-./install.py --prefix=/proj/sot/ska --config=python_modules:pyger >> fix.log
-./install.py --prefix=/proj/sot/ska --config=python_modules:pyyaks >> fix.log
-./install.py --prefix=/proj/sot/ska --config=python_modules:Quaternion >> fix.log
+./install.py --prefix=$SKA --config=python_modules:autopep8 >> fix.log
+./install.py --prefix=$SKA --config=python_modules:chandra_aca >> fix.log
+./install.py --prefix=$SKA --config=python_modules:cxotime >> fix.log
+./install.py --prefix=$SKA --config=python_modules:hopper >> fix.log
+./install.py --prefix=$SKA --config=python_modules:mica >> fix.log
+./install.py --prefix=$SKA --config=python_modules:mpld3 >> fix.log
+./install.py --prefix=$SKA --config=python_modules:numexpr >> fix.log
+./install.py --prefix=$SKA --config=python_modules:parse_cm >> fix.log
+./install.py --prefix=$SKA --config=python_modules:pyfits >> fix.log
+./install.py --prefix=$SKA --config=python_modules:pyger >> fix.log
+./install.py --prefix=$SKA --config=python_modules:pyyaks >> fix.log
+./install.py --prefix=$SKA --config=python_modules:Quaternion >> fix.log
 
 Functional test
 ---------------
@@ -101,6 +104,7 @@ import hopper; print hopper.__file__
 import mica; print mica.__file__
 import mpld3; print mpld3.__file__
 import numexpr; print numexpr.__file__
+import parse_cm; print parse_cm.__file__
 import pyfits; print pyfits.__file__
 import pyger; print pyger.__file__
 import pyyaks; print pyyaks.__file__
@@ -114,14 +118,14 @@ Regression test on HEAD
 PRE-UPDATE::
 
   % ska
-  % python /proj/sot/ska/share/dpa/dpa_check.py \
+  % python $SKA/share/dpa/dpa_check.py \
    --outdir=dpa-feb0413a-flight \
    --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
    --run-start=2013:031
 
 POST-UPDATE::
 
-  % python /proj/sot/ska/share/dpa/dpa_check.py \
+  % python $SKA/share/dpa/dpa_check.py \
    --outdir=dpa-feb0413a-test \
    --oflsdir=/data/mpcrit1/mplogs/2013/FEB0413/oflsa \
    --run-start=2013:031
