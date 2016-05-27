@@ -49,12 +49,17 @@ Census of packages that currently have an Egg but should not
   Sphinx-1.2.3-py2.7.egg-info
   Sphinx.pth
 
-  # IGNORE starcheck for now, that gets installed out-of-skare
+  # Starcheck was ignored during this original procedure, but has since also
+  # been installed via pip and been removed from the pth file per the process
+  # described in these notes.
   # starcheck/
   # starcheck-11.4-py2.7.egg-info
   # starcheck-11.5-py2.7.egg-info
   # starcheck-11.6-py2.7.egg/
   # starcheck-11.7-py2.7.egg/
+
+
+
 
 Update
 ------

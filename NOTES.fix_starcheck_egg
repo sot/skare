@@ -1,0 +1,28 @@
+Removing egg conflict for starcheck
+====================================
+
+  cd ~/git/skare
+  git fetch master
+  touch starcheck_fix.log
+
+  ./install.py --prefix=$SKA --config=python_modules:starcheck >> starcheck_fix.log
+
+For these packages doing the installs does not make the new install
+active until easy-install.pth is updated to take the egg pointer out::
+
+  cd $SKA_ARCH_OS/lib/python2.7/site-packages
+  cp easy-install.pth{,-new}
+  cp easy-install.pth{,-old}
+  emacs easy-install.pth-new
+   < remove .egg/ dirs corresponding to the above list (remember pyfits) >
+  cp easy_install.pth{-new,}
+
+Functional test
+---------------
+  cd /tmp
+  mkdir runstarcheck
+  cd runstarcheck
+  /proj/sot/ska/bin/starcheck -dir /data/mpcrit1/mplogs/2016/MAY3016/oflsa
+
+Result: OK on HEAD 2016-May-27 JMC
+
