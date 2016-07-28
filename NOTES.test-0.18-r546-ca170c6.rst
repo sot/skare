@@ -121,7 +121,7 @@ Xija
   os.environ['ENG_ARCHIVE'] = '/proj/sot/ska/data/eng_archive'
   import xija
   xija.__version__
-'0.7'
+  '0.7'
   xija.test()
 
 ==> OK: chimchim, gretasot (JC 15-Jul-2016).
@@ -136,7 +136,7 @@ chandra_aca
   python
   import chandra_aca
   chandra_aca.__version__
-'0.7'
+  '0.7'
   chandra_aca.test()
 
 ==> OK: chimchim, gretasot (JC 15-Jul-2016)
