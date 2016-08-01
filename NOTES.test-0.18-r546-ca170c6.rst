@@ -401,3 +401,85 @@ Install 32 and 64 bit flight
   # Remove starcheck in GRETA flight
   rm /proj/sot/ska/bin/starcheck
   rm /proj/sot/ska/bin/starcheck.pl
+
+
+Testing in GRETA flight
+----------------------------------------
+
+Smoke tests:
+
+  >>> import Ska.engarchive.fetch as fetch
+  >>> fetch.__version__
+  >>> dat = fetch.Msid('tephin', '2012:001', stat='5min')
+  >>> dat.plot()
+
+  >>> from kadi import events
+  >>> print events.safe_suns.all()
+
+
+
+Xija
+^^^^^^^^
+::
+
+  ska
+  cd
+  python
+  import os
+  import xija
+  xija.__version__
+  '0.7'
+  xija.test()
+
+==>
+
+chandra_aca
+^^^^^^^^^^^
+::
+
+  ska
+  cd
+  python
+  import chandra_aca
+  chandra_aca.__version__
+  '0.7'
+  chandra_aca.test()
+
+==>
+
+Kadi
+^^^^
+::
+
+  cd ~/git/kadi
+  git checkout 0.12.2
+  # cp ltt_bads.txt and events.db3 into $SKA/data/kadi if not linked
+  py.test kadi
+
+==>
+
+
+Eng_archive
+^^^^^^^^^^^^
+::
+
+  # Do kadi tests before and copy events and ltt_bads if needed
+  cd
+  ska
+  python
+  import Ska.engarchive
+  Ska.engarchive.test(args='-k "not test_fetch_regr"')
+
+==>
+
+
+
+Check plotting for qt
+::
+
+  cd
+  ipython --pylab=qt
+  >>> plot()
+  >>> savefig('/tmp/junk.png')
+
+  display /tmp/junk.png
