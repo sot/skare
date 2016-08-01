@@ -76,7 +76,7 @@ Install skare on 32-bit and 64-bit.
   # Rsync from ccosmos to GRETA tmp on machine chimchim
   mkdir /proj/sot/ska/tmp/skadev-0.18-r546 # on GRETA
   cd /proj/sot/ska/tmp/skadev-0.18-r546
-  rsync -aruv jeanconn@ccosmos:/proj/sot/ska/tmp/skadev-0.18-r546/*tar .
+  rsync -aruv jeanconn@ccosmos:/proj/sot/ska/tmp/skadev-0.18-r546/\*tar .
   tar -xvpf 32.tar
   tar -xvpf 64.tar
   # remove no-longer needed tarballs
@@ -86,7 +86,7 @@ Install skare on 32-bit and 64-bit.
   # Rsync arch into /proj/sot/ska/dev/arch, link, and rsync the other pieces as needed
   cd /proj/sot/ska/dev/arch
   mkdir skadev-0.18-r546-ca170c6
-  rsync -aruv /proj/sot/ska/tmp/skadev-0.18-r546/arch/* skadev-0.18-r546-ca170c6
+  rsync -aruv /proj/sot/ska/tmp/skadev-0.18-r546/arch/\* skadev-0.18-r546-ca170c6
 
   # Create arch links
   cd /proj/sot/ska/dev/arch
@@ -352,7 +352,7 @@ Install 32 and 64 bit flight
   # Rsync from ccosmos to GRETA tmp on machine chimchim
   mkdir /proj/sot/ska/tmp/ska-0.18-r546 # on GRETA
   cd /proj/sot/ska/tmp/ska-0.18-r546
-  rsync -aruv jeanconn@ccosmos:/proj/sot/ska/tmp/ska-0.18-r546/*tar .
+  rsync -aruv jeanconn@ccosmos:/proj/sot/ska/tmp/ska-0.18-r546/\*tar .
   tar -xvpf 32.tar
   tar -xvpf 64.tar
   # remove no-longer needed tarballs
@@ -369,24 +369,24 @@ Install 32 and 64 bit flight
   # As FOT CM user (on chimchim for disk speed)
 
   # Rsync arch into /proj/sot/ska/arch, link, and rsync the other pieces as needed
-  cd /proj/sot/ska/dev/arch
+  cd /proj/sot/ska/arch
   mkdir skare-0.18-r546-ca170c6
-  rsync -aruv /proj/sot/ska/tmp/ska-0.18-r546/arch/* skare-0.18-r546-ca170c6
+  rsync -aruv /proj/sot/ska/tmp/ska-0.18-r546/arch/\* skare-0.18-r546-ca170c6
 
   # Create arch links
   cd /proj/sot/ska/arch
   rm x86_64-linux_CentOS-5
-  rm x86_64-linux_CentOS-6
   rm i686-linux_CentOS-5
   ln -s skare-0.18-r546-ca170c6/x86_64-linux_CentOS-5 .
   ln -s skare-0.18-r546-ca170c6/i686-linux_CentOS-5 .
-  ln -s x86_64-linux_CentOS-5 x86_64-linux_CentOS-6
 
-  # Update other pieces; perl and build are sufficient for dev
+  # Update other pieces; perl and build are sufficient
   cd /proj/sot/ska/lib
+  mv perl_bak perl_bak2
   mv perl perl_bak
   rsync -aruv /proj/sot/ska/tmp/ska-0.18-r546/lib/perl .
   cd /proj/sot/ska
+  mv build_bak build_bak2
   mv build build_bak
   rsync -aruvz /proj/sot/ska/tmp/ska-0.18-r546/build .
 
@@ -406,8 +406,13 @@ Install 32 and 64 bit flight
 Testing in GRETA flight
 ----------------------------------------
 
-Smoke tests:
+64 bit tests were run from chimchim.  32 bit tests were run from greta7b
 
+Eng archive and kadi smoke tests
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+::
+
+  ipython --pylab
   >>> import Ska.engarchive.fetch as fetch
   >>> fetch.__version__
   >>> dat = fetch.Msid('tephin', '2012:001', stat='5min')
@@ -416,36 +421,34 @@ Smoke tests:
   >>> from kadi import events
   >>> print events.safe_suns.all()
 
+===> OK 32 & 64
 
 
 Xija
 ^^^^^^^^
 ::
 
-  ska
   cd
-  python
+  ipython
   import os
   import xija
   xija.__version__
   '0.7'
   xija.test()
 
-==>
+==> Expected failures on minusz.npz test otherwise passed 32 & 64
 
 chandra_aca
 ^^^^^^^^^^^
 ::
 
-  ska
-  cd
-  python
+  ipython
   import chandra_aca
   chandra_aca.__version__
   '0.7'
   chandra_aca.test()
 
-==>
+==> OK 32 & 64
 
 Kadi
 ^^^^
@@ -453,10 +456,9 @@ Kadi
 
   cd ~/git/kadi
   git checkout 0.12.2
-  # cp ltt_bads.txt and events.db3 into $SKA/data/kadi if not linked
   py.test kadi
 
-==>
+==> OK 64 and 32
 
 
 Eng_archive
@@ -464,22 +466,21 @@ Eng_archive
 ::
 
   # Do kadi tests before and copy events and ltt_bads if needed
-  cd
-  ska
-  python
+  ipython
   import Ska.engarchive
   Ska.engarchive.test(args='-k "not test_fetch_regr"')
 
-==>
-
+==> OK 32 & 64, test_fetch_regr skipped intentionally
 
 
 Check plotting for qt
+^^^^^^^^^^^^^^^^^^^^^
 ::
 
-  cd
   ipython --pylab=qt
   >>> plot()
   >>> savefig('/tmp/junk.png')
 
   display /tmp/junk.png
+
+==> OK 32 & 64
