@@ -24,7 +24,7 @@ Django-1.6.1.tar.gz
 egenix-mx-base-3.0.0.tar.gz
 find_attitude-0.1.tar.gz
 h5py-2.4.0.tar.gz
-hopper-0.1.tar.gz
+hopper-0.2.tar.gz
 kadi-0.12.2.tar.gz
 matplotlib-1.4.3-local-qhull.tar.gz
 maude-1.0.tar.gz
@@ -40,7 +40,7 @@ pyyaks-3.3.3.tar.gz
 Quaternion-0.4.1.tar.gz
 sherpa-4.7.tar.gz
 ska_path-0.1.tar.gz
-starcheck-11.11.tar.gz
+starcheck-11.12.tar.gz
 #
 # Ska namespace packages
 Ska.arc5gl-0.1.1.tar.gz
