@@ -20,6 +20,7 @@ import re
 from glob import glob
 from collections import defaultdict
 import site
+import shutil
 
 
 def get_packages(filenames, as_list=False):
@@ -77,7 +78,10 @@ for egg in sorted(eggs):
             remove_name = os.path.join(site_dir, basename)
             remove = raw_input('Remove {} [y/N]? '.format(remove_name))
             if remove == 'y':
-                os.unlink(remove_name)
+                if os.path.isfile(remove_name):
+                    os.unlink(remove_name)
+                else:
+                    shutil.rmtree(remove_name)
             else:
                 print('Not removing')
 
