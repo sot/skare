@@ -14,7 +14,7 @@ chandra_models-0.10.tar.gz
 # Chandra namespace packages
 Chandra.cmd_states-0.10.tar.gz
 Chandra.ECF-0.2.1.tar.gz
-Chandra.Maneuver-0.5.1.tar.gz
+Chandra.Maneuver-0.6.tar.gz
 Chandra.taco-0.2.1.tar.gz
 Chandra.Time-3.20.tar.gz
 #
