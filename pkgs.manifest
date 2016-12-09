@@ -4,19 +4,19 @@
 #
 Miniconda-64-3.19.0.tar.gz
 Miniconda-32-3.19.0.tar.gz
-agasc-0.3.1.tar.gz
+agasc-0.4.tar.gz
 asciitable-0.8.0.tar.gz
 autopep8-1.1.1.tar.gz
 BeautifulSoup-3.2.1.tar.gz
 chandra_aca-0.8.tar.gz
-chandra_models-0.10.tar.gz
+chandra_models-0.11.tar.gz
 #
 # Chandra namespace packages
 Chandra.cmd_states-0.10.tar.gz
 Chandra.ECF-0.2.1.tar.gz
-Chandra.Maneuver-0.5.1.tar.gz
+Chandra.Maneuver-0.6.tar.gz
 Chandra.taco-0.2.1.tar.gz
-Chandra.Time-3.19.1.tar.gz
+Chandra.Time-3.20.tar.gz
 #
 cosmocalc-0.1.2.tar.gz
 cxotime-0.1.tar.gz
@@ -143,7 +143,7 @@ Astro-Cosmology-0.90.tar.gz
 BayesianBlocks-0.02.tar.gz
 cfitsio3020.tar.gz
 CFITSIO-Simple-0.10.tar.gz
-Chandra-Time-0.09.1.tar.gz
+Chandra-Time-0.9.2.tar.gz
 Chandra-Tools-dmcoords-0.28.tar.gz
 Chandra-Tools-ECF-0.01.tar.gz
 Class-Accessor-0.30.tar.gz
@@ -254,7 +254,7 @@ TimeDate-1.16.tar.gz
 wcstools-3.7.8.tar.gz
 XML-Simple-2.18.tar.gz
 XML-Parser-2.36.tar.gz
-XTime-1.2.1.tar.gz
+XTime-1.2.2.tar.gz
 Ska-RunAsp-0.03.tar.gz
 CXC-Archive-2.2.0_ska.tar.gz
 Capture-Tiny-0.15.tar.gz
