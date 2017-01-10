@@ -30,7 +30,7 @@ Packages
 ^^^^^^^^^^^
 
 ===================  =======  =======  ===============================================
-Package               0.18     0.18      Pull Request
+Package               0.18     2.18      Pull Request
 ===================  =======  =======  ===============================================
 agasc                 0.4      3.4     https://github.com/sot/agasc/pull/8
 Chandra.cmd_states    0.10     3.10    https://github.com/sot/cmd_states/pull/26
@@ -59,15 +59,7 @@ Ska.Shell             0.3.1    3.3.1   https://github.com/sot/Ska.Shell/pull/7
 Ska.Sun               0.5      3.5     https://github.com/sot/Ska.Sun/pull/4
 Ska.tdb               0.5.1    3.5.1   https://github.com/sot/Ska.tdb/pull/7
 ska_path              0.1      3.1     https://github.com/sot/ska_path/pull/1
-
-
-Packages to be deprecated
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-- ``Ska.astro``
-- ``Ska.ParseCM``
-
-===================  =======  =======  ======================================
+===================  =======  =======  ===============================================
 
 Review
 ------
