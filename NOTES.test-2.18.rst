@@ -1,4 +1,4 @@
-Ska Runtime Environment 0.18
+Ska Runtime Environment 2.18
 ===========================================
 
 .. Build and install this document with:
@@ -122,6 +122,7 @@ Install skare on 64-bit HEAD CentOS-5 machine.
 
 Testing of /proj/sot/ska/dev
 ----------------------------
+::
 
   cd ~/git/ska_testr
   git checkout master
@@ -172,7 +173,6 @@ Testing of /proj/sot/ska/dev
    timelines
    xija
   ====================
-::
 
   # Diff regression outputs, confirm diffs only in package manifest
   (ska17; meld regress/0.18 regress/2.18)
