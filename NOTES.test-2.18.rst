@@ -3,25 +3,82 @@ Ska Runtime Environment 2.18
 
 .. Build and install this document with:
    rst2html.py --stylesheet=/proj/sot/ska/www/ASPECT/aspect.css \
-        --embed-stylesheet NOTES.test-0.18.rst NOTES.test-0.18.html
-   cp NOTES.test-0.18.html /proj/sot/ska/www/ASPECT/skare-0.18.html
+        --embed-stylesheet NOTES.test-2.18.rst NOTES.test-2.18.html
+   cp NOTES.test-2.18.html /proj/sot/ska/www/ASPECT/skare-2.18.html
 
 Summary
 ---------
 
-Version 0.18 of the Ska Runtime environment is a significant upgrade for the HEAD and GRETA
-Ska-flight environment (64, 32 bit) and GRETA Ska-test 32-bit.
+Version 2.18 of the Ska Runtime environment is a significant infrastructure
+upgrade for the HEAD Ska flight and GRETA Ska test environments (64 bit).
+Later this will be the basis for the next GRETA flight (Matlab) Ska
+environment.
 
-Highlights include ...
+This update includes the upgrade of 27 packages to versions that are source-code
+compliant with both Python 2.7 and Python 3.5+.  In most cases the code changes
+are small and logically insignificant.  This include issues like changing print
+statements into print functions, or putting a ``list()`` around an iterable.  In
+a few cases (for instance ``Ska.engarchive`` or ``kadi``) the changes are more
+substantial because of issues largely related to unicode handling.  For
+``kadi``, the Python 3 version uses version 1.10 of Django (vs. 1.6 for Python
+2.7), so this forced significant changes.
+
+In addition, in order to verify that the package updates do not introduce
+regressions, automated unit testing capability was added to many packages.
 
 
 Testing overview
 ^^^^^^^^^^^^^^^^^
 
-Pre-install testing is focused on GRETA Ska-test-32.  This is the test version of the
-flight image that will be installed for GRETA / MCC operations.  In addition the
-HEAD Ska-flight-32 image that will be directly rsynced to GRETA Ska-flight is also
-tested.
+As mentioned, improved unit and regression testing is a major component
+of this update.  To this end work was done on the ``ska_testr`` package:
+
+- http://cxc.cfa.harvard.edu/mta/ASPECT/tool_doc/testr
+- https://github.com/sot/ska_testr
+
+Note that ``ska_testr`` is not actually part of Ska, but rather is a separate
+repository of package test specifications that thoroughly test an installation
+of Ska.  For this release `https://github.com/sot/ska_testr/tree/0.1.1 <version
+0.1.1>`_ of ``ska_testr`` was used.
+
+The following packages now have automated tests, with coverage ranging from
+minimal to decent::
+
+  ====================
+       Package
+  ====================
+   acisfp_check
+   agasc
+   chandra_aca
+   Chandra.cmd_states
+   Chandra.Maneuver
+   Chandra.Time
+   cxotime
+   dea_check
+   dpa_check
+   kadi
+   maude
+   mica
+   parse_cm
+   pyyaks
+   Quaternion
+   Ska.DBI
+   Ska.engarchive
+   Ska.ftp
+   Ska.Numpy
+   Ska.ParseCM
+   Ska.quatutil
+   Ska.Shell
+   Ska.Table
+   Ska.tdb
+   starcheck
+   timelines
+   xija
+  ====================
+
+Initial testing was done on HEAD and GRETA with a pre-install version installed
+to ``/proj/sot/ska/dev``.  After installation to ``/proj/sot/ska`` (HEAD) and
+``/proj/sot/ska/test`` (GRETA), post-install testing will be done.
 
 Changes from 0.18-r630-bc4d24f (current HEAD Ska flight)
 --------------------------------------------------------
@@ -141,39 +198,6 @@ Testing of /proj/sot/ska/dev
   # Confirm all "pass"
   cat outputs/2.18/
 
-  ====================
-       Package
-  ====================
-   acisfp_check
-   agasc
-   chandra_aca
-   Chandra.cmd_states
-   Chandra.Maneuver
-   Chandra.Time
-   cxotime
-   dea_check
-   dpa_check
-   kadi
-   maude
-   mica
-   package_manifest
-   parse_cm
-   pyyaks
-   Quaternion
-   Ska.DBI
-   Ska.engarchive
-   Ska.ftp
-   Ska.Numpy
-   Ska.ParseCM
-   Ska.quatutil
-   Ska.Shell
-   Ska.Table
-   Ska.tdb
-   starcheck
-   timelines
-   xija
-  ====================
-
   # Diff regression outputs, confirm diffs only in package manifest
   (ska17; meld regress/0.18 regress/2.18)
 
@@ -222,6 +246,10 @@ Testing on GRETA 64-bit::
   # resources or interfaces that are not available on GRETA.
   run_testr --exclude='*long*' --packages-repo=/home/SOT/git
 
+  # ESA view tool (basic functional checkout, chimchim only)::
+  cd
+  python /proj/sot/ska/share/taco/esaview.py MAR2513
+
 All tests from above pass except following, which are all
 acceptable / expected:
 
@@ -239,6 +267,9 @@ Chandra.cmd_states     3 pass, 1 xfail: No sybase
          timelines     0 pass, 1 xfail: No sybase
 ==================   =============================================
 
+
+**ALL CONTENT BELOW IS NOT YET UPDATED, IGNORE!!**
+----------------------------------------------------
 
 Installation on GRETA network (flight)
 --------------------------------------
