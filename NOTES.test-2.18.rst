@@ -302,7 +302,7 @@ Build (on HEAD):
 - Following the build instructions for /proj/sot/ska/dev, but use
   prefix=/proj/sot/ska/test and commit fb2811a instead
 
-Install and test on GRETA (test)
+Install and test on GRETA (test)::
 
   set version=2.18-r639-fb2811a
   set arch=x86_64-linux_CentOS-5
