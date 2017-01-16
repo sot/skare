@@ -27,6 +27,12 @@ In addition, in order to verify that the package updates do not introduce
 regressions, automated unit testing capability was added to many packages.
 
 
+Interface changes
+^^^^^^^^^^^^^^^^^
+
+This update does not change any interfaces and no impact to existing code
+is anticipated.
+
 Testing overview
 ^^^^^^^^^^^^^^^^^
 
@@ -267,179 +273,69 @@ Chandra.cmd_states     3 pass, 1 xfail: No sybase
          timelines     0 pass, 1 xfail: No sybase
 ==================   =============================================
 
+Installation on HEAD network (flight)
+-------------------------------------
 
-**ALL CONTENT BELOW IS NOT YET UPDATED, IGNORE!!**
-----------------------------------------------------
+Installation and test overview:
 
-Installation on GRETA network (flight)
---------------------------------------
+- Make a backup copy of the 64-bit SKA_ARCH_OS directory as aca@kadi
+- Log in to aca@unagi
+- cd ~/git/skare
+- Check out release commit for py2-3, effectively same as r633-8a7e0b8 before rebase
+  - git checkout fb2811a
+- ./configure --prefix=/proj/sot/ska
+- Perform an in-place update with ``make python_modules``
+- Run full ska_testr unit and regression tests
+- After one-week soak delete the backup copy
 
-Ensure that the HEAD flight distribution has been installed and tested.
+Fallback:
 
-On or before live-install day as SOT user::
-
-  # copy virtual-box built "candidate" directory into a temp directory on chimchim disk
-  cd /proj/sot/ska/tmp
-  rsync -av jeanconn@ccosmos:/proj/sot/ska/ska_0.18_candidate .
-  # this has previously been done in /proj/sot/ska/dist and that would be fine as well
-
-
-On chimchim as FOT CM (chimchim required for local disk access for copy)::
-
-  set version=0.18-r460-06aafd2
-  cd /proj/sot/ska/arch
-  mkdir skare-${version}
-
-  rsync -av /proj/sot/ska/tmp/ska_0.18_candidate/arch skare-${version}
-  # change these from 'pegasus' group
-  chgrp -R fotcm skare-${version}
-  chmod g+w -R skare-${version}
-
-  # do the actual linking
-  rm i686-linux_CentOS-5
-  rm x86_64-linux_CentOS-5
-  ln -s skare-${version}/i686-linux_CentOS-5 ./
-  ln -s skare-${version}/x86_64-linux_CentOS-5 ./
+- Move the backup directory back into place as prime
 
 
-On GRETA chimchim as SOT
+Installation on GRETA network (test)
+------------------------------------
 
-Complete non-arch install::
+Build (on HEAD):
 
-  cd /proj/sot/ska/lib
-  mv perl perl_pre_0.18
-  cd /proj/sot/ska/tmp/ska_0.18_candidate
-  rsync -av lib/perl /proj/sot/ska/lib/
-  rsync -av --dry-run bin/ /proj/sot/ska/bin/
-  rsync -av bin/ /proj/sot/ska/bin/
+- Move the existing /proj/sot/ska/test to test-bak
+- Following the build instructions for /proj/sot/ska/dev, but use
+  prefix=/proj/sot/ska/test and commit fb2811a instead
 
-  # Remove data directories that would be no-ops
-  rm -r data/cmd_states
-  rm -r data/eng_archive
-  rm dir data/pyger
+Install and test on GRETA (test)
 
-  # Remove kadi data directory as we don't want to update task schedule now
-  rm -r data/kadi/
+  set version=2.18-r639-fb2811a
+  set arch=x86_64-linux_CentOS-5
 
-  # Double check remaining data to sync
+  mkdir /proj/sot/ska/test/arch/${version}
+  rsync -azv aldcroft@ccosmos:/proj/sot/ska/test/arch/${arch} \
+                              /proj/sot/ska/test/arch/${version}/
+      (Probably want to ignore pkgs though)
 
-   SOT@chimchim% tree data
-   data
-   |-- starcheck
-   |   |-- A.tlr
-   |   |-- ACABadPixels
-   |   |-- B.tlr
-   |   |-- aca_spec.json
-   |   |-- agasc.bad
-   |   |-- bad_acq_stars.rdb
-   |   |-- bad_gui_stars.rdb
-   |   |-- characteristics.yaml
-   |   |-- down.gif
-   |   |-- fid_CHARACTERISTICS
-   |   |-- fid_CHARACTERIS_FEB07
-   |   |-- fid_CHARACTERIS_JAN07
-   |   |-- fid_CHARACTERIS_JUL01
-   |   |-- overlib.js
-   |   |-- tlr.cfg
-   |   `-- up.gif
-   `-- taco
-       |-- task_schedule.cfg
-       `-- task_schedule_occ.cfg
+  cd /proj/sot/ska/test/arch
+  ls -l  # make sure everything looks good
+  ls -l ${version}
+  rm ${arch}
+  ln -s ${version}/${arch} ./
 
-  # Sync data
-  rsync -av data/ /proj/sot/ska/data/
+Testing on GRETA 64-bit::
 
-  # Skip no-op include files
-  rm -r include
+  # Make sure all repos with ``*git*`` tests are up to date.
 
-  # Syncing share, but while this updated files
-  # it is also basically a no-op as the running cron task
-  # versions of the tasks are being called from /proj/sot/ska/test/share
-  rsync -av share/ /proj/sot/ska/share/
+  cd ~/git/ska_testr
+  git pull origin master
+  git checkout fddff8d
 
+  # long tests are all related to data product creation
+  # which does not happen on GRETA.  They also tend to require
+  # resources or interfaces that are not available on GRETA.
+  run_testr --exclude='*long*' --packages-repo=/home/SOT/git
 
-==> OK: TLA/JC 2015-Jun-29
-
-Smoke test on chimchim::
-
-  source /proj/sot/ska/bin/ska_envs.csh
-  ipython --pylab
-  >>> import Ska.engarchive.fetch as fetch
-  >>> fetch.__version__
-  >>> dat = fetch.Msid('tephin', '2012:001', stat='5min')
-  >>> dat.plot()
-
-  >>> from kadi import events
-  >>> print events.safe_suns.all()
-
-  >>> import xija
-  >>> xija.__version__
-
-==> OK: TLA/JC 2015-Jun-29
-
-Smoke test on snowman::
-
-  source /proj/sot/ska/bin/ska_envs.csh
-  ipython --pylab
-  >>> import Ska.engarchive.fetch as fetch
-  >>> fetch.__version__
-  >>> dat = fetch.Msid('tephin', '2012:001', stat='5min')
-  >>> dat.plot()
-
-  >>> from kadi import events
-  >>> print events.safe_suns.all()
-
-  >>> import xija
-  >>> xija.__version__
-
-==> OK: TLA/JC 2015-Jun-29
-
-
-
-Test on GRETA network (flight)
---------------------------------------
-
-Test xija as SOT (32 and 64 bit)::
-
-  ska
-  cd
-  ipython
-  import xija
-  xija.test()
-
-==> OK: TLA/JC 64 bit, 32 bit  2015-Jun-29
-
-Test eng_archive (32 and 64 bit)::
-
-  ska
-  ipython
-  import Ska.engarchive
-  Ska.engarchive.test()
-
-
-==> OK: TLA/JC 64 bit, 32 bit but with usual fail on DP_SUN_XZ_ANGLE daily 2015-Jun-29
-
-Test kadi (32 and 64 bit)
-::
-
-  cd ~/git/kadi
-  git checkout 0.12.2
-  py.test kadi
-
-==> OK: TLA/JC 64 bit, 32 bit  2015-Jun-29
-
-ESA view tool (basic functional checkout)::
-
-  # On chimchim only
-  ska
+  # ESA view tool (basic functional checkout, chimchim only)::
   cd
   python /proj/sot/ska/share/taco/esaview.py MAR2513
 
-==> OK: TLA/JC 64 bit 2015-Jun-29
+Fallback:
 
-Test starcheck (64 bit)::
+- Move the backup directory back into place as prime
 
-  # On chimchim only
-  ska
-  cd /tmp
-  starcheck -dir /home/SOT/tmp/JAN3111C -out test
