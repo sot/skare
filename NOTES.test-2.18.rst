@@ -212,8 +212,8 @@ Testing of /proj/sot/ska/dev
   python /proj/sot/ska/share/taco/esaview.py MAR2513
 
 
-Installation on GRETA network (dev)
--------------------------------------
+Installation on GRETA network (dev) [This was a process mistake and was undone]
+-------------------------------------------------------------------------------
 
 On HEAD ccosmos::
 
@@ -273,6 +273,16 @@ Chandra.cmd_states     3 pass, 1 xfail: No sybase
          timelines     0 pass, 1 xfail: No sybase
 ==================   =============================================
 
+Fallback::
+
+A fallback was executed - GRETA dev is intended to remain at version 0.18-r554-c27b973 until
+Matlab tools promotion. Actions taken::
+
+  rm ${arch}
+  ln -s skadev-0.18-r554-c27b973/x86_64-linux_CentOS-5 .
+
+
+
 Installation on HEAD network (flight)
 -------------------------------------
 
@@ -290,7 +300,13 @@ Installation and test overview:
 
 Fallback:
 
-- Move the backup directory back into place as prime
+- Move the backup directory back into place as prime.
+
+
+
+
+
+
 
 
 Installation on GRETA network (test)
