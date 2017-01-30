@@ -269,6 +269,7 @@ Chandra.cmd_states     3 pass, 1 xfail: No sybase
       acisfp_check     No sybase
          dea_check     No sybase
          dpa_check     No sybase
+         starcheck     No ASCDS for direct mp_get_agasc
               mica     3 pass, 8 xfail: No /data/aca
          timelines     0 pass, 1 xfail: No sybase
 ==================   =============================================
@@ -303,12 +304,6 @@ Fallback:
 - Move the backup directory back into place as prime.
 
 
-
-
-
-
-
-
 Installation on GRETA network (test)
 ------------------------------------
 
@@ -320,13 +315,13 @@ Build (on HEAD):
 
 Install and test on GRETA (test)::
 
-  set version=2.18-r639-fb2811a
+  set version=skare-2.18-r639-fb2811a
   set arch=x86_64-linux_CentOS-5
 
   mkdir /proj/sot/ska/test/arch/${version}
   rsync -azv aldcroft@ccosmos:/proj/sot/ska/test/arch/${arch} \
-                              /proj/sot/ska/test/arch/${version}/
-      (Probably want to ignore pkgs though)
+                              /proj/sot/ska/test/arch/${version}/ \
+        ( --exclude pkgs/ )
 
   cd /proj/sot/ska/test/arch
   ls -l  # make sure everything looks good
