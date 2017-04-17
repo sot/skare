@@ -92,11 +92,9 @@ Install skare on 32-bit and 64-bit.
   # Create arch links
   cd /proj/sot/ska/dev/arch
   rm x86_64-linux_CentOS-5
-  rm x86_64-linux_CentOS-6
   rm i686-linux_CentOS-5
   ln -s skadev-0.18-r554-c27b973/x86_64-linux_CentOS-5 .
   ln -s skadev-0.18-r554-c27b973/i686-linux_CentOS-5 .
-  ln -s x86_64-linux_CentOS-5 x86_64-linux_CentOS-6
 
   # Update other pieces; perl and build are sufficient for dev
   cd /proj/sot/ska/dev/lib
@@ -370,16 +368,21 @@ Install skare on 32-bit and 64-bit.
 
   # Optional non-arch cleanup items
   cd /proj/sot/ska/lib
-  rm -rf perl_bak
   rm -rf perl_bak2
   rm -rf perl_pre_0.18
   cd /proj/sot/ska
   rm -rf build_bak
-  rm -rf build_bak2
   rm -rf dev-bak
-  rm -rf dev-bak2
 
   # As FOT CM user (on chimchim for disk speed)
+
+  # This seemed non-removeable even as FOT user so I just relocated it
+  cd /proj/sot/ska/lib
+  mv perl_bak perl_bak2
+  # More optional non-arch cleanup items that were write-protected
+  cd /proj/sot/ska
+  rm -rf build_bak2
+  rm -rf dev-bak2
 
   # Rsync arch into /proj/sot/ska/arch, link, and rsync the other pieces as needed
   cd /proj/sot/ska/arch
@@ -392,7 +395,6 @@ Install skare on 32-bit and 64-bit.
   rm i686-linux_CentOS-5
   ln -s skare-0.18-r554-c27b973/x86_64-linux_CentOS-5 .
   ln -s skare-0.18-r554-c27b973/i686-linux_CentOS-5 .
-  ln -s x86_64-linux_CentOS-5 x86_64-linux_CentOS-6
 
   # Update other pieces
   cd /proj/sot/ska/lib
@@ -415,12 +417,25 @@ Install skare on 32-bit and 64-bit.
 Testing in GRETA flight
 ----------------------------------------
 
-64 bit tests were run from chimchim.  32 bit tests were run from greta7b
+64 bit tests were run from chimchim.  32 bit tests were run from gretasot
+
+Chandra.Time
+^^^^^^^^^^^^
+::
+
+  ipython
+  >>> import Chandra.Time
+  >>> Chandra.Time.__version__
+
+
+==> OK at version 3.20: chimchim, gretasot (17-Apr-2017)
+
 
 Eng archive and kadi smoke tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ::
 
+  ska
   ipython --pylab
   >>> import Ska.engarchive.fetch as fetch
   >>> fetch.__version__
@@ -430,7 +445,7 @@ Eng archive and kadi smoke tests
   >>> from kadi import events
   >>> print events.safe_suns.all()
 
-===> 
+===> OK chimchim, gretasot (17-Apr-2017)
 
 
 Xija
@@ -445,7 +460,7 @@ Xija
   '0.7'
   xija.test()
 
-==> 
+==> minusz.npz fail but good besides that chimchim, gretasot (17-Apr-2017)
 
 chandra_aca
 ^^^^^^^^^^^
@@ -457,7 +472,7 @@ chandra_aca
   '0.7'
   chandra_aca.test()
 
-==> 
+===> OK chimchim, gretasot (17-Apr-2017)
 
 Kadi
 ^^^^
@@ -467,7 +482,7 @@ Kadi
   git checkout 0.12.2
   py.test kadi
 
-==> 
+===> OK chimchim, gretasot (17-Apr-2017)
 
 
 Eng_archive
@@ -479,7 +494,7 @@ Eng_archive
   import Ska.engarchive
   Ska.engarchive.test(args='-k "not test_fetch_regr"')
 
-==> 
+==> expected test_get_fetch_size_accuracy fail.  otherwise OK chimchim, gretaso (17-Apr-2017)
 
 
 Check plotting for qt
@@ -492,4 +507,5 @@ Check plotting for qt
 
   display /tmp/junk.png
 
-==> 
+===> OK chimchim, gretasot (17-Apr-2017)
+
