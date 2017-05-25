@@ -13,7 +13,7 @@ chandra_aca-3.12.tar.gz
 chandra_models-3.11.tar.gz
 #
 # Chandra namespace packages
-Chandra.cmd_states-3.10.tar.gz
+Chandra.cmd_states-3.11.tar.gz
 Chandra.ECF-0.2.1.tar.gz
 Chandra.Maneuver-3.6.tar.gz
 Chandra.taco-0.2.1.tar.gz
