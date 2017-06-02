@@ -1,3 +1,10 @@
+"""
+Prune old package versions from /proj/sot/ska/pkgs and put them into
+/proj/sot/ska/pkgs/OLD.
+
+Comment out the ``shutil.move`` line for a dry run.
+"""
+
 import re
 import glob
 import shutil
@@ -15,7 +22,6 @@ for f in files:
     if m:
         name, version = m.groups()
         pkgs[name].append((version, f))
-
 
 for name, versions in pkgs.items():
     versions = sorted(versions, key=lambda x: LooseVersion(x[0]))
