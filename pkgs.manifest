@@ -9,7 +9,7 @@ agasc-3.5.tar.gz
 asciitable-0.8.0.tar.gz
 autopep8-1.1.1.tar.gz
 BeautifulSoup-3.2.1.tar.gz
-chandra_aca-3.12.tar.gz
+chandra_aca-3.13.tar.gz
 chandra_models-3.11.tar.gz
 #
 # Chandra namespace packages
@@ -42,7 +42,7 @@ pyyaks-3.3.4.tar.gz
 Quaternion-3.4.1.tar.gz
 sherpa-4.7.tar.gz
 ska_path-3.1.tar.gz
-starcheck-11.17.tar.gz
+starcheck-11.18.tar.gz
 #
 # Ska namespace packages
 Ska.arc5gl-3.1.1.tar.gz
