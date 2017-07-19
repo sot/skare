@@ -15,11 +15,11 @@ django
 docutils
 h5py
 ipython
-ipython-notebook
 ipyparallel
 ipywidgets
 jinja2
 jpeg
+jupyter
 libtiff
 line_profiler
 lxml
@@ -46,12 +46,7 @@ pyparsing
 #
 # pyside
 #
-# Need qt and pyqt version 4 not 5 to avoid warnings like below on Py3 with CentOS-6:
-# In [1]: failed to get the current screen resources
-# QXcbConnection: XCB error: 173 (Unknown), sequence: 164, resource id: 89,
-#   major code: 150 (Unknown), minor code: 20
-#
-pyqt=4.*
+pyqt
 pytables
 pytest
 python-dateutil
