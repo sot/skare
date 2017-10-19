@@ -273,13 +273,14 @@ Check plotting for qt
 Build of /proj/sot/ska
 ----------------------
 
+
 Install skare on 32-bit and 64-bit.
 ::
 
   # Get skare repository on virtual CentOS-5 machine
   cd ~/git/skare
   git fetch
-  git checkout greta_2016_322
+  git checkout greta_update_xija_3.8
 
   # Choose prefix (dev or flight) and configure
   prefix=/proj/sot/ska
@@ -296,65 +297,50 @@ Install skare on 32-bit and 64-bit.
   tar -cvpf 64.tar arch bin include lib build/*/*/.installed   # 64 bit VM
 
   # Rsync to HEAD /proj/sot/ska/tmp
-  mkdir /proj/sot/ska/tmp/ska-0.18-r554 # on HEAD
-  rsync -aruvz 32.tar jeanconn@fido:/proj/sot/ska/tmp/ska-0.18-r554 # 32 bit VM
-  rsync -aruvz 64.tar jeanconn@fido:/proj/sot/ska/tmp/ska-0.18-r554 # 32 bit VM
+  mkdir /proj/sot/ska/tmp/ska-0.18-r555 # on HEAD
+  rsync -aruvz 32.tar jeanconn@fido:/proj/sot/ska/tmp/ska-0.18-r555 # 32 bit VM
+  rsync -aruvz 64.tar jeanconn@fido:/proj/sot/ska/tmp/ska-0.18-r555 # 64 bit VM
 
   # Rsync from ccosmos to GRETA tmp on machine chimchim
-  mkdir /proj/sot/ska/tmp/ska-0.18-r554 # on GRETA
-  cd /proj/sot/ska/tmp/ska-0.18-r554
-  rsync -aruv jeanconn@ccosmos:/proj/sot/ska/tmp/ska-0.18-r554/\*tar .
+  mkdir /proj/sot/ska/tmp/ska-0.18-r555 # on GRETA
+  cd /proj/sot/ska/tmp/ska-0.18-r555
+  rsync -aruv jeanconn@ccosmos:/proj/sot/ska/tmp/ska-0.18-r555/\*tar .
   tar -xvpf 32.tar
   tar -xvpf 64.tar
   # remove no-longer needed tarballs
   rm 32.tar
   rm 64.tar
 
-  # Optional non-arch cleanup items
-  cd /proj/sot/ska/lib
-  rm -rf perl_bak2
-  rm -rf perl_pre_0.18
-  cd /proj/sot/ska
-  rm -rf build_bak
-  rm -rf dev-bak
-
   # As FOT CM user (on chimchim for disk speed)
-
-  # This seemed non-removeable even as FOT user so I just relocated it
-  cd /proj/sot/ska/lib
-  mv perl_bak perl_bak2
-  # More optional non-arch cleanup items that were write-protected
-  cd /proj/sot/ska
-  rm -rf build_bak2
-  rm -rf dev-bak2
 
   # Rsync arch into /proj/sot/ska/arch, link, and rsync the other pieces as needed
   cd /proj/sot/ska/arch
-  mkdir skare-0.18-r554-c27b973
-  rsync -aruv /proj/sot/ska/tmp/ska-0.18-r554/arch/\* skare-0.18-r554-c27b973
+  mkdir skare-0.18-r555-5e504a3
+  rsync -aruv /proj/sot/ska/tmp/ska-0.18-r555/arch/* skare-0.18-r555-5e504a3/
 
   # Create arch links
   cd /proj/sot/ska/arch
   rm x86_64-linux_CentOS-5
   rm i686-linux_CentOS-5
-  ln -s skare-0.18-r554-c27b973/x86_64-linux_CentOS-5 .
-  ln -s skare-0.18-r554-c27b973/i686-linux_CentOS-5 .
+  ln -s skare-0.18-r555-5e504a3/x86_64-linux_CentOS-5 .
+  ln -s skare-0.18-r555-5e504a3/i686-linux_CentOS-5 .
 
   # Update other pieces
   cd /proj/sot/ska/lib
+  # remove perl_bak as needed
   mv perl perl_bak
-  rsync -aruv /proj/sot/ska/tmp/ska-0.18-r554/lib/perl .
+  rsync -aruv /proj/sot/ska/tmp/ska-0.18-r555/lib/perl .
   cd /proj/sot/ska
   rm -r build
-  rsync -aruv /proj/sot/ska/tmp/ska-0.18-r554/build .
+  rsync -aruv /proj/sot/ska/tmp/ska-0.18-r555/build .
 
   # Set arch and lib directories to be not-writeable
   cd /proj/sot/ska/arch
-  chmod a-w -R skare-0.18-r554-c27b973
+  chmod a-w -R skare-0.18-r555-5e504a3
   cd /proj/sot/ska
   chmod a-w -R lib/perl
 
-  #logout as FOT CM user
+  # logout as FOT CM user
 
 
 
@@ -367,12 +353,17 @@ Chandra.Time
 ^^^^^^^^^^^^
 ::
 
+  ska
   ipython
   >>> import Chandra.Time
   >>> Chandra.Time.__version__
+  '3.20'
+  >>> Chandra.Time.test()
 
+==> OK chimchim.  gretasot has this AssertionError: 441763266.184 != 441763266.18399996
+    The 32bit error should be reviewed, but does not appear to be a regression due to this
+    release (was probably already present)
 
-==> OK at version 3.20: chimchim, gretasot (17-Apr-2017)
 
 
 Eng archive and kadi smoke tests
@@ -383,13 +374,22 @@ Eng archive and kadi smoke tests
   ipython --pylab
   >>> import Ska.engarchive.fetch as fetch
   >>> fetch.__version__
+  '0.36.2'
   >>> dat = fetch.Msid('tephin', '2012:001', stat='5min')
   >>> dat.plot()
 
   >>> from kadi import events
-  >>> print events.safe_suns.all()
+  >>> print(events.safe_suns.all())
+  <SafeSun: start=1999:229:20:17:50.616 dur=105091>
+  <SafeSun: start=1999:269:20:22:50.616 dur=43165>
+  <SafeSun: start=2000:048:08:08:54.216 dur=68798>
+  <SafeSun: start=2011:187:12:28:53.816 dur=288624>
+  <SafeSun: start=2012:150:03:33:09.816 dur=118720>
+  <SafeSun: start=2015:264:04:35:24.616 dur=63156>
+  <SafeSun: start=2016:063:17:11:51.076 dur=98457>
 
-===> OK chimchim, gretasot (17-Apr-2017)
+==> OK chimchim, gretasot
+
 
 
 Xija
@@ -401,10 +401,11 @@ Xija
   import os
   import xija
   xija.__version__
-  '0.7'
+  '3.8'
   xija.test()
 
-==> minusz.npz fail but good besides that chimchim, gretasot (17-Apr-2017)
+==> OK on chimchim, gretasot
+
 
 chandra_aca
 ^^^^^^^^^^^
@@ -416,7 +417,8 @@ chandra_aca
   '0.7'
   chandra_aca.test()
 
-===> OK chimchim, gretasot (17-Apr-2017)
+==> OK chimchim, gretasot
+
 
 Kadi
 ^^^^
@@ -426,7 +428,7 @@ Kadi
   git checkout 0.12.2
   py.test kadi
 
-===> OK chimchim, gretasot (17-Apr-2017)
+==> OK chimchim, gretasot
 
 
 Eng_archive
@@ -438,7 +440,7 @@ Eng_archive
   import Ska.engarchive
   Ska.engarchive.test(args='-k "not test_fetch_regr"')
 
-==> expected test_get_fetch_size_accuracy fail.  otherwise OK chimchim, gretaso (17-Apr-2017)
+==> OK chimchim, gretasot (fail on test_get_fetch_size_accuracy noted in dev, OK)
 
 
 Check plotting for qt
@@ -447,9 +449,12 @@ Check plotting for qt
 
   ipython --pylab=qt
   >>> plot()
-  >>> savefig('/tmp/junk.png')
+  >>> savefig('/tmp/junk_chimchim_qt.png')
+  display /tmp/junk_chimchim_qt.png
 
-  display /tmp/junk.png
+  >>> savefig('/tmp/junk_gretasot_qt.png')
+  display /tmp/junk_gretasot_qt.png
 
-===> OK chimchim, gretasot (17-Apr-2017)
+==> OK chimchim, gretasot
+
 
