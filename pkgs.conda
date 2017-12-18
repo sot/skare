@@ -22,6 +22,8 @@ jpeg
 jupyter
 libtiff
 line_profiler
+# Explicitly pinned via pkgs.pinned -> conda-meta/pinned
+llvmlite
 lxml
 matplotlib
 mpi4py
