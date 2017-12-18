@@ -1,5 +1,6 @@
 channels:
  - defaults
+ - cxc/channel/dev
 
 default_channels:
   - https://repo.continuum.io/pkgs/free

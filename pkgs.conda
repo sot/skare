@@ -72,3 +72,4 @@ setuptools
 conda
 conda-env
 pip
+sherpa=4.9.1
