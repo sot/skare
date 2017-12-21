@@ -13,6 +13,7 @@ db
 decorator
 django
 docutils
+git
 h5py
 ipython
 ipyparallel
