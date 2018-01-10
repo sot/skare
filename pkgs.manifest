@@ -15,7 +15,7 @@ chandra_models-3.11.tar.gz
 # Chandra namespace packages
 Chandra.cmd_states-3.14.tar.gz
 Chandra.ECF-0.2.1.tar.gz
-Chandra.Maneuver-3.6.tar.gz
+Chandra.Maneuver-3.7.tar.gz
 Chandra.taco-0.2.1.tar.gz
 Chandra.Time-3.20.1.tar.gz
 #
@@ -25,7 +25,7 @@ Django-1.6.1.tar.gz
 egenix-mx-base-3.0.0.tar.gz
 find_attitude-0.2.tar.gz
 h5py-2.4.0.tar.gz
-hopper-0.2.tar.gz
+hopper-0.3.tar.gz
 kadi-3.14.1.tar.gz
 matplotlib-1.4.3-local-qhull.tar.gz
 maude-3.1.tar.gz
@@ -42,7 +42,7 @@ pyyaks-3.3.4.tar.gz
 Quaternion-3.4.1.tar.gz
 sherpa-4.7.tar.gz
 ska_path-3.1.tar.gz
-starcheck-11.22.tar.gz
+starcheck-11.23.tar.gz
 #
 # ACIS ops packages
 acis_thermal_check-2.1.0.tar.gz
