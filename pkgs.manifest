@@ -46,9 +46,9 @@ starcheck-11.22.tar.gz
 #
 # ACIS ops packages
 acis_thermal_check-2.1.0.tar.gz
-psmc_check-1.0.0.tar.gz
-dpa_check-2.0.0.tar.gz
-dea_check-2.0.0.tar.gz
+psmc_check-1.0.1.tar.gz
+dpa_check-2.1.0.tar.gz
+dea_check-2.0.1.tar.gz
 acisfp_check-2.0.0.tar.gz
 #
 # Ska namespace packages
