@@ -2,6 +2,10 @@ channels:
  - defaults
  - cxc/channel/dev
 
+# defaults here are explicitly set to attempt to reduce to channels that have
+# packages built on CentOS-5 per advice in:
+# https://groups.google.com/a/continuum.io/d/msg/anaconda/rCjAtppZ4pk/rxqLfzZQCQAJ
+# Packages are not guaranteed to be compatible.
 default_channels:
   - https://repo.continuum.io/pkgs/free
   - https://repo.continuum.io/pkgs/r
