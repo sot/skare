@@ -13,6 +13,7 @@ db
 decorator
 django
 docutils
+git
 h5py
 ipython
 ipyparallel
@@ -22,6 +23,8 @@ jpeg
 jupyter
 libtiff
 line_profiler
+# Explicitly pinned via pkgs.pinned -> conda-meta/pinned
+llvmlite
 lxml
 matplotlib
 mpi4py
@@ -70,3 +73,5 @@ setuptools
 conda
 conda-env
 pip
+# Sherpa is pinned in pkgs.pinned
+sherpa
