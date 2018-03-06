@@ -73,5 +73,5 @@ setuptools
 conda
 conda-env
 pip
-# Sherpa is also pinned in pkgs.pinned
-sherpa=4.9.1
+# Sherpa is pinned in pkgs.pinned
+sherpa
