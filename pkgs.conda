@@ -74,4 +74,4 @@ conda
 conda-env
 pip
 # Sherpa is pinned in pkgs.pinned
-sherpa
+#sherpa
