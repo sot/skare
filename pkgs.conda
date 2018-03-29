@@ -28,7 +28,7 @@ llvmlite
 lxml
 matplotlib
 mpi4py
-mpich2
+#mpich2
 networkx
 nose
 numba
