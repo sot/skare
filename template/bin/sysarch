@@ -395,6 +395,26 @@ case "$OS" in
 
     while true ; do
 
+        # brute force redhat?
+
+	if [ -f /etc/redhat-release ]; then
+
+	    _tmp=$(< /etc/redhat-release)
+
+	    case "$_tmp" in
+		*Fedora*    ) os_vendor=RHFC ;;
+		*Enterprise*) os_vendor=RHEL ;;
+		*Red\ Hat*  ) os_vendor=RH ;;
+		*CentOS*    ) os_vendor=CentOS ;;
+	    esac
+
+	    os_version=${_tmp##*elease }
+	    os_version=${os_version%% *}
+	    simplify_os_version $os_version
+	    check_os_version "$os_version" && break
+	fi
+
+
 	if [ -f /etc/issue ]; then
 
 	    exec 4< /etc/issue
@@ -509,23 +529,6 @@ case "$OS" in
 
 	fi
 
-        # brute force redhat?
-
-	if [ -f /etc/redhat-release ]; then
-
-	    _tmp=$(< /etc/redhat-release)
-
-	    case "$_tmp" in
-		*Fedora*    ) os_vendor=RHFC ;;
-		*Enterprise*) os_vendor=RHEL ;;
-		*Red\ Hat*  ) os_vendor=RH ;;
-	    esac
-
-	    os_version=${_tmp##*elease }
-	    os_version=${os_version%% *}
-	    simplify_os_version $os_version
-	    check_os_version "$os_version" && break
-	fi
 
         # no clue
 	die "unable to determine Linux version"
