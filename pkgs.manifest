@@ -50,7 +50,7 @@ acis_thermal_check-2.6.0.tar.gz
 psmc_check-1.1.0.tar.gz
 dpa_check-2.2.0.tar.gz
 dea_check-2.1.0.tar.gz
-acisfp_check-2.2.0.tar.gz
+acisfp_check-2.3.0.tar.gz
 #
 # Ska namespace packages
 Ska.arc5gl-3.1.1.tar.gz
