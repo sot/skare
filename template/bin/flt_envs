@@ -1,84 +1,181 @@
-#!/usr/bin/perl
+#!/bin/bash
 
-use strict;
-use warnings;
+# default shell output format
+OPT_SHELL='sh'
 
-use Cwd;
-use Getopt::Long;
-
-# Use the convention that flt_envs must be in $SKA/bin to derive SKA
-# OVERRIDE any existing value!
-($ENV{SKA} = Cwd::abs_path($0)) =~ s|/bin/flt_envs||;
-
-die "Cannot find the SKA root directory: flt_envs is in unexpected location.\n"
-  unless defined $ENV{SKA} and -d $ENV{SKA};
-
-# Find CXC::Envs::Flight.
-eval <<CXC_ENVS_FLIGHT;
-    use lib '$ENV{SKA}/lib/perl';
-    use CXC::Envs::Flight;
-CXC_ENVS_FLIGHT
-
-if ($@) {
-    die "$@\n";
+help () {
+    echo "flt_envs -shell [sh ksh csh tcsh]"
 }
 
-my %param = ( shell => 'csh',
-	    );
-
-GetOptions( \%param, qw( shell=s
-                         ska
-			 help
-		       ) ) or die;
-
-if ($param{help}) {
-    require Pod::Usage;
-    Pod::Usage::pod2usage ( { -exitval => 0, -verbose => 2 } );
+die () {
+  echo 1>&2 "$0": $*
+  exit 1
 }
 
-print CXC::Envs::Flight::shell_cmds($param{shell}, 'ska');
+# set up extended pattern matching
+shopt -s extglob
 
-__END__
+# parse cmdline
+while [ $# -gt 0 ]; do
+    arg=$1
+    shift
 
-=head1 NAME
+    case "$arg" in
 
-flt_envs - configure Flt environment
+        ?(-)-help|?(-)-hel|?(-)-he|?(-)-h)
+        help 0
+        exit 0;;
 
-=head1 SYNOPSIS
+        ?(-)-shell|?(-)-shel|?(-)-she|?(-)-sh|?(-)-s )
+        OPT_SHELL=$1
+        shift;;
 
-flt_envs [options]
+        -*)
+        die 'unknown option `'$arg"'"
+        ;;
+    esac
+done
 
-=head1 OPTIONS
+if [ ! $OPT_SHELL == 'sh' ] && [ ! $OPT_SHELL == 'ksh' ] \
+    && [ ! $OPT_SHELL == 'csh' ] && [ ! $OPT_SHELL == 'tcsh' ]
+then
+    die 'unknown shell type, must be sh, ksh, csh, or tcsh'
+fi
 
-=over 8
 
-=item B<-shell> [sh ksh csh tcsh]
+FLT=SKA
 
-Output commands compatible with the specified shell
+Ska_bin="$( cd "$(dirname "$0")" ; pwd -P )"
+if [[ $Ska_bin =~ .*bin ]];
+then
+    SKA=${Ska_bin%/bin}
+else
+    echo "Cannot find the SKA root directory: $0 not in a bin directory"
+    exit 1
+fi
 
-=item B<--help>
+# defaults
+declare -A DEFAULT
+DEFAULT[SKA]='/proj/sot/ska'
+DEFAULT[SYBASE]='/soft/SYBASE_OCS15'
+DEFAULT[SYBASE_OCS]='OCS-15_0'
 
-print this usage and exit.
+# make an associative array to store the environment
+declare -A env
 
-=back
+env["$FLT"]=$SKA
+env[SYBASE]="${DEFAULT[SYBASE]}"
+env[SYBASE_OCS]="${DEFAULT[SYBASE_OCS]}"
 
-=head1 DESCRIPTION
+# this block was a no-op but was how this was implemented in flt_ev/CXC::Envs::Flight
+#if [ $SKA ];
+#then
+#    env["$FLT"]=$SKA
+#else
+#    env["$FLT"]="${DEFAULT[SKA]}"
+#fi
 
-B<flt_envs> is normally used inside a shell script (most likely the
-user's shell startup script, like F<.cshrc> or F<.profile>) to 
-add the required entities to the user's environment to access the Flight
-programs and facilities.  B<flt_envs> is designed to be C<eval>'d by the
-shell, e.g.
+for k in 'lib' 'bin' 'data' 'share' 'idl' 'arch'
+do
+    # upper case the part to be used as a label
+    label="`echo $k|tr '[a-z]' '[A-Z]'`"
+    # and store that path where it lives below SKA
+    env["${FLT}_${label}"]="${env[$FLT]}/$k"
+done
 
-  eval `flt_envs -shell csh`
+OS=`uname -s | tr [:upper:] [:lower:]`
+machine=`uname -m`
 
-normally this results in the setting of various environmental variables,
-including the user's path.
+platform_os_generic="${OS}-${machine}"
+env["${FLT}_ARCH_OS"]="${env[${FLT}_ARCH]}/$platform_os_generic"
+flt_arch_os="${env[${FLT}_ARCH_OS]}"
 
-Don't B<eval> the output until you've got what you want.
+# a function to prepend directories to a path
+prependpath()
+{
+    # if $1 exists and is not in path string $2, prepend $1
+    # else just return the path $2
+    local mypath=$2
+    if [ -d "$1" ] && [[ ":$2:" != *":$1:"* ]]; then
+        mypath="$1:$2"
+    fi
+    echo "$mypath"
+}
 
-=head1 AUTHOR
+perl5lib=$PERL5LIB
+for dir in "${env[${FLT}]}/lib/perl" "${env[${FLT}]}/lib/perl/lib"
+do
+   perl5lib=$(prependpath $dir $perl5lib)
+done
+env[PERL5LIB]=$perl5lib
 
-Tom Aldcroft (taldcroft@cfa.harvard.edu)
+ld_lib_path=$LD_LIBRARY_PATH
+for dir in "$flt_arch_os/lib" "$flt_arch_os/pgplot" "/usr/cuda/lib" \
+    "${env[SYBASE]}/${env[SYBASE_OCS]}/lib"
+do
+    ld_lib_path=$(prependpath $dir $ld_lib_path)
+done
+if [ $OS = 'SunOS' ];
+then
+    ld_lib_path=$(prependpath "/usr/local/lib" $ld_lib_path)
+fi
+env[LD_LIBRARY_PATH]=$ld_lib_path
 
-Based on mst_envs by Diab Jerius (djerius@cfa.harvard.edu)
+path=$PATH
+for dir in "/usr/cuda/bin" "${env[${FLT}_BIN]}" "$flt_arch_os/bin"
+do
+    path=$(prependpath $dir $path)
+done
+env[PATH]=$path
+
+pgplot_dir=$(prependpath "$flt_arch_os/pgplot" "$PGPLOT")
+# Take just the first path value for PGPLOT DIR
+env[PGPLOT_DIR]="${pgplot_dir//:*}"
+
+env[CFITSIO]="$flt_arch_os"
+
+# clean out any vars that are not defined, by looping through and
+# unsetting empty ones
+for k in "${!env[@]}"
+do
+    if [ ! ${env[$k]} ];
+    then
+        unset env[$k]
+    fi
+done
+
+
+for dir in "/usr/cuda/bin" "${env[${FLT}_BIN]}" "$flt_arch_os/bin"
+do
+    path=$(prependpath $dir $path)
+done
+env[PATH]=$path
+
+pgplot_dir=$(prependpath "$flt_arch_os/pgplot" "$PGPLOT")
+# Take just the first path value for PGPLOT DIR
+env[PGPLOT_DIR]="${pgplot_dir//:*}"
+
+env[CFITSIO]="$flt_arch_os"
+
+# clean out any vars that are not defined, by looping through and
+# unsetting empty ones
+for k in "${!env[@]}"
+do
+    if [ ! ${env[$k]} ];
+    then
+        unset env[$k]
+    fi
+done
+
+# print the env assignment commands in the right shell syntax
+# OPT_SHELL has already been checked to confirm it is one of the
+# accepted types, so an 'else' is acceptable
+for k in "${!env[@]}"
+do
+    if [ $OPT_SHELL == 'sh' ] || [ $OPT_SHELL == 'ksh' ]
+    then
+        echo "${k}=${env[$k]}; export ${k};"
+    else
+        echo "setenv $k ${env[$k]};"
+    fi
+done
