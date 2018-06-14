@@ -1,84 +1,82 @@
-#!/usr/bin/perl
+#!/usr/bin/env python
 
-use strict;
-use warnings;
+"""
+Print to stdout the appropriate shell commands to initialize the standalone
+Ska environment.
 
-use Cwd;
-use Getopt::Long;
+Usage::
 
-# Use the convention that flt_envs must be in $SKA/bin to derive SKA
-# OVERRIDE any existing value!
-($ENV{SKA} = Cwd::abs_path($0)) =~ s|/bin/flt_envs||;
+  usage: flt_envs [-h] [-shell SHELL]
 
-die "Cannot find the SKA root directory: flt_envs is in unexpected location.\n"
-  unless defined $ENV{SKA} and -d $ENV{SKA};
+  Set flight environment vars
 
-# Find CXC::Envs::Flight.
-eval <<CXC_ENVS_FLIGHT;
-    use lib '$ENV{SKA}/lib/perl';
-    use CXC::Envs::Flight;
-CXC_ENVS_FLIGHT
+  optional arguments:
+    -h, --help    show this help message and exit
+    -arch ARCH String to override arch defined by `uname -s`_`uname -m`
+    -shell SHELL  Shell name (csh|tcsh|bash|sh|ksh) default=bash
+"""
 
-if ($@) {
-    die "$@\n";
-}
+import os
+from os.path import dirname, abspath
+import sys
+import argparse
+import platform
 
-my %param = ( shell => 'csh',
-	    );
+parser = argparse.ArgumentParser(description='Set flight environment vars')
+parser.add_argument('-shell', type=str,
+                    default='bash',
+                    help='Shell name (csh|tcsh|bash|sh|ksh) default=bash')
+parser.add_argument('-arch', type=str,
+                    help='String override arch (uname) string')
+args = parser.parse_args()
 
-GetOptions( \%param, qw( shell=s
-                         ska
-			 help
-		       ) ) or die;
+uname = args.arch
+if uname is None:
+    uname_tuple = platform.uname()
+    uname = "{0}-{1}".format(uname_tuple[0], uname_tuple[4]).lower()
 
-if ($param{help}) {
-    require Pod::Usage;
-    Pod::Usage::pod2usage ( { -exitval => 0, -verbose => 2 } );
-}
+# Use the convention that flt_envs must be in $SKA/bin to derive SKA and
+# OVERRIDE any existing value.
+ska = dirname(dirname(abspath(__file__)))  # from $SKA/bin/flt_envs to $SKA
 
-print CXC::Envs::Flight::shell_cmds($param{shell}, 'ska');
+# Set environment vars
+envs = dict(('SKA_' + suffix.upper(), os.path.join(ska, suffix))
+        for suffix in ('arch', 'data', 'lib', 'share', 'bin', 'idl'))
+ska_arch_os = os.path.join(ska, 'arch', uname)
+envs['SKA_ARCH_OS'] = ska_arch_os
+envs['SKA'] = ska
+envs['SYBASE_OCS'] = 'OCS-15_0'
+envs['PGPLOT_DIR'] = os.path.join(ska_arch_os, 'pgplot')
+envs['SYBASE'] = '/soft/SYBASE15.7'
+envs['CFITSIO'] = ska_arch_os
 
-__END__
+# For these paths, prepend SKA paths but let any existing
+# values in the environment stay
+envs['PERL5LIB'] = ":".join([os.path.join(ska, 'lib', 'perl'),
+                             os.path.join(ska, 'lib', 'perl', 'lib')])
+envs['LD_LIBRARY_PATH'] = ":".join([os.path.join(ska_arch_os, 'lib'),
+                                    os.path.join(ska_arch_os, 'pgplot')])
+for libpath in ['PERL5LIB', 'LD_LIBRARY_PATH']:
+    if libpath in os.environ and os.environ[libpath] != '':
+        envs[libpath] = ":".join([envs[libpath],
+                                  os.environ[libpath]])
 
-=head1 NAME
 
-flt_envs - configure Flt environment
+paths = os.environ['PATH'].split(':')
+ska_bin = envs['SKA_BIN']
+while ska_bin in paths:
+    # I've forgotten why this is needed
+    paths.remove(ska_bin)
+paths.insert(0, os.path.join(ska_arch_os, 'bin'))
+paths.insert(0, ska_bin)
+envs['PATH'] = ':'.join(paths)
 
-=head1 SYNOPSIS
 
-flt_envs [options]
+# Print environment vars correctly for specified shell
+shell_cmd = 'setenv {0} {1}' if (args.shell in ('tcsh', 'csh')) else 'export {0}={1}'
+for name, val in envs.items():
+    print(shell_cmd.format(name, val))
 
-=head1 OPTIONS
 
-=over 8
-
-=item B<-shell> [sh ksh csh tcsh]
-
-Output commands compatible with the specified shell
-
-=item B<--help>
-
-print this usage and exit.
-
-=back
-
-=head1 DESCRIPTION
-
-B<flt_envs> is normally used inside a shell script (most likely the
-user's shell startup script, like F<.cshrc> or F<.profile>) to 
-add the required entities to the user's environment to access the Flight
-programs and facilities.  B<flt_envs> is designed to be C<eval>'d by the
-shell, e.g.
-
-  eval `flt_envs -shell csh`
-
-normally this results in the setting of various environmental variables,
-including the user's path.
-
-Don't B<eval> the output until you've got what you want.
-
-=head1 AUTHOR
-
-Tom Aldcroft (taldcroft@cfa.harvard.edu)
-
-Based on mst_envs by Diab Jerius (djerius@cfa.harvard.edu)
+    
+    

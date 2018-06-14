@@ -8,6 +8,7 @@ import tarfile as Tarfile
 from glob import glob
 import shutil
 from copy import deepcopy
+import platform
 
 import pexpect
 import yaml
@@ -72,6 +73,9 @@ def get_options():
     parser.add_option("--no-env-vars",
                       action="store_true",
                       help="Do not do default env var setup prior to processing",
+                      )
+    parser.add_option("--platform-arch",
+                      help="Overwrite arch (uname) string",
                       )
     parser.add_option("--allow-errors",
                       action="store_true",
@@ -302,12 +306,9 @@ PROMPT2 = r'Install-\t- '
 re_PROMPT = re.compile(r'Install-\d\d:\d\d:\d\d([->]) ')
 pexpect.spawn.sendline_expect = sendline_expect_func(re_PROMPT)
 
-
-# Set the prefix and arch_prefix (latter is architecture dependent installation prefix)
-bash("""eval `./template/bin/sysarch -bash`
-        export platform_os_generic
-        export hw_cpu_generic""",
-     keep_env=True)
+uname = platform.uname()
+os.environ['platform_os_generic'] = "{0}-{1}".format(uname[0], uname[4]).lower()
+os.environ['hw_cpu_generic'] = uname[4]
 
 os.environ['perl'] = opt.perl
 os.environ['python'] = opt.python
@@ -348,6 +349,7 @@ if not opt.installing_anaconda:
 # Remove the default 'env_vars' configuration if --no-env-var specified
 if opt.no_env_vars:
     opt.config.pop(0)
+
 
 # Do the modules installation by iterating over the yaml 'install' sections
 # (delimited by '---' in the yaml cfg file) in each config file
