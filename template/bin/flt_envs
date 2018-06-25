@@ -12,7 +12,6 @@ Usage::
 
   optional arguments:
     -h, --help    show this help message and exit
-    -arch ARCH String to override arch defined by `uname -s`_`uname -m`
     -shell SHELL  Shell name (csh|tcsh|bash|sh|ksh) default=bash
 """
 
@@ -26,14 +25,10 @@ parser = argparse.ArgumentParser(description='Set flight environment vars')
 parser.add_argument('-shell', type=str,
                     default='bash',
                     help='Shell name (csh|tcsh|bash|sh|ksh) default=bash')
-parser.add_argument('-arch', type=str,
-                    help='String override arch (uname) string')
 args = parser.parse_args()
 
-uname = args.arch
-if uname is None:
-    uname_tuple = platform.uname()
-    uname = "{0}-{1}".format(uname_tuple[0], uname_tuple[4]).lower()
+uname_tuple = platform.uname()
+uname = "{0}-{1}".format(uname_tuple[0], uname_tuple[4]).lower()
 
 # Use the convention that flt_envs must be in $SKA/bin to derive SKA and
 # OVERRIDE any existing value.
