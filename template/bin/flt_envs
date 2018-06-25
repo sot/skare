@@ -6,31 +6,31 @@ Ska environment.
 
 Usage::
 
-  usage: flt_envs [-h] [-shell SHELL]
+  usage: flt_envs [-h] [--shell SHELL]
 
   Set flight environment vars
 
   optional arguments:
     -h, --help    show this help message and exit
-    -shell SHELL  Shell name (csh|tcsh|bash|sh|ksh) default=bash
+    --shell SHELL  Shell name (csh|tcsh|bash|sh|ksh) default=bash
 """
 
 import os
 from os.path import dirname, abspath
 import sys
-import argparse
+import optparse
 import platform
 
-parser = argparse.ArgumentParser(description='Set flight environment vars')
-parser.add_argument('-shell', type=str,
+parser = optparse.OptionParser(description='Set flight environment vars')
+parser.add_option('-s', '--shell', type=str,
                     default='bash',
                     help='Shell name (csh|tcsh|bash|sh|ksh) default=bash')
-args = parser.parse_args()
+(options, args) = parser.parse_args()
 
 uname_tuple = platform.uname()
 # platform.uname returns a tuple of strings (system,node,release,version,machine,processor)
 # uname is intended to be like linux-x86_64
-uname = "{0}-{1}".format(uname_tuple[0], uname_tuple[4]).lower()
+uname = "%s-%s" % (uname_tuple[0].lower(), uname_tuple[4])
 
 # Use the convention that flt_envs must be in $SKA/bin to derive SKA and
 # OVERRIDE any existing value.
@@ -70,10 +70,10 @@ envs['PATH'] = ':'.join(paths)
 
 
 # Print environment vars correctly for specified shell
-shell_cmd = 'setenv {0} {1}' if (args.shell in ('tcsh', 'csh')) else 'export {0}={1}'
+if options.shell in ('tcsh', 'csh'):
+    shell_cmd = 'setenv %s %s'
+else:
+    shell_cmd = 'export %s=%s'
 for name, val in envs.items():
-    print(shell_cmd.format(name, val))
+    print(shell_cmd % (name, val))
 
-
-    
-    
