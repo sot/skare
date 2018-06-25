@@ -28,6 +28,8 @@ parser.add_argument('-shell', type=str,
 args = parser.parse_args()
 
 uname_tuple = platform.uname()
+# platform.uname returns a tuple of strings (system,node,release,version,machine,processor)
+# uname is intended to be like linux-x86_64
 uname = "{0}-{1}".format(uname_tuple[0], uname_tuple[4]).lower()
 
 # Use the convention that flt_envs must be in $SKA/bin to derive SKA and
