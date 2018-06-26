@@ -306,9 +306,14 @@ PROMPT2 = r'Install-\t- '
 re_PROMPT = re.compile(r'Install-\d\d:\d\d:\d\d([->]) ')
 pexpect.spawn.sendline_expect = sendline_expect_func(re_PROMPT)
 
-uname = platform.uname()
-os.environ['platform_os_generic'] = "{0}-{1}".format(uname[0], uname[4]).lower()
-os.environ['hw_cpu_generic'] = uname[4]
+uname_tuple = platform.uname()
+system, machine = uname_tuple[0].lower(), uname_tuple[4].lower()
+system = {'darwin': 'osx'}.get(system, system)
+machine = {'x86_64': '64', 'i686': '32'}.get(machine, machine)
+uname = '%s-%s' % (system, machine)
+
+os.environ['platform_os_generic'] = uname
+os.environ['hw_cpu_generic'] = machine
 
 os.environ['perl'] = opt.perl
 os.environ['python'] = opt.python
