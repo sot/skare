@@ -31,7 +31,10 @@ if SHELL not in ['csh', 'tcsh', 'bash', 'sh', 'ksh']:
 uname_tuple = platform.uname()
 # platform.uname returns a tuple of strings (system,node,release,version,machine,processor)
 # uname is intended to be like linux-x86_64
-uname = "%s-%s" % (uname_tuple[0].lower(), uname_tuple[4])
+system, machine = uname_tuple[0].lower(), uname_tuple[4].lower()
+system = {'darwin': 'osx'}.get(system, system)
+machine = {'x86_64': '64', 'i686': '32'}.get(machine, machine)
+uname = '%s-%s' % (system, machine)
 
 # Use the convention that flt_envs must be in $SKA/bin to derive SKA and
 # OVERRIDE any existing value.
