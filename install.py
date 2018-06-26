@@ -74,9 +74,6 @@ def get_options():
                       action="store_true",
                       help="Do not do default env var setup prior to processing",
                       )
-    parser.add_option("--platform-arch",
-                      help="Overwrite arch (uname) string",
-                      )
     parser.add_option("--allow-errors",
                       action="store_true",
                       help="Allow build/test errors and automatically continue",
