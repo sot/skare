@@ -352,7 +352,6 @@ if not opt.installing_anaconda:
 if opt.no_env_vars:
     opt.config.pop(0)
 
-
 # Do the modules installation by iterating over the yaml 'install' sections
 # (delimited by '---' in the yaml cfg file) in each config file
 for configfile in opt.config:
