@@ -11,21 +11,22 @@ Usage::
   Set flight environment vars
 
   optional arguments:
-    -h, --help    show this help message and exit
     --shell SHELL  Shell name (csh|tcsh|bash|sh|ksh) default=bash
 """
 
 import os
 from os.path import dirname, abspath
 import sys
-import optparse
 import platform
 
-parser = optparse.OptionParser(description='Set flight environment vars')
-parser.add_option('-s', '--shell', type=str,
-                    default='bash',
-                    help='Shell name (csh|tcsh|bash|sh|ksh) default=bash')
-(options, args) = parser.parse_args()
+
+SHELL = 'bash'
+for idx, arg in enumerate(sys.argv):
+    if arg == '-shell':
+        SHELL = sys.argv[idx + 1]
+if SHELL not in ['csh', 'tcsh', 'bash', 'sh', 'ksh']:
+    raise ValueError("shell '%s; not supported" % SHELL)
+
 
 uname_tuple = platform.uname()
 # platform.uname returns a tuple of strings (system,node,release,version,machine,processor)
@@ -78,7 +79,7 @@ for libpath in env_paths:
                                         old_path)
 
 # Print environment vars correctly for specified shell
-if options.shell in ('tcsh', 'csh'):
+if SHELL in ('tcsh', 'csh'):
     shell_cmd = 'setenv %s %s'
 else:
     shell_cmd = 'export %s=%s'
