@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python -E
 
 """
 Print to stdout the appropriate shell commands to initialize the standalone
