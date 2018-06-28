@@ -20,12 +20,12 @@ python_32: anaconda_32 basedirs python_libs_32 python_modules
 
 python_64: anaconda_64 basedirs python_libs_64 python_modules
 
-# Git is required for some version.py (this dependency should be changed!)
-python_libs_64: hdf5 xtime git
-# gtk pygtk
+
+python_libs_64: hdf5 xtime
+# git gtk pygtk
 
 # No support for Gtk in 32-bit
-python_libs_32: hdf5 xtime git
+python_libs_32: hdf5 xtime
 
 # meld
 
