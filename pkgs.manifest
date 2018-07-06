@@ -47,7 +47,7 @@ starcheck-11.26.tar.gz
 #
 # ACIS ops packages
 backstop_history-1.1.0.tar.gz
-acis_thermal_check-2.6.0.tar.gz
+acis_thermal_check-2.7.0.tar.gz
 psmc_check-1.1.0.tar.gz
 dpa_check-2.2.0.tar.gz
 dea_check-2.1.0.tar.gz
