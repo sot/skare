@@ -251,7 +251,7 @@ Cmd_states
 **Quaternion** -  ::
 
    >>> import Quaternion
-   >>> Quaternion.test
+   >>> Quaternion.test()
 
 ==> OK: chimchim, gretasot
 
@@ -356,33 +356,36 @@ Install skare on 32-bit and 64-bit.
   rm *.tar
 
 
-  # As FOT CM user (on chimchim for disk speed)
+  # As jrose / FOT CM user (on chimchim for disk speed)
 
 
   # Rsync arch into /proj/sot/ska/arch, link, and rsync the other pieces as needed
   cd /proj/sot/ska/arch
   mkdir skare-2.18-r561-5120035
-  rsync -aruv /proj/sot/ska/tmp/ska-2.18-r561/arch/\* skare-2.18-r561-5120035
+  rsync -av /proj/sot/ska/tmp/ska-2.18-r561/arch/* skare-2.18-r561-5120035
 
   # Create arch links
   cd /proj/sot/ska/arch
   rm x86_64-linux_CentOS-5
   rm i686-linux_CentOS-5
-  ln -s skare-0.18-r561-5120035/x86_64-linux_CentOS-5 .
-  ln -s skare-0.18-r561-5120035/i686-linux_CentOS-5 .
+  ln -s skare-2.18-r561-5120035/x86_64-linux_CentOS-5 .
+  ln -s skare-2.18-r561-5120035/i686-linux_CentOS-5 .
 
 
   # Update other pieces
   cd /proj/sot/ska/lib
+  mv perl_bak perl_bak1
+  chmod +w -R perl_bak1
+  rm -rf perl_back1
   mv perl perl_bak
   rsync -aruv /proj/sot/ska/tmp/ska-2.18-r561/lib/perl .
   cd /proj/sot/ska
-  rm -r build
+  rm -rf build
   rsync -aruv /proj/sot/ska/tmp/ska-2.18-r561/build .
 
   # Set arch and lib directories to be not-writeable
   cd /proj/sot/ska/arch
-  chmod a-w -R skare-0.18-r561-5120035
+  chmod a-w -R skare-2.18-r561-5120035
   cd /proj/sot/ska
   chmod a-w -R lib/perl
 
@@ -404,7 +407,7 @@ Chandra.Time
   >>> Chandra.Time.__version__
 
 
-==> OK at version 3.20: chimchim, gretasot (17-Apr-2017)
+==> OK at version 3.20.1: chimchim, gretasot (03-Aug-2018)
 
 
 Eng archive and kadi smoke tests
@@ -415,13 +418,14 @@ Eng archive and kadi smoke tests
   ipython --pylab
   >>> import Ska.engarchive.fetch as fetch
   >>> fetch.__version__
+  '3.43.1'
   >>> dat = fetch.Msid('tephin', '2012:001', stat='5min')
   >>> dat.plot()
 
   >>> from kadi import events
   >>> print events.safe_suns.all()
 
-===> OK chimchim, gretasot (17-Apr-2017)
+===> OK chimchim, gretasot (03-Aug-2018)
 
 
 Xija
@@ -433,10 +437,10 @@ Xija
   import os
   import xija
   xija.__version__
-  '0.7'
+  '3.9'
   xija.test()
 
-==> minusz.npz fail but good besides that chimchim, gretasot (17-Apr-2017)
+==> OK chimchim, gretasot (03-Aug-2018)
 
 chandra_aca
 ^^^^^^^^^^^
@@ -445,32 +449,47 @@ chandra_aca
   ipython
   import chandra_aca
   chandra_aca.__version__
-  '0.7'
+  '3.20'
   chandra_aca.test()
 
-===> OK chimchim, gretasot (17-Apr-2017)
+===> OK chimchim, gretasot (03-Aug-2018)
 
 Kadi
 ^^^^
 ::
 
-  cd ~/git/kadi
-  git checkout 0.12.2
-  py.test kadi
+  import kadi
+  kadi.test()
 
-===> OK chimchim, gretasot (17-Apr-2017)
+==> OK on chimchim.  kadi.commands fails test_quick, test_states_2017, test_reduce_states_cmd_states
+on gretasot.  kadi.commands is not required operationally and not presently supported for
+32-bit. (03-Aug-2018)
 
 
 Eng_archive
 ^^^^^^^^^^^^
 ::
 
-  # Do kadi tests before and copy events and ltt_bads if needed
-  ipython
+  cd
+  skadev
+  python
   import Ska.engarchive
-  Ska.engarchive.test(args='-k "not test_fetch_regr"')
+  Ska.engarchive.__version
+  '3.43.1'
+  Ska.engarchive.test()
 
-==> expected test_get_fetch_size_accuracy fail.  otherwise OK chimchim, gretaso (17-Apr-2017)
+==> Four data_source tests fail.  MAUDE tests.  This is due to MAUDE
+1.0 change since environment was created. otherwise OK chimchim, gretasot (03-Aug-2018)
+
+
+Chandra.Maneuver
+^^^^^^^^^^^^^^^^^
+::
+
+  import Chandra.Maneuver
+  Chandra.Maneuver.test()
+
+==> Small numeric diffs on gretasot.  OK chimchim (03-Aug-2018)
 
 
 Check plotting for qt
@@ -483,5 +502,5 @@ Check plotting for qt
 
   display /tmp/junk.png
 
-===> OK chimchim, gretasot (17-Apr-2017)
+===> OK chimchim, gretasot (03-Aug-2018)
 
