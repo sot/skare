@@ -1,0 +1,1422 @@
+#! /bin/bash
+
+# --8<--8<--8<--8<--
+#
+# Copyright (C) 2006 Smithsonian Astrophysical Observatory
+#
+# This file is part of sysarch
+#
+# sysarch is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# sysarch is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the
+#       Free Software Foundation, Inc.
+#       51 Franklin Street, Fifth Floor
+#       Boston, MA  02110-1301, USA
+#
+# -->8-->8-->8-->8--
+
+PATH=/bin:/usr/bin:/usr/sbin
+
+# set up extended pattern matching
+shopt -s extglob
+
+die () {
+  echo 1>&2 "$0": $*
+  exit 1
+}
+
+warn () {
+  echo 1>&2 "$0": $*
+}
+
+upper () {
+  echo "$1" | tr -s '[:lower:]' '[:upper:]'
+}
+
+help () {
+  pod2usage --verbose $1 $0
+}
+
+print_version () {
+  echo 2.2.8_ska
+}
+
+###############################################################################
+# Initialize output variables and commandline option variables
+variables="                   \
+		OS		\
+		platform		\
+		platform_generic	\
+		platform_native		\
+		platform_os_native	\
+		platform_os_generic	\
+		platform_uos_native	\
+		platform_uos_generic	\
+		platforms		\
+		platforms_os		\
+		platforms_uos		\
+		hw_cpu			\
+		hw_cpu_generic		\
+		hw_cpus			\
+		kern_version 		\
+		kern_version_maj 	\
+		kern_versions	 	\
+		os_type			\
+		os_vendor		\
+		os_version		\
+		os_version_maj		\
+		os_versions		\
+		os_uversion		\
+		os_uversion_maj		\
+		os_uversions		\
+	      "
+
+export=
+pfx=
+output_format=
+output_vars=
+
+
+###############################################################################
+# Parse the commandline
+while [ $# -gt 0 ]; do
+
+  arg=$1
+  shift
+
+  case "$arg" in
+
+    ?(-)-help|?(-)-hel|?(-)-he|?(-)-h)
+      help 0
+      exit 0;;
+
+    ?(-)-usage|?(-)-usag|?(-)-usa|?(-)-us|?(-)-u )
+      help 2
+      exit 0;;
+
+    ?(-)-version|?(-)-versio|?(-)-versi|?(-)-vers|?(-)-ver|?(-)-ve|?(-)-v)
+      print_version
+      exit 0;;
+
+    ?(-)-csh | ?(-)-tcsh ) output_format=csh           ;;
+    ?(-)-gmake_cat       ) output_format=gmake_cat     ;;
+    ?(-)-gmake_extract   ) output_format=gmake_extract ;;
+    ?(-)-ksh | ?(-)-bash ) output_format=ksh           ;;
+    ?(-)-make            ) output_format=make          ;;
+    ?(-)-make_dump       ) output_format=make_dump     ;;
+    ?(-)-nice            ) output_format=nice          ;;
+    ?(-)-perl            ) output_format=perl          ;;
+    ?(-)-perl_hash       ) output_format=perl_hash     ;;
+    ?(-)-sh              ) output_format=sh            ;;
+    ?(-)-value           ) output_format=value         ;;
+    ?(-)-yaml            ) output_format=yaml          ;;
+
+    ?(-)-export|?(-)-expor|?(-)-expo|?(-)-exp|?(-)-ex)
+      export='export '
+      ;;
+
+    ?(-)-pfx|?(-)-pf)
+      pfx=$1
+      shift
+      ;;
+
+    ?(-)-echo|?(-)-ech|?(-)-ec)
+      set -x
+      ;;
+
+    ?(-)-output|?(-)-outpu|?(-)-outp|?(-)-out|?(-)-ou|?(-)-o )
+        output_format=$1
+	shift
+	;;
+
+    -n)
+	output_format=value
+	;;
+
+    -*)
+      die 'unknown option `'$arg"'"
+      ;;
+
+    *)
+      output_vars="$output_vars $arg"
+      ;;
+
+  esac
+done
+
+if [ -z "$output_vars" ];  then
+
+  output_vars="$variables"
+  : ${output_format:=nice}
+
+else
+
+  : ${output_format:=value}
+
+
+fi
+
+###############################################################################
+# Get required info from uname...
+#
+#   uname -msr output order...
+#      1. kernel name / operating system name
+#      2. kernel release / operating system release
+#      3. machine hardware name
+#
+#   uname -p is not avaliable (or well supported) everywhere
+
+_uname=($(uname -msr))
+OS=${_uname[0]}
+_uname_r=${_uname[1]}
+_uname_m=${_uname[2]}
+
+###############################################################################
+# Parse the uname info...
+
+# --8<--8<--8<--8<--
+#
+# Copyright (C) 2006 Smithsonian Astrophysical Observatory
+#
+# This file is part of sysarch
+#
+# sysarch is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# sysarch is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the
+#       Free Software Foundation, Inc.
+#       51 Franklin Street, Fifth Floor
+#       Boston, MA  02110-1301, USA
+#
+# -->8-->8-->8-->8--
+
+
+###############################################################################
+# Clean up OS name and OSrev...
+
+# versions may have several levels of hierarchy: a.b.c.d limit it to
+# two levels.
+#
+# sets global variables os_version, os_version_maj and os_version_min
+function simplify_os_version {
+
+    # work by stripping off levels from the left.  this makes no
+    # assumptions as to the number of levels greater than two
+    local version=$1
+
+    os_version_maj=${version%%.*}
+
+    if [ "$os_version_maj" = "$version" ]; then
+
+		os_version="$os_version_maj"
+		os_version_min=
+		os_version="$version"
+
+    else
+
+		local minor="${version#*.}"
+		os_version_min="${minor%%.*}"
+		os_version="$os_version_maj.$os_version_min"
+
+    fi
+}
+
+# check that an OS version is legal.  for now that means that it
+# starts with a digit and only contains digits, periods, dashes and
+# underscores
+function check_os_version {
+
+	[[ "$1" =~ ^[0-9][0-9_.\-]*$ ]]
+}
+
+# map release names to versions. usually only needed when
+# running pre-release versions
+
+function map_os_version {
+
+	case "$os_vendor" in
+
+		[dD]ebian* )
+
+			case "$1" in
+
+				'lenny/sid' )
+					os_version=5.0
+					;;
+
+				'squeeze/sid' )
+					os_version=6.0
+					;;
+
+				'wheezy/sid' )
+					os_version=7.0
+					;;
+
+				'jessie/sid' )
+					os_version=8.0
+					;;
+
+			esac
+			;;
+
+		Ubuntu* )
+
+			case "$1" in
+
+				'quantal' )
+					os_version=12.10
+					;;
+
+			esac
+			;;
+
+		* )
+			os_version="$1"
+			;;
+	esac
+
+
+}
+
+case "$OS" in
+
+  Linux)
+
+    os_type=linux
+
+
+    #-------------------------
+    # First get kernel version.  Usually it's something like x.y.z,
+    # but Fedora Core might give you x.y.z.w.
+    # define kern_version_maj=x.y
+
+    kern_version=${_uname_r%%-*}
+    kern_version_min=${kern_version#*.*.}
+    kern_version_maj=${kern_version%.$kern_version_min}
+    kern_versions="${kern_version}:${kern_version_maj}"
+
+    #----------------------
+    # Now get glibc version
+
+    _libc_dir=/lib
+
+    # support multi-arch on debian based distributions
+    if command -v dpkg-architecture > /dev/null ; then
+
+	_libc_dir=/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)
+
+    elif [ -e /lib64 ] ; then
+
+	_libc_dir=/lib64
+
+    fi
+
+    _libc=$_libc_dir/libc.so.*
+    if [ -x $_libc ]; then
+      _IFS="$IFS"; IFS=$'\n'
+      _glibc_ver=( $( $_libc ) )
+      IFS="$_IFS"
+
+      if [[ $_glibc_ver == *'stable release version '* ]] ; then
+	  _glibc_ver=${_glibc_ver##*stable\ release\ version\ }
+	  _glibc_ver=${_glibc_ver%,*}
+
+      else
+	  _glibc_ver=${_glibc_ver##*([!0-9])}
+	  _glibc_ver=${_glibc_ver%%*([!0-9])}
+      fi
+
+
+      # 3.2.1 => 3
+      _glibc_maj=${_glibc_ver%%.*}
+
+      # 3.2.1 => 2.1 => 2
+      # NOT 3.2.1 => 3.2 => 2, as it might start as 3.2
+
+      _glibc_min=${_glibc_ver#*.}
+      _glibc_min=${_glibc_min%%.*}
+
+    elif [ -a /usr/include/features.h ]; then
+
+      _tmp=($(echo __GLIBC__ __GLIBC_MINOR__ \
+               | cpp -imacros /usr/include/features.h -P -E -))
+
+      _glibc_maj=${_tmp[0]}
+      _glibc_min=${_tmp[1]}
+      _glibc_ver=${_glibc_maj}.${_glibc_min}
+
+    else
+
+      die "Unable to determine glibc version!"
+
+    fi
+
+    #----------------------------------------------------------
+    # user space version (glibc)
+
+    os_uversion="${_glibc_ver}"
+    os_uversion_maj="${_glibc_maj}.${_glibc_min}"
+
+    if [ $os_uversion != $os_uversion_maj ] ; then
+	os_uversions[0]="$os_uversion"
+    fi
+
+    _min=$_glibc_min
+    while (( _min > 2 ))
+    do
+      os_uversions[${#os_uversions[*]}]="${_glibc_maj}.${_min}"
+      (( _min = _min - 1 ))
+    done
+
+    _IFS="$IFS"; IFS=:
+    os_uversions="${os_uversions[*]}"
+    IFS="$_IFS"
+
+
+    #----------------------------------------------------------
+    # Now get vendor/distribution name and version
+
+    while true ; do
+
+        # brute force redhat?
+
+	if [ -f /etc/redhat-release ]; then
+
+	    _tmp=$(< /etc/redhat-release)
+
+	    case "$_tmp" in
+		*Fedora*    ) os_vendor=RHFC ;;
+		*Enterprise*) os_vendor=RHEL ;;
+		*Red\ Hat*  ) os_vendor=RH ;;
+		*CentOS*    ) os_vendor=CentOS ;;
+	    esac
+
+	    os_version=${_tmp##*elease }
+	    os_version=${os_version%% *}
+	    simplify_os_version $os_version
+	    check_os_version "$os_version" && break
+	fi
+
+
+	if [ -f /etc/issue ]; then
+
+	    exec 4< /etc/issue
+	    read -u 4 _issue
+	    _issue_a=( $_issue )
+	    case "$_issue" in
+
+		Debian* )
+		    os_vendor=debian
+			map_os_version "${_issue_a[2]}"
+		    ;;
+
+		CentOS* )
+		    os_vendor=CentOS
+			map_os_version "${_issue_a[2]}"
+		    ;;
+
+		Ubuntu* )
+		    os_vendor=Ubuntu
+			map_os_version "${_issue_a[1]}"
+		    ;;
+
+		Red\ Hat\ Enterprise\ Linux* )
+		    os_vendor=RHEL
+		    map_os_version ${_issue_a[6]}
+		    ;;
+
+	    esac
+
+		simplify_os_version "$os_version"
+		check_os_version "$os_version" && break
+
+
+	fi
+
+        # brute force debian, 'cause lsb_release on debian runs apt-cache,
+        # which takes forever
+	if [ "$os_vendor" = debian -a -f /etc/debian_version ]; then
+
+	    exec 4< /etc/debian_version
+	    read -u 4 os_version
+	    exec 4<&-
+	    map_os_version "$os_version"
+	    simplify_os_version $os_version
+
+	    # backwards compatibility
+	    [ "$os_version" = 3.1 ] && \
+		os_vendor=Debian
+
+	    check_os_version "$os_version" && break
+
+	fi
+
+	# Slackware
+	if [ -f /etc/slackware-version ]; then
+	    exec 4< /etc/slackware-version
+	    read -u 4 os_vendor _os_version
+	    exec 4<&-
+	    simplify_os_version "${_os_version}"
+	    check_os_version "$os_version" && break
+	fi
+
+        # try LSB
+	if  command -v lsb_release > /dev/null; then
+
+	    _tmp=($(lsb_release -s -r -i))
+	    os_vendor=${_tmp[0]}
+	    os_version=${_tmp[1]}
+
+	    case "$os_vendor" in
+		*Fedora* )
+		   # previously mistakenly labeled Fedora 8
+		   # as FedoraCore.  Gotta keep it that way for backwards
+	           # compatibility.
+		    if [ $os_version -lt 9 ]; then
+			os_vendor=RHFC
+		    else
+			os_vendor=RHF
+		    fi
+		    simplify_os_version $os_version
+		    ;;
+
+		RedHatEnterprise* )
+	            os_vendor=RHEL
+		    simplify_os_version $os_version
+		    ;;
+
+		CentOS* )
+	            os_vendor=CentOS
+		    simplify_os_version $os_version
+		    ;;
+
+		Debian )
+		    os_vendor=debian
+		 # If it's Debian, testing & unstable versions don't cut it
+		 # go for /etc/debian_version
+		    if [ $os_version = testing -o $os_version = unstable ]; then
+
+			map_os_version $(< /etc/debian_version)
+
+		 # don't care about the revision e.g.: "4.0r?"
+		    os_version=${os_version%r?}
+
+			fi
+
+		    simplify_os_version $os_version
+		    ;;
+
+	    esac
+
+	    check_os_version "$os_version" && break
+
+	fi
+
+
+        # no clue
+	die "unable to determine Linux version"
+
+    done
+
+    case "$os_vendor" in
+
+        # For CentOS, RHEL & Debian, minor versions should be compatible
+	RHEL | CentOS | debian  )
+
+	    os_versions="${os_version_maj}:${os_version}"
+	    (( _min = os_version_min - 1 ))
+	    while (( _min >= 0 ))
+	    do
+		os_versions[${#os_versions[*]}]="${os_version_maj}.${_min}"
+		(( _min = _min - 1 ))
+	    done
+
+	    _IFS="$IFS"; IFS=:
+	    os_versions="${os_versions[*]}"
+	    IFS="$_IFS";
+
+	    ;;
+
+
+	* )
+	    # so far no differences between major and minor versions
+	    os_version_maj=$os_version
+	    os_versions=$os_version
+	    ;;
+
+    esac
+
+
+    ;;
+
+  SunOS)
+	 # backwards compatibility.  should be "solaris"
+	 OS=SunOS
+
+	 os_type=solaris
+	 os_vendor=sun
+
+
+	 os_version=$_uname_r
+	 os_version_maj=${os_version%.*}
+	 os_version_min=${os_version##*.}
+
+	 # Solaris has OS versions of 5.X.  Anything else we don't
+	 # support (as if there really are any SunOS systems out
+	 # there...)
+
+	 if [ "$os_version_maj" != 5 ]; then
+	   die "Unexpected Solaris major version: $os_version_maj"
+	 fi
+
+	 # There doesn't seem to be any "minor" version information
+	 # that's easily accessible or parseable.  In fact, what is parsed
+	 # out as os_version_min above is really the "major" version
+	 # (e.g. Solaris 7,8,9,10)  We should just toss the "5." prefix,
+	 # but for historical compatibility we'll leave it in.
+
+	 os_version_maj="$os_version_min"
+
+	 # Solaris is pretty backwards compatible, so construct a list
+	 # of versions from 5.X back to 5.5
+	 os_versions=$os_version
+	 (( _maj = os_version_maj - 1 ))
+	 while (( _maj > 5 ))
+	 do
+	   os_versions="${os_versions}:5.${_maj}"
+	   (( _maj = _maj - 1 ))
+	 done
+
+	 # add the horribly generic "5" prefix for backwards
+	 # compatibility. new environments shouldn't depend upon it.
+	 os_versions="${os_versions}:5"
+
+	 # add back in the 5. prefix
+	 os_version_maj="5.$os_version_maj"
+
+	 os_uversion=$os_version
+	 os_uversion_maj=$os_uversion
+	 os_uversions=$os_versions
+
+	 kern_version=$(uname -v)
+	 kern_version_maj=$kern_version
+	 ;;
+
+  Darwin)
+	  OS=darwin
+	  os_type=$OS
+	  os_vendor=apple
+
+	  os_version=$(sw_vers -productVersion)
+	  # ensure there's a triad of values
+	  test ${os_version%.*} = ${os_version%%.*} \
+	      && os_version="${os_version}.0"
+
+	  os_version_maj=${os_version%.*}
+	  os_versions="${os_version}:${os_version_maj}"
+
+	  os_uversion=$os_version
+	  os_uversion_maj=${os_uversion%.*}
+	  os_uversions=$os_versions
+
+	  kern_version=${_uname_r}
+	  kern_version_maj=${kern_version%.*}
+	  kern_versions="${kern_version}:${kern_version_maj}"
+
+	  ;;
+
+
+  *)
+     die "unknown operating system: $OS"
+
+esac
+
+# fall through
+
+test -z "$os_versions" \
+ && os_versions=$os_version
+
+test -z "$kern_versions" \
+ && kern_versions=$kern_version
+
+
+# --8<--8<--8<--8<--
+#
+# Copyright (C) 2006 Smithsonian Astrophysical Observatory
+#
+# This file is part of sysarch
+#
+# sysarch is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# sysarch is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the
+#       Free Software Foundation, Inc.
+#       51 Franklin Street, Fifth Floor
+#       Boston, MA  02110-1301, USA
+#
+# -->8-->8-->8-->8--
+
+
+###############################################################################
+# hardware scan
+
+
+case $os_type in
+
+  linux)
+	 exec 4< /proc/cpuinfo
+	 while read -u4 hw_cpu; do
+	   case "$hw_cpu" in
+	     "model name"*) break;;
+	     "type"*)       break;;
+	   esac
+	 done
+	 exec 4<&-
+
+	 hw_cpu=${hw_cpu##*:}
+	 hw_cpu_generic=$_uname_m
+
+	 case "$hw_cpu" in
+	   *Athlon*MP*)   hw_cpu="athlon_mp";;
+	   *Athlon*XP*)   hw_cpu="athlon_xp";;
+	   *Athlon*64*)   hw_cpu="athlon_64";;
+	   *Athlon*)      hw_cpu="athlon";;
+	   *Atom*)        hw_cpu=atom;;
+	   *Core\(TM\)2\ * ) hw_cpu=core2;;
+	   *Core\(TM\)*i?\ * ) hw_cpu=core$(echo "$hw_cpu" | sed 's/.*\(i[0-9][0-9]*\).*/\1/') ;;
+	   *Opteron*)     hw_cpu="opteron";;
+	   *Pentium*III*) hw_cpu="pentium3";;
+	   *Pentium\(R\)\ 4* ) hw_cpu="pentium4";;
+	   *Pentium\(R\)\ D* ) hw_cpu="pentiumD";;
+           *U7300*)       hw_cpu=core2;;
+	   *Xeon*)        hw_cpu="xeon";;
+           *Virtual*)     hw_cpu="virtual";;
+	   *)
+		 warn  "unrecognized CPU type: $hw_cpu"
+		 hw_cpu=UNKNOWN
+		 ;;
+	 esac
+
+	 hw_cpus="${hw_cpu}:${hw_cpu_generic}"
+
+	 hw_cpus_lib="$hw_cpus"
+
+	 ;;
+
+  solaris)
+
+	 hw_cpu=$(/opt/SUNWspro/bin/fpversion -foption)
+	 hw_cpu=${hw_cpu##*xtarget=}
+	 hw_cpu=${hw_cpu%% *}
+
+	 hw_cpu_generic=$_uname_m
+
+	 hw_cpus="${hw_cpu}:${hw_cpu_generic}"
+	 hw_cpus_lib="$hw_cpus"
+
+	 case "$_uname_m" in
+	   sun4u)         hw_cpus="$hw_cpus:sun4m:sparc";;
+	   sun4*)         hw_cpus="$hw_cpus:sparc";;
+	   *)
+		 warn  "unrecognized CPU type: $hw_cpu"
+		 hw_cpu=UNKNOWN
+	 esac
+
+	 ;;
+
+  darwin)
+
+	  hw_cpu=$(machine)
+	  hw_cpus=$hw_cpu
+	  hw_cpu_generic=$hw_cpu
+
+	  case "$hw_cpu" in
+
+	    # on Intel boxes machine is pretty useless -
+	    #  it reports i486!
+	    i486 )
+		   hw_cpu=$(sysctl -n machdep.cpu.brand_string 2>/dev/null )
+
+		   case "$hw_cpu" in
+
+		       *Core\(TM\)*i?\ * ) hw_cpu=core$(echo "$hw_cpu" | sed 's/.*\(i[0-9][0-9]*\).*/\1/') ;;
+
+		       *Xeon* ) hw_cpu=xeon ;;
+
+		     # complain about unknown machine
+		     * )
+			   warn  "unrecognized CPU type: $hw_cpu"
+			   hw_cpu=UNKNOWN
+			   ;;
+		   esac
+
+		   if [ $(sysctl 2>/dev/null -n hw.optional.x86_64) = 1 ];
+		   then
+		     hw_cpu_generic=x86_64
+		     hw_cpus="$hw_cpu:x86_64:i486"
+		   fi
+		   ;;
+	  esac
+
+	  ;;
+
+  *)
+    hw_cpu="$_uname_m"
+    hw_cpu_generic="$_uname_m"
+    hw_cpus="$hw_cpu"
+  ;;
+
+esac
+
+###############################################################################
+# Must occur after compat to get Sun 5 in there...
+
+# --8<--8<--8<--8<--
+#
+# Copyright (C) 2006 Smithsonian Astrophysical Observatory
+#
+# This file is part of sysarch
+#
+# sysarch is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# sysarch is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the
+#       Free Software Foundation, Inc.
+#       51 Franklin Street, Fifth Floor
+#       Boston, MA  02110-1301, USA
+#
+# -->8-->8-->8-->8--
+
+
+_IFS=$IFS
+IFS=':'
+
+case $os_type in
+
+  # simplify solaris + darwin
+  #  os_type+os_vendor = os_type
+  #  os_uversion = os_version
+
+  solaris | darwin )
+
+     _OS=$os_type
+
+     platform_os_native="${hw_cpu}-$_OS-${os_version}"
+     platform_os_generic="${hw_cpu_generic}-$_OS-${os_version_maj}"
+
+     platform_uos_native="${hw_cpu}-$_OS-${os_uversion}"
+     platform_uos_generic="${hw_cpu_generic}-$_OS-${os_uversion_maj}"
+
+
+
+     for _hw_cpu in $hw_cpus; do
+
+       for _os_version in $os_versions; do
+	 _os="${os_type}-${_os_version}"
+	 platforms_os[${#platforms_os[*]}]="${_hw_cpu}-${_os}"
+       done
+
+     done
+
+     platforms_os="${platforms_os[*]}"
+
+     platforms_uos=$platforms_os
+     platforms=$platforms_os
+     ;;
+
+  *)
+     _OS="${os_type}_${os_vendor}"
+     platform_os_native="${hw_cpu}-$_OS-${os_version}"
+     platform_os_generic="${hw_cpu_generic}-$_OS-${os_version_maj}"
+
+     _OS="${os_type}"
+     platform_uos_native="${hw_cpu}-$_OS-${os_uversion}"
+     platform_uos_generic="${hw_cpu_generic}-$_OS-${os_uversion_maj}"
+
+     for _hw_cpu in $hw_cpus; do
+
+
+       for _os_version in $os_versions; do
+	 _os="${os_type}_${os_vendor}-${_os_version}"
+	 platforms_os[${#platforms_os[*]}]="${_hw_cpu}-${_os}"
+	 platforms[${#platforms[*]}]="${_hw_cpu}-${_os}"
+       done
+
+       for _os_uversion in $os_uversions; do
+	 _uos="${os_type}-${_os_uversion}"
+	 platforms_uos[${#platforms_uos[*]}]="${_hw_cpu}-${_uos}"
+	 platforms[${#platforms[*]}]="${_hw_cpu}-${_uos}"
+       done
+
+     done
+
+     platforms="${platforms[*]}"
+     platforms_os="${platforms_os[*]}"
+     platforms_uos="${platforms_uos[*]}"
+
+     ;;
+
+esac
+
+platform=$platform_os_native
+platform_generic=$platform_uos_generic
+platform_native=$platform_os_native
+
+
+IFS=$_IFS
+
+
+###############################################################################
+# Output requested information....
+
+function exists {
+    eval var_exists='${'$1':+1}'
+    if [ ! $var_exists ]; then
+      die unknown variable: "'$1'"
+    fi
+}
+
+output_array=( )
+function push_output {
+
+    output_array[${#output_array[*]}]="$@"
+
+}
+
+function output {
+
+    push_output "$1${!2:?unknown variable: $2 }$3"
+}
+
+case $output_format in
+
+  csh | tcsh )
+    if [ $export ]; then
+      for var in $output_vars; do
+        output "setenv $pfx$var '" $var "'"
+      done
+    else
+      for var in $output_vars; do
+        output "set $pfx$var = '" $var "'"
+      done
+    fi
+    ;;
+
+  sh)
+    for var in $output_vars; do
+      output "$pfx$var='" $var "'"
+    done
+    if [ $export ]; then
+      for var in $output_vars; do
+	push_output "export $pfx$var"
+      done
+    fi
+    ;;
+
+  ksh | bash)
+    for var in $output_vars; do
+      output "$export$pfx$var='" $var "'"
+    done
+    ;;
+
+  nice)
+    for var in $output_vars; do
+      output "$pfx$var = " $var
+    done
+    ;;
+
+  make)
+    for var in $output_vars; do
+      make_var=$(upper $var)
+      output "$pfx$make_var = " $var
+    done
+    ;;
+
+  gmake_cat)
+    output=
+    for var in $output_vars; do
+      exists $var
+      make_var=$(upper $var)
+      output="$output $pfx$make_var=${!var}"
+    done
+    echo -n ${output# }
+    ;;
+
+  gmake_extract)
+    push_output '#######################################################################'
+    push_output '# generated by "sysarch -gmake_extract"'
+    push_output ' '
+    push_output 'SYSINFO :=  $(shell $(_SYSARCH) -gmake_cat)'
+    for var in $output_vars; do
+      exists $var
+      make_var=$(upper $var)
+      push_output $make_var := '$(patsubst '$make_var'=%,%,$(filter '$make_var'=%, $(SYSINFO)))'
+    done
+    echo '#######################################################################'
+    ;;
+
+  make_dump)
+    for var in $output_vars; do
+      exists $var
+      make_var=$(upper $var)
+      push_output "	echo" \"$pfx$make_var = '$'\($make_var\)\"';' \\
+    done
+    ;;
+
+  perl | perl_hash )
+    if [ "$output_format" = perl ]; then
+	eol=';'
+	sep='='
+	pfx="\$$pfx"
+    else
+	eol=','
+	sep='=>'
+    fi
+
+    for var in $output_vars; do
+	value=${!var:?unknown variable}
+	if [[ "$value" == *:* ]]; then
+	    value=${value//:/"', '"}
+	    push_output "$pfx$var $sep [ '$value' ]$eol"
+	else
+	    output "$pfx$var $sep '" $var "'$eol"
+	fi
+    done
+    ;;
+
+  yaml)
+    echo """---"
+    for var in $output_vars; do
+	value=${!var:?unknown variable}
+	if [[ "$value" == *:* ]]; then
+	    value=${value//:/$'\n - '}
+	    push_output "$pfx$var:"$'\n - '"$value"
+	else
+	    output "$pfx$var: " $var
+	fi
+
+    done
+    ;;
+
+  value)
+    for var in $output_vars; do
+       output '' $var
+    done
+    ;;
+
+
+  # error - unknown output format
+  *)
+     die unknown output format: $output_format
+     ;;
+
+esac
+
+_IFS="$IFS"; IFS=$'\n'
+echo "${output_array[*]}"
+IFS="$_IFS"
+
+exit 0
+
+=pod
+
+=head1 NAME
+
+sysarch - defines system specific variables using the uname system command
+
+=head1 SYNOPSIS
+
+sysarch [OPTION]... [VARIABLE] [VARIABLE]
+
+=head1 DESCRIPTION
+
+B<sysarch> provides a uniform description of a system, including the
+underlying hardware, the operating system, and the unique operating
+system characteristics.  Its intent is to identify important system
+characteristics which determine the interoperability of software with
+hardware/operating system platforms.
+
+Compatibility between operating systems sometimes occurs.  Solaris is
+a true champion of this, retaining compatibility across more than a
+decade in some cases.  It's also often possible to run programs
+compiled on one flavor of Linux on another.  It is rare for software
+compiled on newer platforms to run on older ones, however.  While
+B<sysarch> can't determine which systems are compatible, it tries to
+present enough salient information so that it is possible to provide a
+hierarchy of compatibility.
+
+B<sysarch> encodes system information into a set of variables.  It
+will generate code for various shells and GNU make which can be used
+to incorporate those variables into scripts and Makefiles.
+
+=head1 OPTIONS AND ARGUMENTS
+
+B<sysarch> takes an optional argument specifying the name of a
+variable to output. If no options or arguments are specified they are
+all output.
+
+=head2 General Options
+
+=over 4
+
+=item B<--export>
+
+Output code which creates environmental, rather than shell, variables.
+Only releveant for shells.
+
+=item B<--pfx> I<pfx>
+
+Prepend I<pfx> to variable names.
+
+=item B<--help>
+
+Print this usage information and exit.
+
+=back
+
+=head2 Output Formats
+
+Output formats are specified either using the B<--output> option, or
+simply by prefixing the format name with C<--> and treating it as an
+option:
+
+   --output csh
+   --csh
+
+If no variables are specified on the command line, the default output
+format is C<nice>.  If variables are specified, it defaults to C<value>.
+
+
+The following formats are supported:
+
+=over
+
+=item B<csh>|B<tcsh>|B<sh>|B<ksh>| B<bash>
+
+Output commands in the appropriate shell to create the variables.
+
+=item B<make>
+
+Create static B<make> compatible macro assignments.  Macro names are
+in upper case.
+
+=item B<gmake_extract>
+
+Create dynamic GNU B<make> compatible macro assignments using a call
+to B<sysarch>. Macro names are in upper case.
+
+=item B<gmake_cat>
+
+Create the output required by the code output by C<--output
+gmake_extract>.
+
+=item B<make_dump>
+
+Generate B<make> target commands to output the B<sysarch> generated
+macros.  Useful as part of a B<make> C<debug> style target.
+
+=item B<perl>
+
+Output Perl code generating scalar variables.
+
+=item B<perl_hash>
+
+Output Perl code for the contents of a hash.  It does not generate the
+wrapper code required to actually create the hash.
+
+=item B<value>
+
+Output only the variables' values.
+
+=item B<nice>
+
+A more human readable format.
+
+=back
+
+
+=head1 OUTPUT VARIABLES
+
+
+=head2 Hardware Identification
+
+=over
+
+=item B<hw_cpu>
+
+The most specific description of the actual CPU.
+
+=item B<hw_cpu_generic>
+
+The generic description for the CPU.  This is I<not> the most generic
+one with which the CPU is compatible.  For example,
+
+    athlon_64 => x86_64,  not i686
+    core2     => x86_64,  not i686
+    pentium4  => i686
+    ultra3i   => sun4u,   not sparc
+
+=item B<hw_cpus>
+
+A colon separated list of models or families of CPU's with which the
+hardware is compatible, from least to most generic.
+
+=back
+
+For example, for a SunBlade 1500,
+
+  hw_cpu  = ultra3i
+  hw_cpus = ultra3i:sun4u:sun4m:sparc
+
+For an AMD Athlon64 CPU,
+
+  hw_cpu  = athlon_64
+  hw_cpus = athlon_64:x86_64:i686
+
+
+=head2 System Identification
+
+The system designation represents the combination of operating system,
+kernel, and optionally vendor or distribution name.
+
+=over
+
+=item B<OS>, B<os_type>
+
+The operating system name.  B<OS> has historical significance for
+Linux and Solaris, and retains the following value for them:
+
+  Linux
+  SunOS
+
+For other operating systems, B<OS> and B<os_type> are equivalent.
+B<os_type> is the lowercased more "obvious" name (i.e. C<solaris>
+rather than C<sunos>) and is typically equivalent to the B<OSTYPE>
+environmental variable.
+
+Note that C<Linux> represents both the kernel and the accompanying
+system software.  This is often represented as GNU/Linux, similar to
+Debian GNU/kFreeBSD, Debian GNU/NetBSD, GNU/Hurd and Debian
+GNU/Solaris.  The latter set aren't available to the authors, so we're
+not worrying about them yet.
+
+=item B<os_vendor>
+
+B<os_vendor> is the vendor or distribution name.  Some vendors provide
+multiple distributions (e.g. Red Hat Fedora Core, Red Hat Enterprise
+Linux) -- B<os_vendor> is then the combination (e.g. C<RHFC>, C<RHEL>).
+
+=back
+
+
+=head2 System Version
+
+System version information is complex.  It might refer to the version
+given to a particular distribution or release (such as Fedora Core 3
+or 4).  For some applications the kernel version is more important, or
+perhaps the version of glibc. B<sysarch> provides all of that
+information.
+
+=over
+
+=item B<kern_version>
+
+B<kern_version> is the kernel version.  On Linux it is the base kernel,
+without any vendor specific version information.
+
+=item B<kern_version_maj>
+
+B<kern_version_maj> contains just the most significant kernel version
+(e.g. 2.6 for Linux, 8.8 for Darwin).
+
+=item B<kern_versions>
+
+A colon separated list of kernels with which this is compatible.
+
+=item B<os_version>, B<os_version_maj>
+
+B<os_version> is the vendor supplied operation system version.
+B<os_version_maj> is the most significant part (e.g, for OSX 10.4
+vs. 10.4.8).
+
+=item B<os_versions>
+
+A colon separated list of operating system versions with which this
+operating system is backwards compatible.
+
+=item B<os_uversion>, B<os_uversion_maj>
+
+The version of the operating system component most important for user
+space applications.  For Linux this is chosen to be the version of
+glibc.  This may not be restrictive enough for some applications
+(e.g. if one distribution ships with a different version of
+B<libreadline>). B<os_version_maj> is the most significant part (e.g.,
+2.3 vs. 2.3.6).
+
+=item B<os_uversions>
+
+A colon separated list of user space component versions with which
+this operating system is backwards compatible.  For Linux it is
+assumed that previous minor (in the glibc sense) releases are
+backwards compatible.
+
+=back
+
+=head2 Platform
+
+A platform is the combination of hardware and operating system
+specifications.  It's a triad with one of the following combinations:
+
+  <hw_cpu>-<os_type>-<os_uversion>
+  <hw_cpu>-<OS>-<os_version>
+
+where C<E<lt>OSE<gt>> is
+
+ <os_type>_<os_vendor>
+
+except for Solaris and OSX (Darwin) where it is
+
+ <os_type>
+
+It is assumed that B<os_uversion> is constant for a given
+B<os_version>.
+
+=head3 Host System
+
+These variables describe the host system's platform
+
+=over
+
+=item B<platform>
+
+=item B<platform_native>
+
+Aliases for B<platform_os_native>.
+
+=item B<platform_generic>
+
+An alias for B<platform_uos_generic>.
+
+=item B<platform_os_native>
+
+The most detailed specification including the OS vendor/distribution.
+Equivalent to
+
+  <hw_cpu>-<OS>-<os_version>
+
+=item B<platform_os_generic>
+
+This specification allows for a more generic hardware and OS
+specification, allowing for compatibility within minor OS and
+hardware variations.  This is equivalent to
+
+  <hw_cpu_generic>-<OS>-<os_version_maj>
+
+=item B<platform_uos_native>
+
+The most detailed specification using the user space component version.
+Equivalent to
+
+  <hw_cpu>-<os_type>-<os_uversion>
+
+=item B<platform_uos_generic>
+
+Equivalent to
+
+  <hw_cpu_generic>-<OS>-<os_uversion_maj>
+
+=back
+
+=head3 Compatible platforms
+
+These variables provide lists of compatible platforms
+
+=over
+
+=item B<platforms>
+
+A colon separated list of compatible platforms, with hardware being
+the most important element for compatibility.  This is a combination
+of B<platforms_os> and B<platforms_uos>.
+
+
+=item B<platforms_os>
+
+A colon separated list of compatible platforms of the form
+
+  <hw_cpu>-<OS>-<os_version>
+
+With Hardware being the most important element for compatibility.
+
+
+=item B<platforms_uos>
+
+A colon separated list of compatible platforms of the form
+
+  <hw_cpu>-<os_type>-<os_uversion>
+
+with hardware being the most important element for compatibility.
+
+=back
+
+=head1 WHAT DOES THIS ALL MEAN?
+
+Well, that depends upon how its being used.  First off, use
+B<platforms> and B<sysarch>'s accompanying B<syspathsubst>
+program to create compatibility hierarchies for executable and library
+search paths.
+
+B<platform_generic> is B<not> the lowest common denominator.  It's
+essentially the most generic specification that can be natively
+created (i.e. compiled) on the platform.  Because it purports to
+specify user space compatibility, use it on Linux if you're sure that
+your application will run on multiple Linux distributions based solely
+on B<glibc> compatibility.  If, however, your application links
+against libraries in a combination that differs between distributions,
+you might as well use B<platform_os_generic>.
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is Copyright 2007 The Smithsonian Astrophysical Observatory
+and is released under the GNU General Public License.  You may find a
+copy at: L<http://www.fsf.org/copyleft/gpl.html>
+
+
+=head1 AUTHORS
+
+M. Tibbetts E<lt>mtibbetts@cfa.harvard.eduE<gt>
+
+D. Jerius   E<lt>djerius@cfa.harvard.eduE<gt>
