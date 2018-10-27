@@ -24,7 +24,7 @@
 #
 # -->8-->8-->8-->8--
 
-PATH=/bin:/usr/bin:/usr/sbin:/usr/local/bin
+PATH=/bin:/usr/bin:/usr/sbin
 
 # set up extended pattern matching
 shopt -s extglob
@@ -32,6 +32,10 @@ shopt -s extglob
 die () {
   echo 1>&2 "$0": $*
   exit 1
+}
+
+warn () {
+  echo 1>&2 "$0": $*
 }
 
 upper () {
@@ -43,7 +47,7 @@ help () {
 }
 
 print_version () {
-  echo 2.1.20
+  echo 2.2.8_ska
 }
 
 ###############################################################################
@@ -117,7 +121,7 @@ while [ $# -gt 0 ]; do
     ?(-)-yaml            ) output_format=yaml          ;;
 
     ?(-)-export|?(-)-expor|?(-)-expo|?(-)-exp|?(-)-ex)
-      export=export
+      export='export '
       ;;
 
     ?(-)-pfx|?(-)-pf)
@@ -179,6 +183,29 @@ _uname_m=${_uname[2]}
 ###############################################################################
 # Parse the uname info...
 
+# --8<--8<--8<--8<--
+#
+# Copyright (C) 2006 Smithsonian Astrophysical Observatory
+#
+# This file is part of sysarch
+#
+# sysarch is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# sysarch is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the
+#       Free Software Foundation, Inc.
+#       51 Franklin Street, Fifth Floor
+#       Boston, MA  02110-1301, USA
+#
+# -->8-->8-->8-->8--
 
 
 ###############################################################################
@@ -188,7 +215,7 @@ _uname_m=${_uname[2]}
 # two levels.
 #
 # sets global variables os_version, os_version_maj and os_version_min
-function simplify_version {
+function simplify_os_version {
 
     # work by stripping off levels from the left.  this makes no
     # assumptions as to the number of levels greater than two
@@ -198,19 +225,75 @@ function simplify_version {
 
     if [ "$os_version_maj" = "$version" ]; then
 
-	os_version="$os_version_maj"
-	os_version_min=
-	os_version="$version"
+		os_version="$os_version_maj"
+		os_version_min=
+		os_version="$version"
 
     else
 
-	local minor="${version#*.}"
-	os_version_min="${minor%%.*}"
-	os_version="$os_version_maj.$os_version_min"
+		local minor="${version#*.}"
+		os_version_min="${minor%%.*}"
+		os_version="$os_version_maj.$os_version_min"
 
     fi
 }
 
+# check that an OS version is legal.  for now that means that it
+# starts with a digit and only contains digits, periods, dashes and
+# underscores
+function check_os_version {
+
+	[[ "$1" =~ ^[0-9][0-9_.\-]*$ ]]
+}
+
+# map release names to versions. usually only needed when
+# running pre-release versions
+
+function map_os_version {
+
+	case "$os_vendor" in
+
+		[dD]ebian* )
+
+			case "$1" in
+
+				'lenny/sid' )
+					os_version=5.0
+					;;
+
+				'squeeze/sid' )
+					os_version=6.0
+					;;
+
+				'wheezy/sid' )
+					os_version=7.0
+					;;
+
+				'jessie/sid' )
+					os_version=8.0
+					;;
+
+			esac
+			;;
+
+		Ubuntu* )
+
+			case "$1" in
+
+				'quantal' )
+					os_version=12.10
+					;;
+
+			esac
+			;;
+
+		* )
+			os_version="$1"
+			;;
+	esac
+
+
+}
 
 case "$OS" in
 
@@ -232,10 +315,34 @@ case "$OS" in
     #----------------------
     # Now get glibc version
 
-    if [ -x /lib/libc.so.6 ]; then
-      _glibc_ver=$(/lib/libc.so.6 | head -1)
-      _glibc_ver=${_glibc_ver##*([!0-9])}
-      _glibc_ver=${_glibc_ver%%*([!0-9])}
+    _libc_dir=/lib
+
+    # support multi-arch on debian based distributions
+    if command -v dpkg-architecture > /dev/null ; then
+
+	_libc_dir=/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)
+
+    elif [ -e /lib64 ] ; then
+
+	_libc_dir=/lib64
+
+    fi
+
+    _libc=$_libc_dir/libc.so.*
+    if [ -x $_libc ]; then
+      _IFS="$IFS"; IFS=$'\n'
+      _glibc_ver=( $( $_libc ) )
+      IFS="$_IFS"
+
+      if [[ $_glibc_ver == *'stable release version '* ]] ; then
+	  _glibc_ver=${_glibc_ver##*stable\ release\ version\ }
+	  _glibc_ver=${_glibc_ver%,*}
+
+      else
+	  _glibc_ver=${_glibc_ver##*([!0-9])}
+	  _glibc_ver=${_glibc_ver%%*([!0-9])}
+      fi
+
 
       # 3.2.1 => 3
       _glibc_maj=${_glibc_ver%%.*}
@@ -257,8 +364,7 @@ case "$OS" in
 
     else
 
-      echo 1>&2 "$0: Unable to determine glibc version!"
-      exit 1
+      die "Unable to determine glibc version!"
 
     fi
 
@@ -268,184 +374,183 @@ case "$OS" in
     os_uversion="${_glibc_ver}"
     os_uversion_maj="${_glibc_maj}.${_glibc_min}"
 
+    if [ $os_uversion != $os_uversion_maj ] ; then
+	os_uversions[0]="$os_uversion"
+    fi
+
     _min=$_glibc_min
     while (( _min > 2 ))
     do
-      os_uversions="${os_uversions}:${_glibc_maj}.${_min}"
+      os_uversions[${#os_uversions[*]}]="${_glibc_maj}.${_min}"
       (( _min = _min - 1 ))
     done
 
-    [ $os_uversion != $os_uversion_maj ] \
-       && os_uversions="$os_uversion$os_uversions"
-
-    os_uversions=${os_uversions#:}
+    _IFS="$IFS"; IFS=:
+    os_uversions="${os_uversions[*]}"
+    IFS="$_IFS"
 
 
     #----------------------------------------------------------
     # Now get vendor/distribution name and version
 
-    _found=0
+    while true ; do
 
-    if [ -f /etc/issue ]; then
+        # brute force redhat?
 
-	exec 4< /etc/issue
-	read -u 4 _os _os1 _os2
-	case "$_os" in
+	if [ -f /etc/redhat-release ]; then
 
-	Debian )
-		os_vendor=debian
-		simplify_version $_os2
-		_found=1
-		;;
+	    _tmp=$(< /etc/redhat-release)
 
-	CentOS )
-		os_vendor=CentOS
-		simplify_version $_os2
-		_found=1
-		;;
+	    case "$_tmp" in
+		*Fedora*    ) os_vendor=RHFC ;;
+		*Enterprise*) os_vendor=RHEL ;;
+		*Red\ Hat*  ) os_vendor=RH ;;
+		*CentOS*    ) os_vendor=CentOS ;;
+	    esac
 
-	Ubuntu )
-		os_vendor=Ubuntu
-		simplify_version $_os1
-		_found=1
-		;;
-	esac
+	    os_version=${_tmp##*elease }
+	    os_version=${os_version%% *}
+	    simplify_os_version $os_version
+	    check_os_version "$os_version" && break
+	fi
 
-    fi
 
-    # brute force debian, 'cause lsb_release on debian runs apt-cache,
-    # which takes forever
-    if [ $_found == 0 -a -f /etc/debian_version ]; then
+	if [ -f /etc/issue ]; then
 
-      os_vendor=debian
+	    exec 4< /etc/issue
+	    read -u 4 _issue
+	    _issue_a=( $_issue )
+	    case "$_issue" in
 
-      # FIXME: duplicate code below
+		Debian* )
+		    os_vendor=debian
+			map_os_version "${_issue_a[2]}"
+		    ;;
 
-      os_version=$(< /etc/debian_version)
-      if [ $os_version == lenny/sid ]; then
-	  os_version=5.0
-      elif [ $os_version == squeeze/sid ]; then
-	  os_version=6.0
-      else
-	  os_version=${os_version//\//_}
+		CentOS* )
+		    os_vendor=CentOS
+			map_os_version "${_issue_a[2]}"
+		    ;;
 
-	  # use eval 'cause I can't remember if older bashes might
-	  # croak on [[.  Debian versions won't.
-	  if eval "[[ '$os_version' != [0-9]* ]]" ; then
-	      echo 1>&2 "$0: Unable to parse /etc/debian_version!"
-	      exit 1
-	  fi
+		Ubuntu* )
+		    os_vendor=Ubuntu
+			map_os_version "${_issue_a[1]}"
+		    ;;
 
-	  simplify_version $os_version
+		Red\ Hat\ Enterprise\ Linux* )
+		    os_vendor=RHEL
+		    map_os_version ${_issue_a[6]}
+		    ;;
 
-	  # backwards compatibility
-	  [ "$os_version" = 3.1 ] && \
-	      os_vendor=Debian
+	    esac
 
-      fi
+		simplify_os_version "$os_version"
+		check_os_version "$os_version" && break
 
-      _found=1
 
-    fi
+	fi
 
-    # try LSB
-    if [ $_found=0 -a \( -x /usr/bin/lsb_release -o -x /bin/lsb_release \) ]; then
+        # brute force debian, 'cause lsb_release on debian runs apt-cache,
+        # which takes forever
+	if [ "$os_vendor" = debian -a -f /etc/debian_version ]; then
 
-      _tmp=($(lsb_release -s -r -i))
-      os_vendor=${_tmp[0]}
-      os_version=${_tmp[1]}
+	    exec 4< /etc/debian_version
+	    read -u 4 os_version
+	    exec 4<&-
+	    map_os_version "$os_version"
+	    simplify_os_version $os_version
 
-      case "$os_vendor" in
-	*Fedora* )
+	    # backwards compatibility
+	    [ "$os_version" = 3.1 ] && \
+		os_vendor=Debian
+
+	    check_os_version "$os_version" && break
+
+	fi
+
+	# Slackware
+	if [ -f /etc/slackware-version ]; then
+	    exec 4< /etc/slackware-version
+	    read -u 4 os_vendor _os_version
+	    exec 4<&-
+	    simplify_os_version "${_os_version}"
+	    check_os_version "$os_version" && break
+	fi
+
+        # try LSB
+	if  command -v lsb_release > /dev/null; then
+
+	    _tmp=($(lsb_release -s -r -i))
+	    os_vendor=${_tmp[0]}
+	    os_version=${_tmp[1]}
+
+	    case "$os_vendor" in
+		*Fedora* )
 		   # previously mistakenly labeled Fedora 8
 		   # as FedoraCore.  Gotta keep it that way for backwards
 	           # compatibility.
-		   if [ $os_version -lt 9 ]; then
-		     os_vendor=RHFC
-		   else
-		     os_vendor=RHF
-		   fi
-		   simplify_version $os_version
-		   ;;
+		    if [ $os_version -lt 9 ]; then
+			os_vendor=RHFC
+		    else
+			os_vendor=RHF
+		    fi
+		    simplify_os_version $os_version
+		    ;;
 
-	RedHatEnterprise* )
-	           os_vendor=RHEL
-		   simplify_version $os_version
-		   ;;
+		RedHatEnterprise* )
+	            os_vendor=RHEL
+		    simplify_os_version $os_version
+		    ;;
 
-	Debian )
-		 os_vendor=debian
+		CentOS* )
+	            os_vendor=CentOS
+		    simplify_os_version $os_version
+		    ;;
+
+		Debian )
+		    os_vendor=debian
 		 # If it's Debian, testing & unstable versions don't cut it
 		 # go for /etc/debian_version
-		 if [ $os_version = testing -o $os_version = unstable ]; then
-		   os_version=$(< /etc/debian_version)
-		   if [ $os_version == lenny/sid ]; then
-		     os_version=5.0
-		   else
-		     os_version=${os_version//\//_}
+		    if [ $os_version = testing -o $os_version = unstable ]; then
 
-	             # use eval 'cause I can't remember if older
-                     # bashes might croak on [[.  Debian versions
-                     # won't.
-		     if eval "[[ '$os_version' != [0-9]* ]]" ; then
-			 echo 1>&2 "$0: Unable to parse /etc/debian_version!"
-			 exit 1
-		     fi
-
-		   fi
-		 fi
+			map_os_version $(< /etc/debian_version)
 
 		 # don't care about the revision e.g.: "4.0r?"
-		 os_version=${os_version%r?}
+		    os_version=${os_version%r?}
 
-		 simplify_version $os_version
-		 ;;
+			fi
 
-      esac
+		    simplify_os_version $os_version
+		    ;;
 
-      _found=1
+	    esac
 
-    fi
-    # brute force redhat?
+	    check_os_version "$os_version" && break
 
-    if [ $_found == 0 -a -f /etc/redhat-release ]; then
-
-      _tmp=$(< /etc/redhat-release)
-
-      case "$_tmp" in
-	*Fedora*    ) os_vendor=RHFC ;;
-	*Enterprise*) os_vendor=RHEL ;;
-	*Red\ Hat*  ) os_vendor=RH ;;
-      esac
-
-      os_version=${_tmp##*elease }
-      os_version=${os_version%% *}
-      simplify_version $os_version
-
-    fi
-
-    # no clue
+	fi
 
 
-    if [ $_found == 0 ] ; then
+        # no clue
+	die "unable to determine Linux version"
 
-      echo 1>&2 "$0: unable to determine Linux vendor"
-      exit 1
-
-    fi
+    done
 
     case "$os_vendor" in
 
-	RHEL | CentOS )
+        # For CentOS, RHEL & Debian, minor versions should be compatible
+	RHEL | CentOS | debian  )
 
-	    # For CentOS & RHEL, minor versions are supposed to be compatible
-	    os_versions=${os_version}:${os_version_maj}
+	    os_versions="${os_version_maj}:${os_version}"
 	    (( _min = os_version_min - 1 ))
-	    while (( _min > 0 ))
+	    while (( _min >= 0 ))
 	    do
-		os_versions="${os_versions}:${os_version_maj}.${_min}"
+		os_versions[${#os_versions[*]}]="${os_version_maj}.${_min}"
 		(( _min = _min - 1 ))
 	    done
+
+	    _IFS="$IFS"; IFS=:
+	    os_versions="${os_versions[*]}"
+	    IFS="$_IFS";
 
 	    ;;
 
@@ -478,8 +583,7 @@ case "$OS" in
 	 # there...)
 
 	 if [ "$os_version_maj" != 5 ]; then
-	   echo 1>&2 "$0: Unexpected Solaris major version: $os_version_maj"
-	   exit 1
+	   die "Unexpected Solaris major version: $os_version_maj"
 	 fi
 
 	 # There doesn't seem to be any "minor" version information
@@ -540,8 +644,7 @@ case "$OS" in
 
 
   *)
-     echo 1>&2 "$0: unknown operating system: $OS"
-     exit 1
+     die "unknown operating system: $OS"
 
 esac
 
@@ -554,6 +657,29 @@ test -z "$kern_versions" \
  && kern_versions=$kern_version
 
 
+# --8<--8<--8<--8<--
+#
+# Copyright (C) 2006 Smithsonian Astrophysical Observatory
+#
+# This file is part of sysarch
+#
+# sysarch is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# sysarch is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the
+#       Free Software Foundation, Inc.
+#       51 Franklin Street, Fifth Floor
+#       Boston, MA  02110-1301, USA
+#
+# -->8-->8-->8-->8--
 
 
 ###############################################################################
@@ -580,16 +706,20 @@ case $os_type in
 	   *Athlon*XP*)   hw_cpu="athlon_xp";;
 	   *Athlon*64*)   hw_cpu="athlon_64";;
 	   *Athlon*)      hw_cpu="athlon";;
+	   *Atom*)        hw_cpu=atom;;
+	   *Core\(TM\)2\ * ) hw_cpu=core2;;
+	   *Core\(TM\)*i?\ * ) hw_cpu=core$(echo "$hw_cpu" | sed 's/.*\(i[0-9][0-9]*\).*/\1/') ;;
 	   *Opteron*)     hw_cpu="opteron";;
-	   *Intel*)       hw_cpu="intel";;
-	   *Virtual*)     hw_cpu="virtual";;
 	   *Pentium*III*) hw_cpu="pentium3";;
 	   *Pentium\(R\)\ 4* ) hw_cpu="pentium4";;
 	   *Pentium\(R\)\ D* ) hw_cpu="pentiumD";;
+           *U7300*)       hw_cpu=core2;;
 	   *Xeon*)        hw_cpu="xeon";;
-	   *Core\(TM\)2' '* ) hw_cpu=core2;;
-	   *Core\(TM\)*i7' '* ) hw_cpu=corei7;;
-	   *)	     echo 1>&2 "$0: unrecognized CPU type: $hw_cpu" ; exit 1 ;;
+           *Virtual*)     hw_cpu="virtual";;
+	   *)
+		 warn  "unrecognized CPU type: $hw_cpu"
+		 hw_cpu=UNKNOWN
+		 ;;
 	 esac
 
 	 hw_cpus="${hw_cpu}:${hw_cpu_generic}"
@@ -612,7 +742,9 @@ case $os_type in
 	 case "$_uname_m" in
 	   sun4u)         hw_cpus="$hw_cpus:sun4m:sparc";;
 	   sun4*)         hw_cpus="$hw_cpus:sparc";;
-	   *)	     echo 1>&2 "$0: unrecognized CPU type: $hw_cpu" ;;
+	   *)
+		 warn  "unrecognized CPU type: $hw_cpu"
+		 hw_cpu=UNKNOWN
 	 esac
 
 	 ;;
@@ -631,14 +763,16 @@ case $os_type in
 		   hw_cpu=$(sysctl -n machdep.cpu.brand_string 2>/dev/null )
 
 		   case "$hw_cpu" in
-		     *Core\(TM\)2* ) hw_cpu=core2 ;;
 
-		     *Xeon* ) hw_cpu=xeon ;;
+		       *Core\(TM\)*i?\ * ) hw_cpu=core$(echo "$hw_cpu" | sed 's/.*\(i[0-9][0-9]*\).*/\1/') ;;
+
+		       *Xeon* ) hw_cpu=xeon ;;
 
 		     # complain about unknown machine
 		     * )
-			 echo 1>&2 "$0: unknown i486 CPU: $hw_cpu"
-			 ;;
+			   warn  "unrecognized CPU type: $hw_cpu"
+			   hw_cpu=UNKNOWN
+			   ;;
 		   esac
 
 		   if [ $(sysctl 2>/dev/null -n hw.optional.x86_64) = 1 ];
@@ -662,9 +796,32 @@ esac
 ###############################################################################
 # Must occur after compat to get Sun 5 in there...
 
+# --8<--8<--8<--8<--
+#
+# Copyright (C) 2006 Smithsonian Astrophysical Observatory
+#
+# This file is part of sysarch
+#
+# sysarch is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# sysarch is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the
+#       Free Software Foundation, Inc.
+#       51 Franklin Street, Fifth Floor
+#       Boston, MA  02110-1301, USA
+#
+# -->8-->8-->8-->8--
 
 
-orig_ifs=$IFS
+_IFS=$IFS
 IFS=':'
 
 case $os_type in
@@ -689,14 +846,14 @@ case $os_type in
 
        for _os_version in $os_versions; do
 	 _os="${os_type}-${_os_version}"
-	 platforms_os="$platforms_os:${_hw_cpu}-${_os}"
+	 platforms_os[${#platforms_os[*]}]="${_hw_cpu}-${_os}"
        done
 
      done
 
-     platforms_os=${platforms_os#:}
-     platforms_uos=$platforms_os
+     platforms_os="${platforms_os[*]}"
 
+     platforms_uos=$platforms_os
      platforms=$platforms_os
      ;;
 
@@ -714,21 +871,21 @@ case $os_type in
 
        for _os_version in $os_versions; do
 	 _os="${os_type}_${os_vendor}-${_os_version}"
-	 platforms_os="${platforms_os}:${_hw_cpu}-${_os}"
-	 platforms="${platforms}:${_hw_cpu}-${_os}"
+	 platforms_os[${#platforms_os[*]}]="${_hw_cpu}-${_os}"
+	 platforms[${#platforms[*]}]="${_hw_cpu}-${_os}"
        done
 
        for _os_uversion in $os_uversions; do
 	 _uos="${os_type}-${_os_uversion}"
-	 platforms_uos="$platforms_uos:${_hw_cpu}-${_uos}"
-	 platforms="${platforms}:${_hw_cpu}-${_uos}"
+	 platforms_uos[${#platforms_uos[*]}]="${_hw_cpu}-${_uos}"
+	 platforms[${#platforms[*]}]="${_hw_cpu}-${_uos}"
        done
 
      done
 
-     platforms=${platforms#:}
-     platforms_os=${platforms_os#:}
-     platforms_uos=${platforms_uos#:}
+     platforms="${platforms[*]}"
+     platforms_os="${platforms_os[*]}"
+     platforms_uos="${platforms_uos[*]}"
 
      ;;
 
@@ -739,7 +896,7 @@ platform_generic=$platform_uos_generic
 platform_native=$platform_os_native
 
 
-IFS=$orig_ifs
+IFS=$_IFS
 
 
 ###############################################################################
@@ -752,19 +909,16 @@ function exists {
     fi
 }
 
-function value {
-  eval echo "\$$1"
+output_array=( )
+function push_output {
+
+    output_array[${#output_array[*]}]="$@"
+
 }
 
 function output {
 
-    # check that this is a real variable
-    eval var_exists='${'$2':+1}'
-    if [ $var_exists ]; then
-      eval echo "$1\$$2$3"
-    else
-      die unknown variable: "'$2'"
-    fi
+    push_output "$1${!2:?unknown variable: $2 }$3"
 }
 
 case $output_format in
@@ -772,29 +926,29 @@ case $output_format in
   csh | tcsh )
     if [ $export ]; then
       for var in $output_vars; do
-        output "setenv $pfx$var \'" $var "\'"
+        output "setenv $pfx$var '" $var "'"
       done
     else
       for var in $output_vars; do
-        output "set $pfx$var = \'" $var "\'"
+        output "set $pfx$var = '" $var "'"
       done
     fi
     ;;
 
   sh)
     for var in $output_vars; do
-      output "$pfx$var=\'" $var "\'"
+      output "$pfx$var='" $var "'"
     done
     if [ $export ]; then
       for var in $output_vars; do
-	echo export $pfx$var
+	push_output "export $pfx$var"
       done
     fi
     ;;
 
   ksh | bash)
     for var in $output_vars; do
-      output "$export $pfx$var=\'" $var "\'"
+      output "$export$pfx$var='" $var "'"
     done
     ;;
 
@@ -816,20 +970,20 @@ case $output_format in
     for var in $output_vars; do
       exists $var
       make_var=$(upper $var)
-      output="$output $pfx$make_var=$(value $var)"
+      output="$output $pfx$make_var=${!var}"
     done
     echo -n ${output# }
     ;;
 
   gmake_extract)
-    echo '#######################################################################'
-    echo '# generated by "sysarch -gmake_extract"'
-    echo ' '
-    echo SYSINFO :=  \$\(shell \$\(_SYSARCH\) -gmake_cat\)
+    push_output '#######################################################################'
+    push_output '# generated by "sysarch -gmake_extract"'
+    push_output ' '
+    push_output 'SYSINFO :=  $(shell $(_SYSARCH) -gmake_cat)'
     for var in $output_vars; do
       exists $var
       make_var=$(upper $var)
-      eval echo $make_var := '\$\(patsubst '$make_var'=%,%,\$\(filter '$make_var'=%, \$\(SYSINFO\)\)\)'
+      push_output $make_var := '$(patsubst '$make_var'=%,%,$(filter '$make_var'=%, $(SYSINFO)))'
     done
     echo '#######################################################################'
     ;;
@@ -838,26 +992,42 @@ case $output_format in
     for var in $output_vars; do
       exists $var
       make_var=$(upper $var)
-      echo "	" echo \"$pfx$make_var = '$'\($make_var\)\"';' \\
+      push_output "	echo" \"$pfx$make_var = '$'\($make_var\)\"';' \\
     done
     ;;
 
-  perl)
-    for var in $output_vars; do
-       output "\\\$$pfx$var = \'" $var "\'\;"
-    done
-    ;;
+  perl | perl_hash )
+    if [ "$output_format" = perl ]; then
+	eol=';'
+	sep='='
+	pfx="\$$pfx"
+    else
+	eol=','
+	sep='=>'
+    fi
 
-  perl_hash)
     for var in $output_vars; do
-       output "$pfx$var =\> \'" $var "\',"
+	value=${!var:?unknown variable}
+	if [[ "$value" == *:* ]]; then
+	    value=${value//:/"', '"}
+	    push_output "$pfx$var $sep [ '$value' ]$eol"
+	else
+	    output "$pfx$var $sep '" $var "'$eol"
+	fi
     done
     ;;
 
   yaml)
     echo """---"
     for var in $output_vars; do
-       output "$pfx$var: " $var
+	value=${!var:?unknown variable}
+	if [[ "$value" == *:* ]]; then
+	    value=${value//:/$'\n - '}
+	    push_output "$pfx$var:"$'\n - '"$value"
+	else
+	    output "$pfx$var: " $var
+	fi
+
     done
     ;;
 
@@ -874,6 +1044,10 @@ case $output_format in
      ;;
 
 esac
+
+_IFS="$IFS"; IFS=$'\n'
+echo "${output_array[*]}"
+IFS="$_IFS"
 
 exit 0
 
