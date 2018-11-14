@@ -127,7 +127,7 @@ Xija
   python
   import xija
   xija.__version__
-  '3.9'
+  '3.12'
   xija.test()
 
 ==> OK: chimchim, gretasot
@@ -142,7 +142,7 @@ chandra_aca
   python
   import chandra_aca
   chandra_aca.__version__
-  '3.20'
+  '3.24'
   chandra_aca.test()
 
 ==> OK: chimchim, gretasot
@@ -158,8 +158,10 @@ Kadi
   kadi.test()
 
 
-==> OK on chimchim.  kadi.commands fails test_quick, test_states_2017, test_reduce_states_cmd_states
-on gretasot.  kadi.commands is not required operationally and not presently supported for 32-bit.
+==> chimchim: kadi.commands fails test_get_cmds_zero_length_result and test_get_cmds
+    gretasot: kadi.commands fails test_get_cmds_zero_length_result, test_get_cmds,
+    test_quick, test_states_2017, test_reduce_states_cmd_states.
+    kadi.commands is not required operationally and these test fails are in the previous ska.
 
 
 Eng_archive
@@ -174,7 +176,9 @@ Eng_archive
   '3.43.1'
   Ska.engarchive.test()
 
-==> OK: chimchim, gretasot
+==> chimchim and gretasot fail maude-related regression tests.  The installed modules with
+    their built-in regression test values have not been updated since MAUDE 1.0
+    promotion.  Same fails in current flight.
 
 
 Cmd_states
@@ -248,7 +252,7 @@ Run models
   >>> run calc_model.py
   >>> plt.show()
 
-==> Not done
+==> OK chimchim, gretasot
 
 
 Check plotting for qt
@@ -262,6 +266,8 @@ Check plotting for qt
   display /tmp/junk.png
 
 ==> OK chimchim, gretasot
+
+
 
 
 
