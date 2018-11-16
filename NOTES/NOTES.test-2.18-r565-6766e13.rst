@@ -297,13 +297,13 @@ Install skare on 32-bit and 64-bit.
   tar -cvpf 64.tar arch bin include lib build/*/*/.installed   # 64 bit VM
 
   # Rsync to HEAD /proj/sot/ska/tmp
-  rsync -aruvz 32.tar jeanconn@fido:/proj/sot/ska/tmp/skadev-2.18-r565 # 32 bit VM
-  rsync -aruvz 64.tar jeanconn@fido:/proj/sot/ska/tmp/skadev-2.18-r565 # 64 bit VM
+  rsync -aruvz 32.tar jeanconn@fido:/proj/sot/ska/tmp/ska-2.18-r565 # 32 bit VM
+  rsync -aruvz 64.tar jeanconn@fido:/proj/sot/ska/tmp/ska-2.18-r565 # 64 bit VM
 
   # Rsync from ccosmos to GRETA tmp on machine chimchim
   mkdir /proj/sot/ska/tmp/ska-2.18-r565 # on GRETA
   cd /proj/sot/ska/tmp/ska-2.18-r565
-  rsync -aruv jeanconn@ccosmos:/proj/sot/ska/tmp/skadev-2.18-r565/\*tar .
+  rsync -aruv jeanconn@ccosmos:/proj/sot/ska/tmp/ska-2.18-r565/\*tar .
   tar -xvpf 32.tar
   tar -xvpf 64.tar
   # remove no-longer needed tarballs
@@ -328,10 +328,8 @@ Install skare on 32-bit and 64-bit.
 
   # Update other pieces
   cd /proj/sot/ska/lib
-  mv perl_bak perl_bak1
-  chmod +w -R perl_bak1
-  rm -rf perl_back1
   mv perl perl_bak
+  chmod +w -R perl_bak
   rsync -aruv /proj/sot/ska/tmp/ska-2.18-r565/lib/perl .
   cd /proj/sot/ska
   rm -rf build
@@ -361,7 +359,7 @@ Chandra.Time
   >>> Chandra.Time.__version__
 
 
-==> OK at version 3.20.1: chimchim, gretasot (03-Aug-2018)
+==> OK at version 3.20.1: chimchim, gretasot fails test_secs due to numeric issue (15-Nov-2018)
 
 
 Eng archive and kadi smoke tests
@@ -379,7 +377,7 @@ Eng archive and kadi smoke tests
   >>> from kadi import events
   >>> print events.safe_suns.all()
 
-===> OK chimchim, gretasot (03-Aug-2018)
+===> OK chimchim, gretasot (15-Nov-2018)
 
 
 Xija
@@ -391,10 +389,10 @@ Xija
   import os
   import xija
   xija.__version__
-  '3.9'
+  '3.12'
   xija.test()
 
-==> OK chimchim, gretasot (03-Aug-2018)
+==> OK chimchim, gretasot (15-Nov-2018)
 
 chandra_aca
 ^^^^^^^^^^^
@@ -403,10 +401,10 @@ chandra_aca
   ipython
   import chandra_aca
   chandra_aca.__version__
-  '3.20'
+  '3.24'
   chandra_aca.test()
 
-===> OK chimchim, gretasot (03-Aug-2018)
+===> OK chimchim, gretasot (15-Nov-2018)
 
 Kadi
 ^^^^
@@ -415,9 +413,10 @@ Kadi
   import kadi
   kadi.test()
 
-==> OK on chimchim.  kadi.commands fails test_quick, test_states_2017, test_reduce_states_cmd_states
-on gretasot.  kadi.commands is not required operationally and not presently supported for
-32-bit. (03-Aug-2018)
+==> chimchim fails on kadi.commands test_get_cmds_zero_length_result, test_get_cmds
+    gretasot fails on kadi.commands fails test_get_cmds_zero_length_result, test_get_cmds,
+    test_quick, test_states_2017, test_reduce_states_cmd_states
+    kadi.commands is not required operationally and not presently supported for 32-bit. (15-Nov-2018)
 
 
 Eng_archive
@@ -425,15 +424,15 @@ Eng_archive
 ::
 
   cd
-  skadev
+  ska
   python
   import Ska.engarchive
-  Ska.engarchive.__version
+  Ska.engarchive.__version__
   '3.43.1'
   Ska.engarchive.test()
 
 ==> Four data_source tests fail.  MAUDE tests.  This is due to MAUDE
-1.0 change since environment was created. otherwise OK chimchim, gretasot (03-Aug-2018)
+1.0 change since environment was created. otherwise OK chimchim, gretasot (15-Nov-2018)
 
 
 Chandra.Maneuver
@@ -456,5 +455,5 @@ Check plotting for qt
 
   display /tmp/junk.png
 
-===> OK chimchim, gretasot (03-Aug-2018)
+===> OK chimchim, gretasot (15-Nov-2018)
 
